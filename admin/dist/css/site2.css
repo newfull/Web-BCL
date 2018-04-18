@@ -1,0 +1,68 @@
+/**********site.css**********/
+body { margin: 0px auto; font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 12px}
+a { text-decoration: none;}
+.design-by { margin: 15px 0 10px; text-align: center; font-size: 10px; color: white;}
+.page-top { font-weight: bold; font-size: 22px; color: #006699; padding:  5px 0 0 10px; background: url('../images/bg-top.png') repeat-y right; height: 40px; background-color: white;}
+.page-top-menu-l { background: url('../images/bg-top-menu.png') repeat-y left; height: 15px; padding: 5px 0 5px 15px; font-size: 10px; color: white; background-color: white;}
+.page-top-menu-l a { color: white;}
+.page-top-menu-l a:hover { text-decoration: underline;}
+.page-top-menu-r { float: right; margin-right: 15px}
+.page-top-menu-r a { font-weight: bold; color: #000066}
+.page-top-menu-r a:hover { text-decoration: underline;}
+.paging-btn-primary { color:Black; background-color:#FFFF99; border-color:#990033; border-width:1px; border-style:Solid; height:25px; margin-right:3px;}
+.paging-btn-normal { color:White; background-color:#3267ff; border-color:#990033; border-width:1px; border-style:Solid; height:25px; margin-right:3px;}
+.sort-img { margin-left: 5px;}
+.pnlpaging { text-align: right; margin-right: -3px; margin-top: 5px;}
+.pnlNumber { float: right; margin-left: 10px;}
+.pnlPrevNext { float: right; margin-left: 40px}
+.textPage { height:20px;width:50px;}
+.labelTotalpage { font-weight:bold; margin-right: 15px}
+.divRefresh { float: right; margin-left: 5px;}
+.input-paging { height: 25px;}
+.update-td { border: 1px solid #b7dee4; border-bottom: none;}
+.update-header-td { font-weight:bold;}
+.update-table { border: 1px solid #b7dee4; width: 100%;}
+.label-validate { color:red; margin-left: 5px;}
+.labelmessageForm { color:Red; font-size:14px; font-weight:bold; margin-left: 10px}
+.pnlUpdateAction { background-color:#AAD5FF; border-width:1px; border-style:Solid; padding: 6px; margin-top: 5px;}
+.save-btn-action { color:Black; font-weight:bold; text-decoration: none; padding-left: 20px; margin-right: 10px; background: url('../images/page_save.png') center left no-repeat;}
+.back-btn-action { color:Black; font-weight:bold; text-decoration: none; padding-left: 20px; margin-left: 5px; background: url('../images/back.png') center left no-repeat;}
+.refresh-btn-action { background: url('../images/refresh.png') center left no-repeat;}
+.addnew-btn-action { background: url('../images/page_add.png') center left no-repeat;}
+.delete-btn-action { background: url('../images/delete.png') center left no-repeat;}
+.success-btn-action { background: url('../images/checkok.png') center left no-repeat;}
+.title-table { font-size:18px;font-weight:bold; color: #3267ff; margin-left: 5px;}
+.labelMessage { color:Red; font-size:14px; font-weight:bold; margin-left: 10px}
+.pnlAction { background-color:#8AC8FF; border-color:#006699; border-width:1px; border-style:Solid; height:30px; padding: 5px; margin-top: 5px;}
+.pnlSearch { float: right;}
+.pnlimgbtnSearch { float: right; margin-top: -2px; margin-left: 5px;}
+.pnltxtSearch { margin-top: -3px; float: left;}
+.labelPageSize { font-weight:bold;}
+.cboPageSize { font-weight:normal; height:27px; width:60px; border: 3px groove #d8f6f6;}
+.textSearch { height:20px; width:225px;}
+.pnlActionLeft { margin-top:3px;}
+.pnlActionLeft a { color:Black; font-weight:bold; text-decoration: none; padding-left: 20px;}
+.cbxSelectOne { font-size:0px;}
+.table-row-one { background-color:#DDEEFF; border-color:#006699; border-width:1px; border-style:Solid;}
+.table-row-two { background-color:#b1ecdb; border-color:#006699; border-width:1px; border-style:Solid;}
+.table-row-primary { font-weight:bold;}
+.table-search-one { background-color:#3267ff;}
+.table-search-one input { text-align: center;}
+.cbxSelectAll { width:20px;}
+.table-header { color:White; background-color:#3267ff; font-weight:bold;}
+.table-header th{ border: black 1px solid; border-bottom: none; text-align: center;}
+.table-header a { color:White; text-decoration: underline;}
+.table-display { color:Black; border-color:#999999; border-width:1px; border-style:Solid; border: black; width:100%; border-collapse:collapse; text-align: center}
+.table-search-one input { width: 95%;}
+.table-display tr[class*="table-row-"]:hover { color: red;}
+.pnlNumber input:hover { background: #009933; cursor: pointer;}
+.table-body { width: 99.9%; border: 0px; border-collapse: collapse;}
+.table-body-l { width: 220px; background: #2276f2; vertical-align: top;}
+.table-body-r { vertical-align: top;  padding-top: 5px;}
+.table-body-l-div { padding: 0 10px 0 5px; margin-top: -11px}
+.menu-left-title { background: url('../images/bg_menu.png') repeat-y right; font-weight: bold; height: 15px; color: #0000cc; padding: 6px 15px; margin-top: 10px; background-color: white;}
+.menu-left-content { background: #d3e2f9; padding: 7px 15px; line-height: 20px;}
+.menu-left-content a { color: #6600ff; font-size: 11px;}
+.menu-left-content a:hover { font-weight: bold;}
+.menu-left-img { float: right; cursor: pointer; margin-top: -5px; margin-right: -12px;}
+.menu-left-content img { vertical-align: sub; width: 15px; height: 15px;}
