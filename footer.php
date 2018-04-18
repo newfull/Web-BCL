@@ -156,15 +156,13 @@
 
 	</footer><!--/Footer-->
 
-
-
-    <script src="js/jquery.js"></script>
+  <script src="js/jquery.js"></script>
 	<script src="js/bootstrap.min.js"></script>
-    <script src="js/jquery.scrollUp.min.js"></script>
-    <script src="js/jquery.prettyPhoto.js"></script>
-    <script src="js/main.js"></script>
+  <script src="js/jquery.scrollUp.min.js"></script>
+  <script src="js/jquery.prettyPhoto.js"></script>
+  <script src="js/main.js"></script>
     <!--For Image Zoom-->
-    <script src='js/jquery-1.8.3.min.js'></script>
+  <script src='js/jquery-1.8.3.min.js'></script>
 	<script src='js/jquery.elevatezoom.js'></script>
 	<script>
 	    $('#zoom_01').elevateZoom({
@@ -174,18 +172,27 @@
 		zoomWindowFadeOut: 750
 		   });
 	</script>
+
 	<!--For Fancyapp-->
 	<!--<script type="text/javascript" src="fancyapp/lib/jquery-1.10.1.min.js"></script> -->
-  <!--  <script type="text/javascript" src="fancyapp/source/jquery.fancybox.js?v=2.1.5"></script>
-  	<link rel="stylesheet" type="text/css" href="fancyapp/source/jquery.fancybox.css?v=2.1.5" media="screen" />
+  <script type="text/javascript" src="fancyapp/source/jquery.fancybox.js?v=2.1.5"></script>
+  <link rel="stylesheet" type="text/css" href="fancyapp/source/jquery.fancybox.css?v=2.1.5" media="screen" />
+  <script type="text/javascript">
+    $(document).ready(function() {
+      var stickyNavTop = $('#navbar').offset().top;
 
-      <script type="text/javascript">
-        $(document).ready(function() {
+      $(window).scroll(function() {
+        if ($(window).scrollTop() > stickyNavTop) {
+            $('#navbar').addClass('navbar navbar-default navbar-fixed-top');
+      } else {
+            $('#navbar').removeClass('navbar navbar-default navbar-fixed-top');
+            $('#navbar').addClass('navbar navbar-default');
+          }
+      });
 
-          $('.fancybox').fancybox();
-          });
-      </script>
+      $('.fancybox').fancybox();
+    });
+  </script>
 
-    -->
 </body>
 </html>

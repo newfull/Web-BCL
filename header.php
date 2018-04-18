@@ -11,6 +11,7 @@
     <link href="css/price-range.css" rel="stylesheet">
     <link href="css/animate.css" rel="stylesheet">
 	  <link href="css/style.css" rel="stylesheet">
+    <link href="css/main.css" rel="stylesheet">
  	  <link href="css/responsive.css" rel="stylesheet">
 
     <!--[if lt IE 9]>
@@ -49,13 +50,13 @@
 		</div><!--/header_top-->
 
     <div class="header-middle"><!--header-middle-->
+      <nav id="navbar" class="navbar navbar-default">
   			<div class="container">
-  				<div class="row">
   					<div class="col-sm-4">
   						<div class="logo pull-left">
   							<a href="index.php"><img src="images/home/logo.png" alt="" /></a>
   						</div>
-          </div>
+            </div>
   					<div class="col-sm-8">
   						<div class="shop-menu pull-right">
   							<ul class="nav navbar-nav">
@@ -67,9 +68,9 @@
   							</ul>
   						</div>
   					</div>
-  				</div>
-  			</div>
-  		</div><!--/header-middle-->
+  			 </div>
+       </nav>
+  	</div><!--/header-middle-->
 
   		<div class="header-bottom"><!--header-bottom-->
   			<div class="container">
