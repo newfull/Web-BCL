@@ -1,4 +1,8 @@
-<?php include("header.php");?>
+<head>
+  <title>Hình thức thanh toán | Gà Rán BCL</title>
+</head>
+<?php include_once("header.php");?>
+
 	<section id="cart_items" style="padding-bottom:50px">
 		<div class="container">
 			<div class="breadcrumbs">

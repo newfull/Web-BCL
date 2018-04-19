@@ -21,28 +21,44 @@
   <script type="text/javascript" src="fancyapp/source/jquery.fancybox.js?v=2.1.5"></script>
   <link rel="stylesheet" type="text/css" href="fancyapp/source/jquery.fancybox.css?v=2.1.5" media="screen" />
   <script type="text/javascript">
-    $(document).ready(function() {
-        var stickyNavTop = $('#navbar').offset().top;
-        var position = $(window).scrollTop();
+  var stickyNavTop = $('#navbar').offset().top;
+  var position = $(window).scrollTop();
 
+    $(document).ready(function() {
         $(window).scroll(function() {
-          if ($(window).scrollTop() > stickyNavTop) {
+          var scroll = $(window).scrollTop();
+          if (scroll > stickyNavTop) {
               $('#navbar').addClass('navbar-fixed-top');
+              $('#navbar').addClass('isDown');
         } else {
               $('#navbar').css('margin-top','0px');
               $('#navbar').removeClass('navbar-fixed-top');
+              $('#navbar').removeClass('isDown');
             }
-
-            var scroll = $(window).scrollTop();
             if(scroll < position) {
-              $('#navbar').animate({ "margin": "0px"}, "fast");
+              $('#navbar').css('margin-top','0px');
+              $('#navbar').addClass('isDown');
             } else {
-              $('#navbar').animate({ "margin": "-40px"}, "fast");      }
+              $('#navbar').css('margin-top','-40px');
+              $('#navbar').removeClass('isDown');
+            }
             position = scroll;
-
-        });
+          });
       $('.fancybox').fancybox();
     });
 
+    $('#navbar').mouseenter(function(){
+      if((!$('#navbar').hasClass('isDown'))&&($(window).scrollTop() > stickyNavTop)){
+        $('#navbar').animate({'margin-top':'0px'},"fast");
+        $('#navbar').addClass('isDown');
+      }
+    });
+
+    $('#navbar').mouseleave(function(){
+      if(($('#navbar').hasClass('isDown'))&&($(window).scrollTop() > stickyNavTop)){
+        $('#navbar').animate({'margin-top':'-40px'},"fast");
+        $('#navbar').removeClass('isDown');
+      }
+    });
 
   </script>
