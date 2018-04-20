@@ -1,0 +1,23 @@
+Animated Vertical Bootstrap Carousel on Mouse scroll and Swipe
+https://bootsnipp.com/snippets/featured/animated-vertical-bootstrap-carousel-on-mouse-scroll-and-swipe
+
+Animated Loading icon
+Source: https://bootsnipp.com/snippets/featured/creative-animated-loading-icon-in-html5-css3
+
+Animated Loading
+Source: https://bootsnipp.com/snippets/featured/animated-loading
+
+Footer using Bootstrap 4
+https://bootsnipp.com/snippets/featured/footer-using-bootstrap-4
+
+Bootstrap tabs with elegant smooth design using bootstrap 4
+https://bootsnipp.com/snippets/featured/bootstrap-tabs-with-elegant-smooth-design-using-bootstrap-4
+
+Team design card flipper using bootstrap 4
+https://bootsnipp.com/snippets/featured/team-design-card-flipper-using-bootstrap-4
+
+Bootstrap Material Wizard
+https://bootsnipp.com/snippets/featured/bootstrap-material-wizard
+
+Shopping Order Status
+https://bootsnipp.com/snippets/featured/shopping-order-status

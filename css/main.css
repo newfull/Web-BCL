@@ -50,13 +50,13 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 a#scrollUp {
-  bottom: 0px;
+  bottom: 10px;
   right: 10px;
-  padding: 5px 10px;
-  background: #FE980F;
+  padding: 5px 20px;
+  background: #0fbefe;
   color: #FFF;
-  -webkit-animation: bounce 2s ease infinite;
-  animation: bounce 2s ease infinite;
+  -webkit-animation: bounce 1s ease infinite;
+  animation: bounce 1s ease infinite;
 }
 
 a#scrollUp i{

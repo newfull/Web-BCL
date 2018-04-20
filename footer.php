@@ -156,7 +156,7 @@
 
 	</footer><!--/Footer-->
 
-<?php include_once("function.php"); ?>
+<?php include_once("includes/functions.php") ?>
 
 </body>
 </html>
