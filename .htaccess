@@ -1,0 +1,77 @@
+DirectoryIndex trang-chu.php
+
+Options -Indexes
+
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME}.php -f [NC]
+RewriteRule ^(.*?)$ $1.php [L]
+RewriteCond %{REQUEST_FILENAME}.html -f [NC]
+RewriteRule ^(.*?)/?$ $1.html [L]
+
+<Files header.php>
+    Order Allow,Deny
+    Deny from all
+</Files>
+
+<Files footer.php>
+    Order Allow,Deny
+    Deny from all
+</Files>
+
+<Files header.php>
+    Order Allow,Deny
+    Deny from all
+</Files>
+
+Redirect /index.php /trang-chu
+Redirect /home.html /trang-chu
+Redirect /index.html /trang-chu
+Redirect /home.php /trang-chu
+Redirect /trangchu.php /trang-chu
+Redirect /trangchu.html /trang-chu
+Redirect /trangchu /trang-chu
+Redirect /trang_chu /trang-chu
+Redirect /home /trang-chu
+Redirect /index /trang-chu
+Redirect /header /trang-chu
+Redirect /footer /trang-chu
+Redirect /functions /trang-chu
+Redirect /favicon.ico /trang-chu
+
+Redirect /cart /gio-hang
+Redirect /gio /gio-hang
+Redirect /giohang /gio-hang
+Redirect /gio_hang /gio-hang
+Redirect /tui /gio-hang
+
+Redirect /menu /thuc-don
+Redirect /thucdon /thuc-don
+Redirect /thuc_don /thuc-don
+Redirect /sanpham /thuc-don
+Redirect /san-pham /thuc-don
+Redirect /thuc-an /thuc-don
+Redirect /thucan /thuc-don
+
+Redirect /checkout /thanh-toan
+Redirect /check-out /thanh-toan
+Redirect /check_out /thanh-toan
+Redirect /tinhtien /thanh-toan
+Redirect /tinh-tien /thanh-toan
+Redirect /tinh_tien /thanh-toan
+
+Redirect /menu /thuc-don
+Redirect /js/404 /404
+Redirect /css/404 /404
+Redirect /images/404 /404
+Redirect /images/items/404 /404
+Redirect /images/promotions/404 /404
+Redirect /images/users/404 /404
+Redirect /includes/404 /404
+Redirect /fonts/404 /404
+Redirect /admin/404 /404
+Redirect /cache/404 /404
+
+<Files 404.php>
+  order allow,deny
+  allow from all
+</Files>

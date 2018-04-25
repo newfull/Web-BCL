@@ -1,162 +1,171 @@
-	<footer id="footer"><!--Footer-->
-		<div class="footer-top">
-			<div class="container">
-				<div class="row">
-					<div class="col-sm-2">
-						<div class="companyinfo">
-							<h2><span>e</span>-shopper</h2>
-							<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit,sed do eiusmod tempor</p>
-						</div>
+<footer id="footer"><!--Footer-->
+	<div class="footer-top">
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-2">
+					<div class="companyinfo">
+						<h2><span>e</span>-shopper</h2>
+						<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit,sed do eiusmod tempor</p>
 					</div>
-					<div class="col-sm-7">
-						<div class="col-sm-3">
-							<div class="video-gallery text-center">
-								<a href="#">
-									<div class="iframe-img">
-										<img src="images/home/iframe1.png" alt="" />
-									</div>
-									<div class="overlay-icon">
-										<i class="fa fa-play-circle-o"></i>
-									</div>
-								</a>
-								<p>Circle of Hands</p>
-								<h2>24 DEC 2014</h2>
-							</div>
-						</div>
-
-						<div class="col-sm-3">
-							<div class="video-gallery text-center">
-								<a href="#">
-									<div class="iframe-img">
-										<img src="images/home/iframe2.png" alt="" />
-									</div>
-									<div class="overlay-icon">
-										<i class="fa fa-play-circle-o"></i>
-									</div>
-								</a>
-								<p>Circle of Hands</p>
-								<h2>24 DEC 2014</h2>
-							</div>
-						</div>
-
-						<div class="col-sm-3">
-							<div class="video-gallery text-center">
-								<a href="#">
-									<div class="iframe-img">
-										<img src="images/home/iframe3.png" alt="" />
-									</div>
-									<div class="overlay-icon">
-										<i class="fa fa-play-circle-o"></i>
-									</div>
-								</a>
-								<p>Circle of Hands</p>
-								<h2>24 DEC 2014</h2>
-							</div>
-						</div>
-
-						<div class="col-sm-3">
-							<div class="video-gallery text-center">
-								<a href="#">
-									<div class="iframe-img">
-										<img src="images/home/iframe4.png" alt="" />
-									</div>
-									<div class="overlay-icon">
-										<i class="fa fa-play-circle-o"></i>
-									</div>
-								</a>
-								<p>Circle of Hands</p>
-								<h2>24 DEC 2014</h2>
-							</div>
-						</div>
-					</div>
+				</div>
+				<div class="col-sm-7">
 					<div class="col-sm-3">
-						<div class="address">
-							<img src="images/home/map.png" alt="" />
-							<p>505 S Atlantic Ave Virginia Beach, VA(Virginia)</p>
+						<div class="video-gallery text-center">
+							<a href="#">
+								<div class="iframe-img">
+									<img src="images/home/iframe1.png" alt="" />
+								</div>
+								<div class="overlay-icon">
+									<i class="fa fa-play-circle-o"></i>
+								</div>
+							</a>
+							<p>Circle of Hands</p>
+							<h2>24 DEC 2014</h2>
 						</div>
+					</div>
+
+					<div class="col-sm-3">
+						<div class="video-gallery text-center">
+							<a href="#">
+								<div class="iframe-img">
+									<img src="images/home/iframe2.png" alt="" />
+								</div>
+								<div class="overlay-icon">
+									<i class="fa fa-play-circle-o"></i>
+								</div>
+							</a>
+							<p>Circle of Hands</p>
+							<h2>24 DEC 2014</h2>
+						</div>
+					</div>
+
+					<div class="col-sm-3">
+						<div class="video-gallery text-center">
+							<a href="#">
+								<div class="iframe-img">
+									<img src="images/home/iframe3.png" alt="" />
+								</div>
+								<div class="overlay-icon">
+									<i class="fa fa-play-circle-o"></i>
+								</div>
+							</a>
+							<p>Circle of Hands</p>
+							<h2>24 DEC 2014</h2>
+						</div>
+					</div>
+
+					<div class="col-sm-3">
+						<div class="video-gallery text-center">
+							<a href="#">
+								<div class="iframe-img">
+									<img src="images/home/iframe4.png" alt="" />
+								</div>
+								<div class="overlay-icon">
+									<i class="fa fa-play-circle-o"></i>
+								</div>
+							</a>
+							<p>Circle of Hands</p>
+							<h2>24 DEC 2014</h2>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-3">
+					<div class="address">
+						<img src="images/home/map.png" alt="" />
+						<p>505 S Atlantic Ave Virginia Beach, VA(Virginia)</p>
 					</div>
 				</div>
 			</div>
 		</div>
+	</div>
 
-		<div class="footer-widget">
-			<div class="container">
-				<div class="row">
-					<div class="col-sm-2">
-						<div class="single-widget">
-							<h2>Service</h2>
-							<ul class="nav nav-pills nav-stacked">
-								<li><a href="">Online Help</a></li>
-								<li><a href="">Contact Us</a></li>
-								<li><a href="">Order Status</a></li>
-								<li><a href="">Change Location</a></li>
-								<li><a href="">FAQ’s</a></li>
-							</ul>
-						</div>
-					</div>
-					<div class="col-sm-2">
-						<div class="single-widget">
-							<h2>Quock Shop</h2>
-							<ul class="nav nav-pills nav-stacked">
-								<li><a href="">T-Shirt</a></li>
-								<li><a href="">Mens</a></li>
-								<li><a href="">Womens</a></li>
-								<li><a href="">Gift Cards</a></li>
-								<li><a href="">Shoes</a></li>
-							</ul>
-						</div>
-					</div>
-					<div class="col-sm-2">
-						<div class="single-widget">
-							<h2>Policies</h2>
-							<ul class="nav nav-pills nav-stacked">
-								<li><a href="">Terms of Use</a></li>
-								<li><a href="">Privecy Policy</a></li>
-								<li><a href="">Refund Policy</a></li>
-								<li><a href="">Billing System</a></li>
-								<li><a href="">Ticket System</a></li>
-							</ul>
-						</div>
-					</div>
-					<div class="col-sm-2">
-						<div class="single-widget">
-							<h2>About Shopper</h2>
-							<ul class="nav nav-pills nav-stacked">
-								<li><a href="">Company Information</a></li>
-								<li><a href="">Careers</a></li>
-								<li><a href="">Store Location</a></li>
-								<li><a href="">Affillate Program</a></li>
-								<li><a href="">Copyright</a></li>
-							</ul>
-						</div>
-					</div>
-					<div class="col-sm-3 col-sm-offset-1">
-						<div class="single-widget">
-							<h2>About Shopper</h2>
-							<form action="#" class="searchform">
-								<input type="text" placeholder="Your email address" />
-								<button type="submit" class="btn btn-default"><i class="fa fa-arrow-circle-o-right"></i></button>
-								<p>Get the most recent updates from <br />our site and be updated your self...</p>
-							</form>
-						</div>
-					</div>
+	<div class="footer-widget">
+		<div class="container">
 
+			<div class="row no-gutter">
+				<div class="col-xs-2">
+					<a class="navbar-brand" href="trang-chu">
+							<img src="./images/logo.png" class="logo-img img-responsive">
+					</a>
+					<a href="trang-chu"><img src="images/name.png" alt="" /></a>
+				</div>
+				<div class="col-xs-2">
+					<h2>Thực đơn</h2>
+							<ul class="list-unstyled quick-links">
+								<li><a href="/thuc-don/ga">Gà</a></li>
+								<li><a href="/thuc-don/burger">Hamburger</a></li>
+								<li><a href="/thuc-don/com">Cơm</a></li>
+							</ul>
+				</div>
+				<div class="col-xs-2">
+					<h3>Thực đơn</h3>
+							<ul class="list-unstyled quick-links">
+								<li><a href="/thuc-don/thuc-uong">Thức uống</a></li>
+								<li><a href="/thuc-don/combo">Combo</a></li>
+								<li><a href="/thuc-don/trang-mieng">Tráng miệng</a></li>
+							</ul>
+				</div>
+				<div class="col-xs-2">
+					<h2>Đặt hàng</h2>
+							<ul class="list-unstyled quick-links">
+								<li><a href=""><i class="fa fa-phone"> 1800-8099</i></a></li>
+								<li class="static">Miễn phí giao hàng</li>
+							</ul>
+				</div>
+
+				<div class="col-xs-4 text-right">
+						<ul class="list-unstyled">
+							<li><div class="submit-mail-title">Đăng ký nhận thông tin</div></li>
+							<li><div class="form-group">
+								<input type="text" id="news_email" name="news_email" class="form-control focus empty" value="">
+								<label class="floating-label">Nhập email</label>
+							</div>
+							</li>
+							<li>
+								<span class="input-group-btn">
+									<button class="btn btn-danger" type="submit" onclick="news_letter();">Đăng ký</button>
+								</span>
+							</li>
+						</ul>
+					</div>
 				</div>
 			</div>
 		</div>
+	</div>
 
 		<div class="footer-bottom">
 			<div class="container">
 				<div class="row">
-					<p class="pull-left">Copyright © 2013 E-SHOPPER Inc. All rights reserved.</p>
-					<p class="pull-right">Designed by <span><a target="_blank" href="http://www.themeum.com">Themeum</a></span></p>
+			<div class="copyright">
+				©2014  Lotteria  All Rights Reserved
+			</div>
+
+			<div class="right-footer fright">
+				<div class="social-icons">
+					<ul class="nomargin">
+						<a href="https://www.facebook.com/bootsnipp"><i class="fa fa-facebook-square fa-3x social-fb" id="social"></i></a>
+						<a href="https://twitter.com/bootsnipp"><i class="fa fa-twitter-square fa-3x social-tw" id="social"></i></a>
+						<a href="https://plus.google.com/+Bootsnipp-page"><i class="fa fa-google-plus-square fa-3x social-gp" id="social"></i></a>
+						<a href="mailto:bootsnipp@gmail.com"><i class="fa fa-envelope-square fa-3x social-em" id="social"></i></a>
+					</ul>
 				</div>
 			</div>
+			<ul class="insset-footer fright">
+				<li><a href="http://www.lotteria.vn/vn/gioi-thieu/">Giới thiệu</a></li>
+				<li><a href="http://www.lotteria.vn/vn/tin-tuc/">Tin tức</a></li>
+				<li><a href="http://www.lotteria.vn/vn/tuyen-dung/">Tuyển dụng</a></li>
+				<li><a href="http://www.lotteria.vn/vn/lien-he/">Liên hệ</a></li>
+			</ul>
 		</div>
+				</div>
+		</footer><!--/Footer-->
 
-	</footer><!--/Footer-->
-
-<?php include_once("includes/functions.php") ?>
-
-</body>
-</html>
+		<script src="js/jquery.js"></script>
+		<script src="js/bootstrap.min.js"></script>
+		<script src="js/jquery.scrollUp.min.js"></script>
+		<script src="js/jquery.prettyPhoto.js"></script>
+		<script src="js/main.js"></script>
+		<script src="js/jquery-ui-1.9.2.custom.min.js"></script>
+		<script src="js/bootstrap-datetimepicker.min.js"></script>
+		<script src="js/bootstrap-datepicker.min.js"></script>
+	</body>

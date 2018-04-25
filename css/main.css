@@ -7,11 +7,10 @@
 @import url(http://fonts.googleapis.com/css?family=Abel);
 
 body {
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Cambria', sans-serif;
   background:;
   position: relative;
   font-weight:400px;
-  margin-top: 70px;
 }
 
 ul li {
@@ -36,17 +35,13 @@ a {
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Cambria', sans-serif;
 }
 
 .btn:hover,
 .btn:focus{
   outline: none;
   box-shadow: none;
-}
-
-.navbar-toggle {
-  background-color: #000;
 }
 
 a#scrollUp {
@@ -69,6 +64,7 @@ a#scrollUp i{
 **************************/
 
 .header_top {
+  height: 100px;
   background: none repeat scroll 0 0 #F0F0E9;
 }
 
@@ -142,7 +138,6 @@ a#scrollUp i{
   margin-left: 0;
   margin-right: 0;
   padding-bottom: 20px;
-  padding-top: 20px;
 }
 
 .header-middle .container .row .col-sm-4{
@@ -151,27 +146,6 @@ a#scrollUp i{
 
 .header-middle .container .row .col-sm-8 {
 	padding-right:0;
-}
-
-.usa {
-  border-radius: 0;
-  color: #B4B1AB;
-  font-size: 12px;
-  margin-right: 20px;
-  padding: 2px 15px;
-  margin-top: 10px;
-}
-
-.usa:hover {
-	background:#FE980F;
-	color:#fff;
-	border-color:#FE980F;
-}
-
-.usa:active, .usa.active {
-  background: none repeat scroll 0 0 #FE980F;
-  box-shadow: inherit;
-  outline: 0 none;
 }
 
 .btn-group.open .dropdown-toggle {
@@ -223,7 +197,6 @@ a#scrollUp i{
 
 .header-bottom {
   padding-bottom: 30px;
-  padding-top: 30px;
 }
 
 .navbar-collapse.collapse{
@@ -1394,12 +1367,14 @@ h2.title {
 .content-404 h1 {
   color: #363432;
   font-family: 'Roboto', sans-serif;
-  font-size: 41px;
+  font-size: 25px;
   font-weight: 300;
 }
 
 .content-404 img {
  margin:0 auto;
+ max-height: 500px;
+ max-width: 500px;
 }
 
 .content-404 p {
@@ -1416,7 +1391,7 @@ h2.title {
   background: #FE980F;
   color: #FFFFFF;
   font-family: 'Roboto', sans-serif;
-  font-size: 44px;
+  font-size: 22px;
   font-weight: 300;
   padding: 8px 40px;
 }
