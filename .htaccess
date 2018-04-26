@@ -7,6 +7,9 @@ RewriteCond %{REQUEST_FILENAME}.php -f [NC]
 RewriteRule ^(.*?)$ $1.php [L]
 RewriteCond %{REQUEST_FILENAME}.html -f [NC]
 RewriteRule ^(.*?)/?$ $1.html [L]
+RewriteCond #%{REQUEST_FILENAME} -f [NC]
+RewriteRule ^(.*?)/?$ #$1 [L]
+
 
 <Files header.php>
     Order Allow,Deny

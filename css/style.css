@@ -454,6 +454,7 @@ imp{
 }
 
 #footer h2{
+  font-size:20px;
   text-align: center;
     text-transform: uppercase;
 	  padding-left: 10px;
@@ -472,6 +473,7 @@ imp{
 }
 
 #footer h3{
+    font-size: 15px;
 	  padding-left: 10px;
     padding-bottom: 10px;
     margin-bottom: 10px;
@@ -479,8 +481,9 @@ imp{
 }
 
 #footer h4{
-  font-weight: bold;
-  text-align: left;
+    font-size:20px;
+    font-weight: bold;
+    text-align: left;
     text-transform: uppercase;
     border-bottom: 3px solid #eeeeee;
     padding-right: 0px;
@@ -493,7 +496,7 @@ imp{
     transition: .5s all ease;
 }
 
-#footer ul.quick-links li{
+#footer ul.quick-links li, #footer .logo-delivery, #footer .logo-bcl{
   padding: 3px 0;
   -webkit-transition: .5s all ease;
   -moz-transition: .5s all ease;
@@ -504,12 +507,49 @@ imp{
   margin-left: 10px;
 }
 
-#footer ul.quick-links li.static:hover{
-  padding: 3px 0;
-  margin-left: 20px;
+#footer .logo-delivery:hover, #footer .logo-bcl:hover{
+  margin-left: 30px;
 }
 
+.flip-container{
+  perspective: 1000px;
+}
 
+.flip-container:hover .flipper, .flip-container.hover .flipper {
+		transform: rotateY(180deg);
+}
+
+.flip-container, .front, .back {
+  max-width: 150px;
+  max-height: 150px;
+  width: auto;
+	height: auto;
+  margin-bottom: 150px;
+}
+
+.flipper {
+	transition: 0.6s;
+	transform-style: preserve-3d;
+
+	position: relative;
+}
+
+.front, .back {
+	backface-visibility: hidden;
+
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
+.front {
+	z-index: 2;
+	transform: rotateY(0deg);
+}
+
+.back {
+	transform: rotateY(180deg);
+}
 
 #social:hover {
   -webkit-transform:scale(1.1);
@@ -517,6 +557,7 @@ imp{
   -o-transform:scale(1.1);
 }
 #social {
+  margin-top: -5px;
   -webkit-transform:scale(0.8);
   -moz-transform:scale(0.8);
   -o-transform:scale(0.8);
@@ -594,10 +635,26 @@ imp{
   height: 42px;
   line-height: 40px;
   font-size: 17px;
+  text-align: right;
+  margin-right: 20px;
 }
 
 @media (max-width: 599px) {
     .submit-mail-title {
         text-align: left;
     }
+}
+
+#footer p, #footer p1{
+  font-family: 'SegoeUI';
+  font-size: 30px;
+  font-weight: bold;
+}
+
+#footer p{
+  text-align: center;
+}
+
+#footer p1{
+  text-align: right;
 }
