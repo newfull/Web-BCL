@@ -1510,16 +1510,17 @@ imp{
     border-radius: 0;
     font-size: 17px;
     font-weight: 700;
+    text-transform: uppercase;
     color: #444;
     margin-right: 0;
     text-align: center;
     z-index: 1;
-    transition: all 0.3s ease 0s;
+    transition: all 1s ease .1s;
 }
 .thucdon-tabs .tab .nav-tabs li a i{
     display: block;
     font-size: 40px;
-    color: #00a6ff;
+    color: #ff0000;
     margin-bottom: 15px;
 }
 .thucdon-tabs .tab .nav-tabs li.active a,
@@ -1531,11 +1532,11 @@ imp{
 .thucdon-tabs .tab .nav-tabs li a:after{
     content: "";
     width: 0;
-    border-top: 3px solid #00a6ff;
+    border-top: 3px solid #ff0000;
     position: absolute;
     bottom: -1px;
     left: 0;
-    transition: all 0.3s ease 0s;
+    transition: all 1s ease .1s;
 }
 .thucdon-tabs .tab .nav-tabs li a:after{
     left: auto;

@@ -2,31 +2,44 @@
   <title>Thực đơn | Gà Rán BCL</title>
 </head>
 <?php include_once("header.php");?>
+<?php $tabs_name = item_category_list($conn); ?>
+
 <div class="thucdon-tabs">
 <div class="container">
     <div class="row">
         <div class="col-xs-12">
             <div class="tab" role="tabpanel">
+
                 <!-- Nav tabs -->
                 <ul class="nav nav-tabs" role="tablist">
-                    <li role="presentation" class="active"><a href="#Section1" aria-controls="home" role="tab" data-toggle="tab"><i class="fa fa-globe"></i> Section 1</a></li>
-                    <li role="presentation"><a href="#Section2" aria-controls="profile" role="tab" data-toggle="tab"><i class="fa fa-rocket"></i> Section 2</a></li>
-                    <li role="presentation"><a href="#Section3" aria-controls="messages" role="tab" data-toggle="tab"><i class="fa fa-briefcase"></i> Section 3</a></li>
-                </ul>
+                  <li role='presentation'><a href='#Section1' role='tab' data-toggle='tab'></i>Combo</a></li>;
+                  <?php
+                  $create_tab_content = "";
+                  $tabs_num = count($tabs_name);
+                  for($i = 2; $i < $tabs_num + 2; $i++){
+                    $create_tab_content .= "<li role='presentation'";
+                    $create_tab_content.= "><a href='#Section".$i."' role='tab' data-toggle='tab'></i>";
+                    $create_tab_content .= $tabs_name[$i-2][1];
+                    $create_tab_content .= "</a></li>";
+                  }
+
+                  echo $create_tab_content;
+                  ?>
+                  </ul>
+
                 <!-- Tab panes -->
                 <div class="tab-content tabs">
-                    <div role="tabpanel" class="tab-pane fade in active" id="Section1">
-                        <h3>Section 1</h3>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras nec urna aliquam, ornare eros vel, malesuada lorem. Nullam faucibus lorem at eros consectetur lobortis. Maecenas nec nibh congue, placerat sem id, rutrum velit. Phasellus porta enim at facilisis condimentum. Maecenas pharetra dolor vel elit tempor pellentesque sed sed eros. Aenean vitae mauris tincidunt, imperdiet orci semper, rhoncus ligula. Vivamus scelerisque.</p>
-                    </div>
-                    <div role="tabpanel" class="tab-pane fade" id="Section2">
-                        <h3>Section 2</h3>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras nec urna aliquam, ornare eros vel, malesuada lorem. Nullam faucibus lorem at eros consectetur lobortis. Maecenas nec nibh congue, placerat sem id, rutrum velit. Phasellus porta enim at facilisis condimentum. Maecenas pharetra dolor vel elit tempor pellentesque sed sed eros. Aenean vitae mauris tincidunt, imperdiet orci semper, rhoncus ligula. Vivamus scelerisque.</p>
-                    </div>
-                    <div role="tabpanel" class="tab-pane fade" id="Section3">
-                        <h3>Section 3</h3>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras nec urna aliquam, ornare eros vel, malesuada lorem. Nullam faucibus lorem at eros consectetur lobortis. Maecenas nec nibh congue, placerat sem id, rutrum velit. Phasellus porta enim at facilisis condimentum. Maecenas pharetra dolor vel elit tempor pellentesque sed sed eros. Aenean vitae mauris tincidunt, imperdiet orci semper, rhoncus ligula. Vivamus scelerisque.</p>
-                    </div>
+                  <div role='tabpanel' class='tab-pane fade in' id='Section1'>aeaeaeaae</div>
+                  <?php
+                  $create_tab_content = "";
+                  for($i = 0; $i < $tabs_num; $i++){
+                    $create_tab_content .= "<div role='tabpanel' class='tab-pane fade in' id='Section".($i+2)."'>";
+                    $create_tab_content .= "<p>AEAEAEE</p>";
+                    $create_tab_content .= "</div>";
+                  }
+
+                  echo $create_tab_content;
+                  ?>
                 </div>
             </div>
         </div>
@@ -37,6 +50,9 @@
 
 <?php
 $selection = $_GET['select'];
-if($selection === "ga") echo "<script></script>";
-if($selection === "com") echo '<div class="my_class">AAaeaihiurhuwqeBCD</div>';
+$section_id = "0";
+if($selection != "combo")
+  $section_id = array_search($selection, array_column($tabs_name, 'ITEM_CATEGORYALIAS')) + 1;
+
+echo "<script>$('.nav-tabs li:eq($section_id) a').tab('show');</script>";
 ?>
