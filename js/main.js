@@ -252,6 +252,35 @@ $('.carousel-bcl .item').each(function(){
     }
   });
 
+$('.carousel-tabs .item').each(function(){
+    var next = $(this).next();
+    if (!next.length) {
+      next = $(this).siblings(':first');
+    }
+    next.children(':first-child').clone().appendTo($(this));
+
+    if (next.next().length>0) {
+      next.next().children(':first-child').clone().appendTo($(this));
+    } else {
+      $(this).siblings(':first').children(':first-child').clone().appendTo($(this));
+    }
+  });
+
+$('.item-card').on('click', function () {
+  		if ($(this).hasClass('open')) {
+  			$(this).removeClass('open');
+  		} else {
+  			$('.item-card').removeClass('open');
+  			$(this).addClass('open');
+  		}
+  	});
+
+$(document).click(function(event){
+    if(event.target.className != 'front-facing' && event.target.className != 'disp img-responsive'){
+      $('.item-card').removeClass('open');
+    }
+})
+
 $(document).ready(function(e){
     SmoothScroll({ stepSize: 100 });
     scroll_to_top();

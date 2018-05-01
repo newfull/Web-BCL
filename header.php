@@ -70,13 +70,13 @@ require_once("./includes/functions.php");
                       <div class="list-group">
                         <div class="list-group-item">
                           <div class="avartar-user img-circle pull-left">
-                            <img src="/avatar-nu.png" class="img-responsive" alt="">
+                            <img src="/images/avatar.png" class="img-responsive" alt="">
                           </div>
                           <div class="username pull-left">
                             <div class="clearfix"><span></span></div>
                             <div class="clearfix">
                               <h5>
-                                <img src="/gift-thanh-toan-md-mobile.png" alt="" class="img-responsive">0
+                                <img src="/" alt="" class="img-responsive">0
                               </h5>
                             </div>
                           </div>
@@ -227,10 +227,7 @@ require_once("./includes/functions.php");
 
                   <div class="col-xs-4">
                     <div class="form-group">
-                      <button class="btn btn-danger btn-block btn-dk" type="submit" onclick="loginTop()" name="submitTop">Đăng nhập</button>
-                    </div>
-                    <div class="form-group">
-
+                      <a href class="btn btn-lg btn-bcl red" type="submit" onclick="loginTop()" name="submitTop">Đăng nhập</a>
                     </div>
                   </div>
 
@@ -279,7 +276,7 @@ require_once("./includes/functions.php");
 
                   <div class="col-xs-5">
                     <div class="form-group">
-                      <button class="btn btn-danger btn-block btn-dk" id="btn-regnow" data-target="#popup-reg" data-toggle="modal">Đăng ký ngay</button>
+                      <a href class="btn btn-lg btn-bcl orange" id="btn-regnow" data-target="#popup-reg" data-toggle="modal">Đăng ký ngay</a>
                     </div>
                   </div>
 
