@@ -1,0 +1,24 @@
+.navbar-toggle                      { background-color: rgba(0, 0, 0, 0.2); }
+.navbar-toggle .icon-bar            { background-color: #ffffff; }
+.items div                          { float:left; width:680px;}
+.items ul                           { list-style-type: none; border-left: 1px solid #006699; border-right: 1px solid #006699; padding: 0; position: absolute; width: 100%; margin: 0 50px;  }
+a.left                              { background-color: #006699; left: 0; margin-left: 0; position: relative; width: 50px; height: 50px; display: block; cursor: pointer; border-right: 1px solid #00437D; float: left; }
+a.right                             { background-color: #006699; left: 0; clear: right; float: right; margin-right: 0; position: relative; width: 50px; height: 50px; display: block; cursor: pointer; border-left: 1px solid #00437D; float:right; }
+a.left .icon                        { border-bottom: 12px solid transparent; border-right: 15px solid #fff; border-top: 12px solid transparent; height: 0; margin: 13px 15px; position: absolute; width: 0; }
+a.right .icon                       { border-bottom: 12px solid transparent; border-left: 15px solid #fff; border-top: 12px solid transparent; height: 0; margin: 13px 0 13px 20px; position: absolute; width: 0; }
+
+.navbar, .navbar ul                 { border: 0 none; margin-bottom:0; border-radius:0; background-color: #006699;}
+.navbar                             { overflow-x: hidden; width: 100%; margin: 0 auto;}
+.navbar ul a                        { color: #fff; width: 100%; }
+.navbar ul a:hover,
+.navbar ul a:focus,
+.navbar .carousel-menu-button:hover,
+.navbar .dropdown a:hover, 
+.navbar .dropdown a:focus, 
+.nav > li > a:focus, 
+.nav > li > a:hover,
+.nav .open > a,
+.nav .open > a:focus,
+.nav .open > a:hover                { color: #fff; background-color: #003366; }
+.navbar ul li ul.dropdown-menu      { margin: 0; list-style: none; }
+.navbar ul li ul.dropdown-menu li a { padding-top: 8px; padding-bottom: 8px; margin-bottom: 5px; margin-top: 5px; }

@@ -1,3 +1,4 @@
+
 function scroll_to_top(){
   $(function () {
     $.scrollUp({
@@ -38,7 +39,9 @@ function navbar_movealong(){
         $('#navbar').css('margin-top','0px');
         $('#navbar').addClass('isDown');
     } else {
-        $('#navbar').css('margin-top','-25px');
+        if($('#navbar').offset().top > 105)
+          $('#navbar').css('margin-top','-25px');
+
         $('#navbar').removeClass('isDown');
       }
       position = scroll;
@@ -144,15 +147,31 @@ function date_change(){
           $('.date_day option[value="30"]').remove();
           if(is_leap_year($('.date_year').find(":selected").text()) == false)
             $('.date_day option[value="29"]').remove();
+          break;
         }
     });
 
-    $('.date_year').change(function(){
-      if(parseInt($(this).find(":selected").text()) == 2)
-        if(is_leap_year($('.date_year').find(":selected").text()) == false)
+  $('.date_year').change(function(){
+      $('.date_day option[value="31"]').remove();
+      $('.date_day option[value="30"]').remove();
+      $('.date_day option[value="29"]').remove();
+      $('.date_day').append('<option value="29">29</option>');
+      $('.date_day').append('<option value="30">30</option>');
+      $('.date_day').append('<option value="31">31</option>');
+
+      var this_month = parseInt($('.date_month').find(":selected").text());
+      switch (this_month) {
+        case 4: case 6: case 9: case 11:
+          $('.date_day option[value="31"]').remove();
+          break;
+
+        case 2:
           $('.date_day option[value="31"]').remove();
           $('.date_day option[value="30"]').remove();
-          $('.date_day option[value="29"]').remove();
+          if(is_leap_year($('.date_year').find(":selected").text()) == false)
+            $('.date_day option[value="29"]').remove();
+          break;
+        }
     });
 };
 
@@ -202,7 +221,39 @@ function validateNumber(event) {
     }
 };
 
+$('.carousel .vertical .item').each(function(){
+  var next = $(this).next();
+  if (!next.length) {
+    next = $(this).siblings(':first');
+  }
+  next.children(':first-child').clone().appendTo($(this));
+
+  for (var i=1;i<2;i++) {
+    next=next.next();
+    if (!next.length) {
+    	next = $(this).siblings(':first');
+  	}
+
+    next.children(':first-child').clone().appendTo($(this));
+  }
+});
+
+$('.carousel-bcl .item').each(function(){
+    var next = $(this).next();
+    if (!next.length) {
+      next = $(this).siblings(':first');
+    }
+    next.children(':first-child').clone().appendTo($(this));
+
+    if (next.next().length>0) {
+      next.next().children(':first-child').clone().appendTo($(this));
+    } else {
+      $(this).siblings(':first').children(':first-child').clone().appendTo($(this));
+    }
+  });
+
 $(document).ready(function(e){
+    SmoothScroll({ stepSize: 100 });
     scroll_to_top();
     navbar_movealong();
     navbar_hover();

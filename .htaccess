@@ -8,8 +8,7 @@ RewriteRule ^(.*?)$ $1.php [L]
 RewriteCond %{REQUEST_FILENAME}.html -f [NC]
 RewriteRule ^(.*?)/?$ $1.html [L]
 RewriteCond #%{REQUEST_FILENAME} -f [NC]
-RewriteRule ^(.*?)/?$ #$1 [L]
-
+RewriteRule ^(.*?)/?$ #$1 [L]\
 
 <Files header.php>
     Order Allow,Deny
@@ -21,7 +20,7 @@ RewriteRule ^(.*?)/?$ #$1 [L]
     Deny from all
 </Files>
 
-<Files header.php>
+<Files admin.php>
     Order Allow,Deny
     Deny from all
 </Files>
@@ -62,6 +61,13 @@ Redirect /tinhtien /thanh-toan
 Redirect /tinh-tien /thanh-toan
 Redirect /tinh_tien /thanh-toan
 
+Redirect /thuc-don/ga /thuc-don?select=ga
+Redirect /thuc-don/com /thuc-don?select=com
+Redirect /thuc-don/burger /thuc-don?select=burger
+Redirect /thuc-don/thuc-uong /thuc-don?select=thuc-uong
+Redirect /thuc-don/trang-mieng /thuc-don?select=trang-mieng
+Redirect /thuc-don/combo /thuc-don?select=combo
+
 Redirect /menu /thuc-don
 Redirect /js/404 /404
 Redirect /css/404 /404
@@ -73,6 +79,9 @@ Redirect /includes/404 /404
 Redirect /fonts/404 /404
 Redirect /admin/404 /404
 Redirect /cache/404 /404
+
+ErrorDocument 404 /404
+ErrorDocument 500 /404
 
 <Files 404.php>
   order allow,deny

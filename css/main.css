@@ -2,6 +2,13 @@
 /*************************
 *******Typography******
 **************************/
+@import "bootstrap.min.css";
+@import "font-awesome.min.css";
+@import "animate.css";
+@import "responsive.css";
+@import "bootstrap-select.min.css";
+@import "jquery.mobile.custom.structure.min.css";
+
 @import url(http://fonts.googleapis.com/css?family=Roboto:400,300,400italic,500,700,100);
 @import url(http://fonts.googleapis.com/css?family=Open+Sans:400,800,300,600,700);
 @import url(http://fonts.googleapis.com/css?family=Abel);
@@ -62,11 +69,6 @@ a#scrollUp i{
 /*************************
 *******Header CSS******
 **************************/
-
-.header_top {
-  height: 100px;
-  background: none repeat scroll 0 0 #F0F0E9;
-}
 
 .contactinfo ul li:first-child{
     margin-left: -15px;
@@ -440,7 +442,7 @@ ul.sub-menu {
 }
 
 .footer-widget {
-  margin-bottom: 68px;
+  margin-bottom: 20px;
 }
 
 .footer-widget .container {
@@ -1367,20 +1369,22 @@ h2.title {
 .content-404 h1 {
   color: #363432;
   font-family: 'Roboto', sans-serif;
-  font-size: 25px;
+  font-size: 30px;
   font-weight: 300;
 }
 
 .content-404 img {
  margin:0 auto;
- max-height: 500px;
- max-width: 500px;
+ max-height: 400px;
+ max-width: 400px;
+ min-height: 300px;
+ min-width: 300px;
 }
 
 .content-404 p {
   color: #363432;
   font-family: 'Roboto', sans-serif;
-  font-size: 18px;
+  font-size: 28px;
 }
 
 .content-404  h2 {
