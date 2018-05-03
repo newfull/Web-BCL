@@ -1,4 +1,3 @@
-
 function scroll_to_top(){
   $(function () {
     $.scrollUp({
@@ -275,11 +274,34 @@ $('.item-card').on('click', function () {
   		}
   	});
 
+$('.modal').on('shown.bs.modal', function(){
+    $('body').css("overflow", "hidden");
+});
+
 $(document).click(function(event){
     if(event.target.className != 'front-facing' && event.target.className != 'disp img-responsive'){
       $('.item-card').removeClass('open');
     }
-})
+
+      if($('.modal.in').length > 0){
+        $('body').css("overflow", "hidden");
+      }
+      else
+        $('body').css("overflow", "scroll");
+});
+
+$('#login').submit(function(e){
+    e.preventDefault();
+    var data= $("#login").serialize();
+    $.ajax({
+        url:'../includes/login.php',
+        type:'post',
+        data: data,
+        success:function(response){
+          $('.error-popup').html(response);
+     }
+    });
+});
 
 $(document).ready(function(e){
     SmoothScroll({ stepSize: 100 });

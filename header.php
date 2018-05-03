@@ -1,6 +1,10 @@
 <?php
 require_once("config.php");
 require_once("./includes/functions.php");
+$current_user = new bclUser($conn);
+if(!empty($_COOKIE['current']))
+  $current_user->init_info($_COOKIE['current']);
+
 ?>
 
 
@@ -64,9 +68,24 @@ require_once("./includes/functions.php");
               <div class="container-fluid">
                 <div class="row">
                   <div class="col-xs-12 userbox userbox-mobile">
-                    <a href="#popup-login" data-toggle="modal" id="btnLogIn" class="inline-block" ><i class="fa fa-lock"></i> Đăng nhập</a>
-                    <a href="#popup-reg" data-toggle="modal" id="btnReg" class="inline-block" ><i class="fa fa-plus"></i> Đăng ký</a>
-                    <div id="user-info" style="display:none;">
+                    <?php
+                      $create_content = "";
+                    if(empty($_COOKIE)){
+                    $create_content = "<div class='log-func'>
+                    <a href='#popup-login' data-toggle='modal' id='btnLogIn' class='inline-block'>
+                    <i class='fa fa-lock'></i> Đăng nhập</a>
+                    <a href='#popup-reg' data-toggle='modal' id='btnReg' class='inline-block' ><i class='fa fa-plus'></i> Đăng ký</a>
+                    </div>";
+                  } else {
+                    $create_content = "<div class='log-func'>
+                    <a href='/thanh-vien' class='inline-block'>
+                    <i class='fa fa-lock'></i>".$current_user->sCustomerName."</a>
+                    <a href='/index' onclick='<?php Logout(); ?>' class='inline-block' ><i class='fa fa-plus'></i> Đăng xuất</a>
+                    </div>";
+                   }
+                    echo $create_content;
+                  ?>
+                    <!--<div id="user-info" style="display:none;">
                       <div class="list-group">
                         <div class="list-group-item">
                           <div class="avartar-user img-circle pull-left">
@@ -89,7 +108,7 @@ require_once("./includes/functions.php");
                         <a href="/thu-vien-anh" class="list-group-item">Thư viện ảnh</a>
                         <a href="/dang-xuat" class="list-group-item">Đăng xuất</a>
                       </div>
-                    </div>
+                    </div> -->
                   </div>
                 </div>
               </div>
@@ -197,11 +216,11 @@ require_once("./includes/functions.php");
 
             <div id="signin-panel" class="tab-content">
               <div class="tab-pane fade active in" id="signin">
-
+              <form id='login' action='' method='post' accept-charset='UTF-8'>
                 <div class="row">
                   <div class="col-xs-12">
                     <div class="form-group">
-                      <input type="text" value="" name="login-user" id="login-user" class="form-control focus empty" placeholder="">
+                      <input type="text" name="login-username" id="login-user" class="form-control focus empty" placeholder="" required="">
                       <label class="floating-label">Tên đăng nhập</label>
                     </div>
                   </div>
@@ -209,7 +228,7 @@ require_once("./includes/functions.php");
                 <div class="row">
                   <div class="col-xs-12">
                     <div class="form-group">
-                      <input type="password" value="" name="login-pass" id="login-pass" class="form-control focus empty" placeholder="">
+                      <input type="password" name="login-password" id="login-pass" class="form-control focus empty" placeholder="" required="">
                       <label class="floating-label">Mật khẩu</label>
                     </div>
                   </div>
@@ -227,13 +246,13 @@ require_once("./includes/functions.php");
 
                   <div class="col-xs-4">
                     <div class="form-group">
-                      <a href class="btn btn-lg btn-bcl red" type="submit" onclick="loginTop()" name="submitTop">Đăng nhập</a>
+                      <button class="btn btn-lg btn-bcl red" type="submit" name="login-submit">Đăng nhập</button>
                     </div>
                   </div>
 
                   <div class = "col-xs-4">
                     <div class="clearfix">
-                      <a href="javascript:void(0)" data-toggle="tab" data-target="#forgotpass" class="text-danger">Quên mật khẩu ?</a>
+                      <a id="forgot-pass" data-target="#popup-forgotpass" data-toggle="modal" class="text-danger">Quên mật khẩu ?</a>
                     </div>
                   </div>
                 </div>
@@ -284,6 +303,7 @@ require_once("./includes/functions.php");
                     <div class="popup-close-line"></div>
                   </div>
                 </div>
+              </form>
               </div>
             </div>
           </div>
@@ -320,6 +340,7 @@ require_once("./includes/functions.php");
 
           <div class="modal-body">
             <div id="signup-panel" class="tab-content">
+            <form id='register' action='' method='post' accept-charset='UTF-8'>
               <div class="tab-pane fade active in" id="signup">
                 <div class="regform">
                   <div class="row">
@@ -327,7 +348,16 @@ require_once("./includes/functions.php");
                       <label class="nhan">Họ và tên <imp>(*)</imp>: </label>
                     </div>
                     <div class="col-xs-8">
-                      <input id="userid" name="userid" class="form-control" type="text" required="">
+                      <input id="name" name="name" class="form-control" type="text" required="">
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-xs-4">
+                      <label class="nhan">Tên đăng nhập <imp>(*)</imp>: </label>
+                    </div>
+                    <div class="col-xs-8">
+                      <input id="regusername" name="username" class="form-control" type="text" required="">
                     </div>
                   </div>
 
@@ -336,7 +366,7 @@ require_once("./includes/functions.php");
                       <label class="nhan">Mật khẩu <imp>(*)</imp>: </label>
                     </div>
                     <div class="col-xs-8">
-                      <input id="password" name="password" class="form-control" type="password" required="">
+                      <input id="regpassword" name="password" class="form-control" type="password" required="">
                     </div>
                   </div>
 
@@ -346,6 +376,15 @@ require_once("./includes/functions.php");
                     </div>
                     <div class="col-xs-8">
                       <input id="reenterpassword" class="form-control" name="reenterpassword" type="password" required="">
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-xs-4">
+                      <label class="nhan">E-mail <imp>(*)</imp>: </label>
+                    </div>
+                    <div class="col-xs-8">
+                      <input id="email" name="email" class="form-control" type="text" required="">
                     </div>
                   </div>
 
@@ -407,7 +446,7 @@ require_once("./includes/functions.php");
 
                     <div class="col-xs-8">
                       <div class="form-group">
-                        <button onclick="registerUser()" class="btn btn-danger btn-block btn-lg btn-dk">Đăng ký</button>
+                        <button class="btn btn-danger btn-block btn-lg btn-dk" type="submit" name="reg-submit">Đăng ký</button>
                       </div>
                     </div>
                   </div>
@@ -416,7 +455,7 @@ require_once("./includes/functions.php");
                   <div class="row">
                     <div class="col-xs-6">
                       <div class="form-group form-group-lg">
-                        <a href="javascript:void(0)" onclick="loginFB()" class="fb">
+                        <a href="javascript:void(0)" onclick="regFB()" class="fb">
                           <div class="input-group"> <span class="input-group-addon"><i class="fa fa-facebook"></i></span>
                             <div class="form-control">Đăng ký bằng <br>Facebook</div>
                           </div>
@@ -426,7 +465,7 @@ require_once("./includes/functions.php");
 
                     <div class="col-xs-6">
                       <div class="form-group form-group-lg">
-                        <a href="javascript:void(0)" onclick="loginGG()" class="gm">
+                        <a href="javascript:void(0)" onclick="reg()" class="gm">
                           <div class="input-group"> <span class="input-group-addon"><i class="fa fa-google-plus"></i></span>
                             <div class="form-control">Đăng ký bằng <br>Google</div>
                           </div>
@@ -465,6 +504,7 @@ require_once("./includes/functions.php");
                   </div>
                 </div>
               </div>
+            </form>
             </div>
           </div>
           <!--  <div class="modal-footer">
@@ -505,3 +545,30 @@ require_once("./includes/functions.php");
       </div>
     </div>
   </div><!-- /Popup Terms&Conditions - Modal -->
+
+  <div class="modal fade bs-modal-sm" id="popup-forgotpass" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <div class="popup-wap clearfix">
+          <div class="modal-header">
+            <div class="btn-close" data-dismiss="modal"></div>
+            <div class="form-group text-center">
+              <div class="avatar-login inline-block">
+                <img src="" class="avatar img-responsive">
+              </div>
+              <div class="title-login inline-block">Quên mật khẩu</div>
+            </div>
+          </div>
+
+          <div class="modal-body">
+            <div id="signup-panel" class="tab-content">
+              <div class="tab-pane fade active in" id="signup">
+                <div class="content">
+                              </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

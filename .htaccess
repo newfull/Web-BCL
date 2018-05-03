@@ -1,4 +1,5 @@
 DirectoryIndex trang-chu.php
+php_value session.gc_maxlifetime 604800
 
 Options -Indexes
 
@@ -60,6 +61,7 @@ Redirect /check_out /thanh-toan
 Redirect /tinhtien /thanh-toan
 Redirect /tinh-tien /thanh-toan
 Redirect /tinh_tien /thanh-toan
+
 
 Redirect /thuc-don/ga /thuc-don?select=ga
 Redirect /thuc-don/com /thuc-don?select=com
