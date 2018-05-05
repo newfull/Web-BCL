@@ -284,10 +284,10 @@ $(document).click(function(event){
     }
 
       if($('.modal.in').length > 0){
-        $('body').css("overflow", "hidden");
+        $('body').css("overflow-x", "hidden");
       }
       else
-        $('body').css("overflow", "scroll");
+        $('body').css("overflow-x", "scroll");
 });
 
 $('#login').submit(function(e){
@@ -298,16 +298,43 @@ $('#login').submit(function(e){
         type:'post',
         data: data,
         success:function(response){
-          $('.error-popup').html(response);
+          $('#error-popup .modal-body').html(response);
+          $('#error-popup').modal('show');
+          if(response == "Đăng nhập thành công")
+            setTimeout(function(){ window.location = "/"; },800);
+          else {
+            setTimeout(function(){  $('#error-popup').modal('hide');},5000);
+          }
      }
     });
 });
+
+$('.btn-logout').on("click", function(){
+  $.ajax({
+      url:'../includes/logout.php',
+      type:'post',
+      success:function(response){
+        $('#error-popup .modal-body').html(response);
+        $('#error-popup').modal('show');
+        setTimeout(function(){ window.location = "/"; },800);
+   }
+  });
+});
+
+function username_hover(){
+$('.userbox .username').on("mouseenter", function(){ $('#user-info').show();});
+$('.userbox .username').on("mouseleave", function(){ $('#user-info').hide();});
+$('#user-info').on("mouseenter", function(){ $(this).show();});
+$('#user-info').on("mouseleave", function(){ $(this).hide();})
+};
+
 
 $(document).ready(function(e){
     SmoothScroll({ stepSize: 100 });
     scroll_to_top();
     navbar_movealong();
     navbar_hover();
+    username_hover();
     check_input_value_email();
     check_input_value_password();
     clear_modal();

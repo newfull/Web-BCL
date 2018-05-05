@@ -1,7 +1,11 @@
 <?php
 $cookiedeadtime = 3600; //3600 = 1hr, cookies die after 1hr
+$cookielife = time() + $cookiedeadtime;
+$unsetvalue = time() - $cookiedeadtime;
 
 function item_category_list($conn){
+  if($conn == "NULL")
+    return null;
 
   $stmt = $conn->query('SELECT * from item_category');
 
@@ -15,6 +19,8 @@ function item_category_list($conn){
 }
 
 function all_item($conn){
+  if($conn == "NULL")
+    return null;
 
   $stmt = $conn->query('SELECT * from item');
 
@@ -29,6 +35,9 @@ function all_item($conn){
 
 
 function item_list($conn, $item_cat){
+  if($conn == "NULL")
+    return null;
+
   $query = "SELECT item.* from item, item_type type, item_category cat
     where cat.ITEM_CATEGORYID = ".$item_cat." and type.ITEM_CATEGORYID = cat.ITEM_CATEGORYID
     and item.ITEM_TYPEID = type.ITEM_TYPEID and item.ITEMSTATUS = 1";
@@ -43,6 +52,9 @@ function item_list($conn, $item_cat){
 }
 
 function combo_list($conn){
+  if($conn == "NULL")
+    return null;
+
 
   $stmt = $conn->query('SELECT * from combo');
 
@@ -56,6 +68,9 @@ function combo_list($conn){
 }
 
 function combo_details($conn, $comboid){
+  if($conn == "NULL")
+    return null;
+
   $query = "SELECT item.*, cd.QUANTITY, type.UNIT_NAME from combo cb, combo_detail cd, item, item_type type
       where cb.COMBOID = $comboid AND cd.COMBOID = cb.COMBOID
       AND cd.ITEMID = item.ITEMID AND item.ITEM_TYPEID = type.ITEM_TYPEID";
@@ -80,6 +95,9 @@ function isEmpty($array){
 }
 
 function item_type_list($conn){
+  if($conn == "NULL")
+    return null;
+
 
   $stmt = $conn->query('SELECT * from item_type');
 
@@ -93,6 +111,9 @@ function item_type_list($conn){
 }
 
 function user_list($conn){
+  if($conn == "NULL")
+    return null;
+
 
   $stmt = $conn->query('SELECT * from item_category');
 
@@ -106,6 +127,9 @@ function user_list($conn){
 }
 
 function account_list($conn){
+  if($conn == "NULL")
+    return null;
+
 
   $stmt = $conn->query('SELECT * from item_category');
 
@@ -119,6 +143,9 @@ function account_list($conn){
 }
 
 function blog_list($conn){
+  if($conn == "NULL")
+    return null;
+
 
   $stmt = $conn->query('SELECT * from item_category');
 
@@ -131,7 +158,51 @@ function blog_list($conn){
   return $result;
 }
 
+function cart_details($conn, $cartID){
+  if($conn == "NULL")
+    return null;
+
+  $stmt = $conn->prepare('SELECT item.* from cart_detail cd, item
+    where cd.CARTID = :cart and cd.ITEMID = item.ITEMID');
+  $stmt->execute(array(":cart"=>$cartID));
+
+  $result[] = $stmt->fetch();
+
+  while($row = $stmt->fetch()) {
+      $result[] = $row;
+  }
+
+  return $result;
+}
+
+
+function init_cart($conn, $accID){
+  if($conn == "NULL")
+    return null;
+
+
+  $stmt = $conn->prepare('SELECT * from cart where ACCOUNTID =:acc');
+  $stmt->execute(array(":acc"=>$accID));
+
+  while($stmt->rowCount() < 1)
+  {
+    $stmt1 = $conn->prepare("INSERT INTO cart(ACCOUNTID, CARTTIME)
+      VALUES(:acc, :carttime)");
+    $stmt1->execute(array(
+    "acc" => $accID,
+    "carttime" => date('Y-m-d H:i:s')
+    ));
+
+    $stmt->execute(array(":acc"=>$accID));
+  }
+
+  return $stmt->fetch()['CARTID'];
+}
+
 function user_info($conn, $accID){
+  if($conn == "NULL")
+    return null;
+
   $stmt = $conn->prepare('SELECT C.* from CUSTOMER C, ACCOUNT A
       where A.ACCOUNTID =:id and A.CUSTOMERID = C.CUSTOMERID');
   $stmt->execute(array(":id"=>$accID));
@@ -141,20 +212,19 @@ function user_info($conn, $accID){
   return $result;
 }
 
-function unset_cookies($conn){
-  if (isset($_SERVER['HTTP_COOKIE'])) {
-    $cookies = explode(';', $_SERVER['HTTP_COOKIE']);
-    foreach($cookies as $cookie) {
-        $parts = explode('=', $cookie);
-        $name = trim($parts[0]);
-        setcookie($name, '', time()-1000);
-        setcookie($name, '', time()-1000, '/');
-    }
-}
+function unset_cookies(){
+
+  $past = time() - 3600;
+  foreach ( $_COOKIE as $key => $value )
+  {
+    if($key != 'username')
+      setcookie( $key, $value, $past, '/' );
+  }
 }
 
-function logout($conn){
-  unset_cookies($conn);
+function Logout($conn){
+  if($conn != "NULL")
+    unset_cookies($conn);
 }
 
 class bclUser{
@@ -168,6 +238,7 @@ class bclUser{
   private $sCustomerDOB;
   private $sCustomerNoti;
   private $sLikedItems;
+  private $iCartId;
 
   public function bclUser($conn){
     $this->conn = $conn;
@@ -180,6 +251,13 @@ class bclUser{
     $this->iAccountId = $id;
     $this->sCustomerName = $row['CUSTOMERNAME']?$row['CUSTOMERNAME']:'Admin';
     $this->sLikedItems = $row['LIKEDITEMS'];
+    $this->sCustomerEmail = $row['CUSTOMEREMAIL'];
+    $this->sCustomerPhone = $row['CUSTOMERPHONE'];
+    $this->sCustomerSex = $row['CUSTOMERSEX'];
+    $this->sCustomerAdd = $row['CUSTOMERADD'];
+    $this->sCustomerDOB = $row['CUSTOMERDOB'];
+    $this->sCustomerNoti = $row['CUSTOMERNOTI'];
+    $this->iCartId = init_cart($this->conn, $id);
   }
 
     private function setID($val) {
@@ -206,6 +284,10 @@ class bclUser{
     private function setLiked($val) {
       $this->sLikedItems = $val;
     }
+    private function setCart($val) {
+      $this->iCartId = $val;
+    }
+
 
     private function getID() {
       return $this->iAccountId;
@@ -231,6 +313,10 @@ class bclUser{
     private function getLiked() {
       return $this->sLikedItems;
     }
+    private function getCart() {
+      return $this->iCartId;
+    }
+
 
   public function __set($name,$value) {
     switch($name) {
@@ -250,6 +336,8 @@ class bclUser{
         return $this->setNoti($value);
       case 'sLikedItems':
         return $this->setLiked($value);
+      case 'iCartId':
+        return $this->setCart($value);
     }
   }
 
@@ -271,6 +359,8 @@ class bclUser{
         return $this->getNoti();
       case 'sLikedItems':
         return $this->getLiked();
+      case 'iCartId':
+        return $this->getCart();
     }
   }
 

@@ -1,9 +1,13 @@
 <?php
 require_once("config.php");
 require_once("./includes/functions.php");
+
+$cart_details = null;
 $current_user = new bclUser($conn);
-if(!empty($_COOKIE['current']))
+if(!empty($_COOKIE['current'])){
   $current_user->init_info($_COOKIE['current']);
+  $cart_details = cart_details($conn, $current_user->iCartId);
+}
 
 ?>
 
@@ -64,28 +68,23 @@ if(!empty($_COOKIE['current']))
               </div>
             </div>
 
-            <div class="navbar-top-wap">
+            <div class="navbar-top-wap" id="#func">
               <div class="container-fluid">
                 <div class="row">
                   <div class="col-xs-12 userbox userbox-mobile">
                     <?php
                       $create_content = "";
-                    if(empty($_COOKIE)){
-                    $create_content = "<div class='log-func'>
-                    <a href='#popup-login' data-toggle='modal' id='btnLogIn' class='inline-block'>
+                    if(!isset($_COOKIE['current'])){
+                    $create_content = "<a href='#popup-login' data-toggle='modal' id='btnLogIn' class='inline-block'>
                     <i class='fa fa-lock'></i> Đăng nhập</a>
-                    <a href='#popup-reg' data-toggle='modal' id='btnReg' class='inline-block' ><i class='fa fa-plus'></i> Đăng ký</a>
-                    </div>";
+                    <a href='#popup-reg' data-toggle='modal' id='btnReg' class='inline-block' ><i class='fa fa-plus'></i> Đăng ký</a>";
                   } else {
-                    $create_content = "<div class='log-func'>
-                    <a href='/thanh-vien' class='inline-block'>
-                    <i class='fa fa-lock'></i>".$current_user->sCustomerName."</a>
-                    <a href='/index' onclick='<?php Logout(); ?>' class='inline-block' ><i class='fa fa-plus'></i> Đăng xuất</a>
-                    </div>";
+                    $create_content = "<a href='/thanh-vien' class='username inline-block'>".$current_user->sCustomerName."</a>
+                    <a href='#' class='inline-block btn-logout'>Đăng xuất</a>";
                    }
                     echo $create_content;
                   ?>
-                    <!--<div id="user-info" style="display:none;">
+                    <div id="user-info" class="display-none">
                       <div class="list-group">
                         <div class="list-group-item">
                           <div class="avartar-user img-circle pull-left">
@@ -101,14 +100,11 @@ if(!empty($_COOKIE['current']))
                           </div>
                         </div>
                         <a href="/thong-tin-tai-khoan" class="list-group-item">Thông tin tài khoản</a>
-                        <a href="/dia-chi" class="list-group-item">Địa chỉ giao hàng</a>
                         <a href="/lich-su-giao-dich" class="list-group-item">Lịch sử giao dịch</a>
                         <a href="/mon-an-yeu-thich" class="list-group-item">Món ăn yêu thích</a>
-                        <a href="/thong-bao" class="list-group-item">Thông báo<span class="badge">0</span></a>
-                        <a href="/thu-vien-anh" class="list-group-item">Thư viện ảnh</a>
                         <a href="/dang-xuat" class="list-group-item">Đăng xuất</a>
                       </div>
-                    </div> -->
+                    </div>
                   </div>
                 </div>
               </div>
@@ -153,7 +149,7 @@ if(!empty($_COOKIE['current']))
             <div class="carousel slide carousel-bcl" id="text-carousel" data-ride="carousel" data-interval="false">
               <div class="carousel-inner" role="listbox">
                 <div class="item active">
-                  <a href="/thuc-don" class="active">Thực đơn</a>
+                  <a href="/thuc-don/ga" class="active">Thực đơn</a>
                 </div>
                 <div class="item">
                   <a href="/khuyen-mai">Tin tức</a>
@@ -174,18 +170,37 @@ if(!empty($_COOKIE['current']))
               <a class="control right inline-block" href="#text-carousel" data-slide="next">
                 <span class="glyphicon glyphicon-chevron-right"></span>
               </a>
-              <a href="/gio-hang/">
+              <a href="/gio-hang">
                 <i class="fa fa-shopping-cart"></i>
                 <span class="text-cart"> Giỏ hàng</span>
-
-                <span id="cart_number">0</span>
-                <i class="fa fa-caret-down"></i>
+                <span id="cart_number"><?php if(!empty($cart_details[0])) echo count($cart_details); else echo '0'; ?></span>
               </a>
             </div>
-          </div>
 
         </div>
       </nav><!-- /Navbar Header Body -->
+      <?php
+      $create_content = "<ul class='cart-details' class='list-unstyled'>";
+      for($i = 0; $i < count($cart_details); $i++)
+        $create_content .= '
+              <li>
+                <span class="item">
+                  <span class="item-left">
+                      <img src="./images/items/'.($cart_details[$i]['ITEMIMGURL']).'" onerror="this.src=\'../images/not-found.png\'" class="disp img-responsive" alt="" />
+                      <span class="item-info">
+                          <span>'.($cart_details[$i]['ITEMNAME']).'</span>
+                          <span>'.number_format($cart_details[$i]['ITEMPRICE'], 0).' VNĐ</span>
+                      </span>
+                  </span>
+                  <span class="item-right">
+                      <button class="btn btn-xs btn-danger pull-right">X</button>
+                  </span>
+              </span>
+            </li>';
+      $create_content.= "</ul>";
+            echo $create_content;
+        ?>
+
     </div><!-- /Header Body -->
   </header><!-- /Header-->
 
@@ -220,7 +235,10 @@ if(!empty($_COOKIE['current']))
                 <div class="row">
                   <div class="col-xs-12">
                     <div class="form-group">
-                      <input type="text" name="login-username" id="login-user" class="form-control focus empty" placeholder="" required="">
+
+                      <input type="text" name="login-username" id="login-user"
+                      <?php if(isset($_COOKIE['username'])) echo 'class="form-control focus" value="'.$_COOKIE['username'].'" ';
+                        else echo 'class="form-control focus empty"'; ?> placeholder="" required="">
                       <label class="floating-label">Tên đăng nhập</label>
                     </div>
                   </div>
@@ -238,7 +256,7 @@ if(!empty($_COOKIE['current']))
                   <div class="col-xs-4">
                     <div class="clearfix">
                       <div class="checkbox chkbox">
-                        <input type="checkbox" value="1" id="chkbox-label" name=""/>Ghi nhớ
+                        <input type="checkbox" value="1" id="chkbox-label" name="save-user" checked>Ghi nhớ
                         <label for="chkbox-label"></label>
                       </div>
                     </div>
@@ -252,7 +270,7 @@ if(!empty($_COOKIE['current']))
 
                   <div class = "col-xs-4">
                     <div class="clearfix">
-                      <a id="forgot-pass" data-target="#popup-forgotpass" data-toggle="modal" class="text-danger">Quên mật khẩu ?</a>
+                      <a id="forgot-pass" data-target="#popup-forgotpass" data-toggle="modal" class="text-danger" data-dismiss="modal">Quên mật khẩu ?</a>
                     </div>
                   </div>
                 </div>
@@ -295,7 +313,7 @@ if(!empty($_COOKIE['current']))
 
                   <div class="col-xs-5">
                     <div class="form-group">
-                      <a href class="btn btn-lg btn-bcl orange" id="btn-regnow" data-target="#popup-reg" data-toggle="modal">Đăng ký ngay</a>
+                      <a href class="btn btn-lg btn-bcl orange" id="btn-regnow" data-target="#popup-reg" data-toggle="modal" data-dismiss="modal">Đăng ký ngay</a>
                     </div>
                   </div>
 
@@ -572,3 +590,26 @@ if(!empty($_COOKIE['current']))
       </div>
     </div>
   </div>
+
+  <div class="modal fade" id="error-popup" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="popup-wap clearfix">
+        <div class="n-vertical top clearfix">
+          <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+        </div>
+        <div class="n-vertical bottom clearfix">
+          <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+        </div>
+        <div class="modal-header">
+          <div class="btn-close" data-dismiss="modal"></div>
+          <div class="form-group text-center">
+            <div class="title-login inline-block">Thông báo</div>
+          </div>
+        </div>
+
+        <div class="modal-body">Lỗi xảy ra!</div>
+    </div>
+    </div>
+  </div>
+</div>

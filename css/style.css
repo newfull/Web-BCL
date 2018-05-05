@@ -1,6 +1,10 @@
 body{
   overflow-x: hidden;
-  margin: 0 auto;
+  margin: 0 0 0 0;
+  top: 0;
+  left: 0;
+  right:0;
+  bottom: 0;
   width: 100%;
 }
 
@@ -1855,4 +1859,77 @@ margin-bottom: 5px;
   font-size: 16px;
   text-align: left;
   color: black;
+}
+
+.userbox .username{
+  max-width: 150px;
+  padding-right: 5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
+.userbox .btn-logout{
+  right:0px;
+  overflow: hidden;
+}
+
+#error-popup .modal-dialog {
+    min-width: 300px;
+    max-width: 500px;
+}
+
+#error-popup .modal-body{
+  font-size: 22px;
+  text-align: center;
+  font-family: "Roboto";
+}
+
+ul.cart-details{
+    min-width:250px;
+    position: fixed;
+    top: 10%;
+    left: 80%;
+    right: 10%;
+}
+ul.cart-details li .item{
+    display:block;
+    padding:3px 10px;
+    margin: 3px 0;
+}
+ul.cart-details li .item:hover{
+    background-color:#f3f3f3;
+}
+ul.cart-details li .item:after{
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: " ";
+    clear: both;
+    height: 0;
+}
+
+ul.cart-details li .item-left{
+    float:left;
+}
+ul.cart-details li .item-left img,
+ul.cart-details li .item-left span.item-info{
+    float:left;
+}
+ul.cart-details li .item-left span.item-info{
+    margin-left:10px;
+}
+ul.cart-details li .item-left span.item-info span{
+    display:block;
+}
+ul.cart-details li .item-right{
+    float:right;
+}
+ul.cart-details li .item-right button{
+    margin-top:14px;
+}
+
+.cart-details img{
+  max-width: 100px;
+  max-height: 100px;
 }

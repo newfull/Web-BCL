@@ -4,6 +4,8 @@ $dbname = "webbcl";
 $username = "root";
 $password = "";
 
+$conn = "NULL";
+
 try {
     $conn = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password,
           array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"));
@@ -13,6 +15,6 @@ try {
     }
 catch(PDOException $e)
     {
-          
+
     }
 ?>

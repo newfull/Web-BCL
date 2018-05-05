@@ -1,7 +1,7 @@
 <head>
   <title>Trang chủ | Gà Rán BCL</title>
 </head>
-<?php include_once("header.php");?>
+<?php require_once("header.php");?>
 <!--
 	<section id="slider">
 		<div class="container">
@@ -759,4 +759,4 @@
 		</div>
 	</section>
 -->
-	<?php include_once("footer.php");?>
+	<?php require_once("footer.php");?>

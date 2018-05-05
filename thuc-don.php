@@ -16,6 +16,7 @@
                   <?php
                   $create_tab_content = "";
                   $tabs_num = count($tabs_name);
+
                   for($i = 0; $i < $tabs_num; $i++){
                     $create_tab_content .= "<li role='presentation'";
                     $create_tab_content.= "><a href='#Section".$tabs_name[$i][0]."' role='tab' data-toggle='tab'></i>";
@@ -33,7 +34,7 @@
                       <div class="item active">
                         <a href='#Section0' role='tab' data-toggle='tab'>Combo</a>
                       </div>
-                    <?php
+                   <?php
                     $create_tab_content = "";
                     $tabs_num = count($tabs_name);
                     for($i = 0; $i < $tabs_num; $i++){
@@ -73,7 +74,7 @@
 
                       $create_tab_content .= "<div class='details'>";
                        for($k = 0; $k < $lines; $k++){
-                       $create_tab_content .= "<p>► ".($details[$k]['QUANTITY'])." ".($details[$k]['UNIT_NAME'])." ".($details[$k]['ITEMNAME'])."</p>";
+                       $create_tab_content .= "<p data-toggle='tooltip' title='Giá gốc: ".number_format($details[$k]['ITEMPRICE'], 0)." VNĐ'>► ".($details[$k]['QUANTITY'])." ".($details[$k]['UNIT_NAME'])." ".($details[$k]['ITEMNAME'])."</p>";
                         }
 
                      $create_tab_content .= "</div>";
@@ -126,9 +127,11 @@
 
 <?php
 $selection = $_GET['select'];
-$section_id = "0";
-if($selection != "combo")
-  $section_id = array_search($selection, array_column($tabs_name, 'ITEM_CATEGORYALIAS')) + 1;
+if($conn != "NULL"){
+  $section_id = "0";
+  if($selection != "combo")
+    $section_id = array_search($selection, array_column($tabs_name, 'ITEM_CATEGORYALIAS')) + 1;
 
-echo "<script>$('.nav-tabs li:eq($section_id) a').tab('show');</script>";
+  echo "<script>$('.nav-tabs li:eq($section_id) a').tab('show');</script>";
+}
 ?>
