@@ -1,4 +1,4 @@
--- phpMyAdmin SQL Dump
+﻿-- phpMyAdmin SQL Dump
 -- version 4.7.4
 -- https://www.phpmyadmin.net/
 --
@@ -308,6 +308,7 @@ CREATE TABLE `receipt` (
   `ACCOUNTID` int(11) NOT NULL COMMENT 'Mã tài khoản',
   `RECEIPTTIME` datetime NOT NULL COMMENT 'Thời điểm thanh toán',
   `RECEIPTVALUE` decimal(13,2) NOT NULL COMMENT 'Giá trị hóa đơn'
+  `RECEIPTADD` varchar(300) NOT NULL COMMENT 'Địa chỉ giao hàng',
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Hóa đơn';
 
 -- --------------------------------------------------------
@@ -746,3 +747,127 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+
+
+
+----
+
+-- check account 
+DELIMITER $$
+	CREATE FUNCTION func_account_chk(in user varchar(20))
+    RETURNS int
+    BEGIN
+    	IF (EXISTS(SELECT * FROM account WHERE accountuser = user)) THEN
+        	RETURN 0;
+        ELSEIF 
+        	RETURN 1;
+        END IF;
+        
+    END;
+DELIMITER
+-- get last account id
+DELIMITER $$
+	CREATE FUNCTION func_account_lastID RETURNS int
+    BEGIN
+    	DECLARE LASTID INT;
+        IF(EXISTS(SELECT TOP 1 accountID INTO LASTID FROM account ODER BY DESC accountID))
+        	RETURN LASTID;
+        ELSE
+        	RETURN 1;
+        END IF;
+
+    END;
+-- GET last customer id
+CREATE FUNCTION func_customer_lastID RETURNS int
+BEGIN
+   	DECLARE LASTID INT;
+    IF(EXISTS(SELECT TOP 1 accountID INTO LASTID FROM customer ODER BY DESC accountID))
+  	RETURN LASTID;
+    ELSE
+      	RETURN 1;
+    END IF;
+END;
+-- -x tạo account mới.
+DELIMITER $$
+	create PROCEDURE sp_account_cre (in username varchar(20),
+                                     in pass varchar(20)
+                                     )
+BEGIN
+	
+     DECLARE chk int;
+     SET chk = CALL func_account_chk(username);
+     if(chk==1)
+     	ROLLBACK;
+     ELSE
+     	DECLARE acc_lastID INT;
+        SET acc_lastID = FUNC_ACCOUNT_LASTID;
+     	INSERT into account VALUES (acc_lastID,USERNAME, PASS,NOW(),1,0,NULL);
+        DECLARE cus_lastID int;
+        SET cus_lastID = FUNC_customer_LASTID();
+        
+        
+        
+     END IF;
+END;
+                                     
+DELIMITER
+-- v- lay thong tin nguoi dung: ten, email, phone, dob
+DELIMITER $$
+create PROCEDURE sp_GetInfoUser (out @name varchar(30), 
+                                  out @email varchar(30),
+                                  out @phone int(11),
+                                  out @dob date)
+BEGIN
+	SELECT customername, email, phone, dob, sex 
+    into @name, @email, @phone, @dob
+    from customer;
+END
+DELIMITER ;
+
+-- x- lay ten va dia chi da giao trong qua khu
+DELIMITER $$
+create PROCEDURE sp_GetAddress(in @id int(11),
+                                out @name varchar(30),
+                                out @address varchar(500))
+BEGIN
+	SELECT CUSTOMERNAME, CUSTOMERADD into @name, @address	
+    from account,customer,receipt
+    where CUSTOMERID= id
+END
+DELIMITER ;
+
+-- update thong tin customer
+DELIMITER $$
+CREATE PROCEDURE proc_UpdateKH(in @id int(11), 
+                               in @name varchar(30),
+                               in @email varchar(30),
+                               in @phone int(11),
+                               in @dob date,
+                               in @sex int(1),
+                               in @address varchar(300)
+                               )
+BEGIN
+	if( EXISTS (select * from customer where CUSTOMERID = @id))  THEN RETURN;
+    ELSE
+    	UPDATE customer SET (@id, @name, @email,@phone, @dob, @sex, @address,0 ,'')
+    end if;    
+END
+DELIMITER ;
+-- them thong tin customer
+DELIMITER $$
+create PROCEDURE pro_ThemKH(in @id int(11), 
+                            in @name varchar(30),
+                            in @email varchar(30),
+                            in @phone int(11),
+                            in @dob date,
+                            in @sex int(1),
+                            in @address varchar(300)
+                            )
+BEGIN
+	IF(EXISTS( SELECT * FROM CUSTOMER WHERE CUSTOMERID=@ID)) THEN RETURN;
+    ELSEIF THEN INSERT INTO CUSTOMER VALUES (@id, @name, @email, @phone, @dob, @sex, @address,0,'');
+END
+DELIMITER ;
+
+                               

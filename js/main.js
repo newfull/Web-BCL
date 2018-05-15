@@ -314,4 +314,7 @@ $(document).ready(function(e){
     load_days();
     date_change();
     $('[id="phonenumber"]').keypress(validateNumber);
+       $(".btn-suathongtin").click(function(){
+       alert();
+    });
 });

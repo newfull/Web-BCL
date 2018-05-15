@@ -23,6 +23,7 @@ body{
 
 .loader{
   width: 300px;
+  
   height: 300px;
   margin: 15% auto;
   position: relative;
@@ -1855,4 +1856,75 @@ margin-bottom: 5px;
   font-size: 16px;
   text-align: left;
   color: black;
+}
+
+
+
+.account-management{
+    padding-top: 30px;
+    padding-left:40px;
+    color: black;
+    background-color: #e0e4e5 ;
+    font-size: 18px;
+}
+.member-info{
+    padding-left:10px;
+    font-size: :15px;
+
+}
+.nav-container{
+  margin-left: -30px;
+  color: black;
+}
+.item-li {
+  padding-top: 5px;
+  font-size: 20px;
+}
+.sub {
+  margin-top: 2px;
+  margin-left: -10px;
+  font-size: 18px;
+  color: black;
+}
+.frames-bi{
+  padding:10px;
+  margin-right:20px;
+  background-color: #ffffff;
+}
+.nav-name{
+  font-size: 20px;
+}
+
+.under-info{
+  margin-top: 10px;
+}
+.address-book{
+  border: 1px solid red;
+  padding: 10px;
+}
+.info-tbl ,th, td{
+  padding: 20px;
+  text-align: left;
+}
+.edit-info-bi{
+  margin: 20px;
+}
+.hide{
+  display: none;
+}
+.show{
+  display: inline;
+}
+.inner-addon{
+  position: relative;
+}
+.inner-addon .glyphicon{
+  position: absolute;
+  padding: 10px;
+}
+.right-addon .glyphicon{
+  right: 0px;
+}
+.right.addon input{
+  padding-right: 30px;
 }
