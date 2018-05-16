@@ -1,4 +1,4 @@
--- phpMyAdmin SQL Dump
+﻿-- phpMyAdmin SQL Dump
 -- version 4.8.0
 -- https://www.phpmyadmin.net/
 --
@@ -177,7 +177,7 @@ CREATE TABLE `item` (
   `ITEM_TYPEID` int(11) NOT NULL COMMENT 'Mã loại',
   `ITEMSTOCK` int(11) NOT NULL COMMENT 'Số lượng tồn',
   `ITEMLIKED` int(11) NOT NULL DEFAULT '0' COMMENT 'Số lượt thích',
-  `ITEMSTATUS` int(11) NOT NULL DEFAULT '1' COMMENT '1 - Đang bán, 0 - Ngừng bán',
+  `ITEMSTATUS` int(1) NOT NULL DEFAULT '1' COMMENT '1 - Đang bán, 0 - Ngừng bán',
   `ITEMIMGURL` text NOT NULL COMMENT 'Đường dẫn hình ảnh',
   `ITEMISNEW` int(1) NOT NULL DEFAULT '1' COMMENT 'Nếu mới bán: 1, còn lại: 0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Món ăn';
