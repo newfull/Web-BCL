@@ -307,8 +307,8 @@ CREATE TABLE `receipt` (
   `RECEIPTID` int(11) NOT NULL COMMENT 'Mã hóa đơn',
   `ACCOUNTID` int(11) NOT NULL COMMENT 'Mã tài khoản',
   `RECEIPTTIME` datetime NOT NULL COMMENT 'Thời điểm thanh toán',
-  `RECEIPTVALUE` decimal(13,2) NOT NULL COMMENT 'Giá trị hóa đơn'
-  `RECEIPTADD` varchar(300) NOT NULL COMMENT 'Địa chỉ giao hàng',
+  `RECEIPTVALUE` decimal(13,2) NOT NULL COMMENT 'Giá trị hóa đơn',
+  `RECEIPTADD` varchar(300) NOT NULL COMMENT 'Địa chỉ giao hàng'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Hóa đơn';
 
 -- --------------------------------------------------------
