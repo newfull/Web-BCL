@@ -1081,6 +1081,7 @@ imp{
 }
 
 .carousel-inner.vertical > .item {
+  transition: 500ms ease-in-out left;
   -webkit-transition: .6s ease-in-out top;
   -o-transition: .6s ease-in-out top;
   transition: .6s ease-in-out top;
@@ -1091,9 +1092,10 @@ imp{
   -o-transition: -o-transform .6s ease-in-out;
   transition: transform .6s ease-in-out;
 }
+
 .carousel-inner.vertical > .item.next,
 .carousel-inner.vertical > .item.active.right {
-  -webkit-transform: translate3d(0, 33.33%, 0);
+ -webkit-transform: translate3d(0, 33.33%, 0);
   transform: translate3d(0, 33.33%, 0);
   top: 0;
 }
@@ -1128,7 +1130,6 @@ imp{
   .carousel-inner.vertical{
     height: 64px;
   }
-
 
 }
 
@@ -1630,19 +1631,13 @@ imp{
 
 .thucdon-tabs .tab .carousel-tabs{
   display: none;
-  max-height: 40px;
+  max-height: 45px;
   width: 100%;
   overflow: hidden;
-}
-
-.thucdon-tabs .tab .carousel-tabs .carousel-inner{
-  width: 100%;
   margin: -20px 10px 10px -10% !important;
-  overflow: hidden;
 }
 
-
-.thucdon-tabs .tab .carousel-tabs .carousel-inner .item a{
+.thucdon-tabs .tab .carousel-tabs .item a{
   display: inline-block;
   margin-left: 5%;
   margin-right: 5%;
@@ -1743,7 +1738,7 @@ imp{
   color: #870901;
   text-align:center;
   font-weight: bold;
-  margin-top: -8px;
+  margin-top: 3px;
 }
 
 @media(max-width: 991px){
@@ -1981,7 +1976,7 @@ margin-bottom: 5px;
     background-color: white;
     position: fixed;
     border: 2px double gray;
-    border-radius: 4px;
+    border-radius: 8px;
     min-width: 280px;
     max-width: 280px;
     height: 280px;
@@ -2070,4 +2065,10 @@ margin-bottom: 5px;
   min-height: 80px;
   max-width: 96px;
   max-height: 80px;
+}
+
+.slick-slide{
+   width: 240px;
+   margin: 0 -30px;
+   outline: none
 }

@@ -29,8 +29,7 @@
                   </ul>
 
                   <!-- Carousel -->
-                  <div class="carousel slide carousel-tabs" id="thucdon-carousel" data-ride="carousel" data-interval="false">
-                    <div class="carousel-inner" role="listbox">
+                  <div class="carousel-tabs">
                       <div class="item active">
                         <a href='#Section0' role='tab' data-toggle='tab'>Combo</a>
                       </div>
@@ -46,7 +45,6 @@
 
                     echo $create_tab_content;
                     ?>
-                    </div>
                   </div>
                 <!-- Tab panes -->
                 <div class="tab-content tabs">
@@ -117,8 +115,12 @@
         </div>
 
         <!-- Carousel control-->
-        <a class="control left inline-block" href="#thucdon-carousel" data-slide="prev">≪</a>
-        <a class="control right inline-block" href="#thucdon-carousel" data-slide="next">≫</a>
+        <a class="control left inline-block">
+          <span class="glyphicon glyphicon-backward"></span>
+        </a>
+        <a class="control right inline-block">
+          <span class="glyphicon glyphicon-forward"></span>
+        </a>
     </div>
 </div>
 </div>

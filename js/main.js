@@ -237,34 +237,6 @@ $('.carousel .vertical .item').each(function(){
   }
 });
 
-$('.carousel-bcl .item').each(function(){
-    var next = $(this).next();
-    if (!next.length) {
-      next = $(this).siblings(':first');
-    }
-    next.children(':first-child').clone().appendTo($(this));
-
-    if (next.next().length>0) {
-      next.next().children(':first-child').clone().appendTo($(this));
-    } else {
-      $(this).siblings(':first').children(':first-child').clone().appendTo($(this));
-    }
-  });
-
-$('.carousel-tabs .item').each(function(){
-    var next = $(this).next();
-    if (!next.length) {
-      next = $(this).siblings(':first');
-    }
-    next.children(':first-child').clone().appendTo($(this));
-
-    if (next.next().length>0) {
-      next.next().children(':first-child').clone().appendTo($(this));
-    } else {
-      $(this).siblings(':first').children(':first-child').clone().appendTo($(this));
-    }
-  });
-
 $('.item-card').on('click', function () {
   		if ($(this).hasClass('open')) {
   			$(this).removeClass('open');
@@ -363,4 +335,35 @@ $(document).ready(function(e){
     load_days();
     date_change();
     $('[id="phonenumber"]').keypress(validateNumber);
+
+
+    $('.carousel-bcl').slick({
+      prevArrow: '.glyphicon-chevron-left',
+      nextArrow: '.glyphicon-chevron-right',
+      accessibility: true,
+      infinite: true,
+      slidesToShow: 3,
+      responsive: [{
+        breakpoint: 935,
+        settings: { slidesToShow: 2}
+      }, {
+        breakpoint: 769,
+        settings: { slidesToShow: 1}
+      }]
+    });
+
+    $('.carousel-tabs').slick({
+      prevArrow: '.glyphicon-backward',
+      nextArrow: '.glyphicon-forward',
+      infinite: true,
+      slidesToShow: 3,
+      responsive: [{
+        breakpoint: 935,
+        settings: { slidesToShow: 2}
+      }, {
+        breakpoint: 769,
+        settings: { slidesToShow: 1}
+      }]
+    });
+
 });

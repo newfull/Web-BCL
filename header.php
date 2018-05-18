@@ -134,7 +134,7 @@ if(!empty($_SESSION['current'])){
             <div class="logo clearfix">
               <a href="/trang-chu"><img src="/images/name.png"/ class="logo-bcl"></a>
 
-              <a class="control left inline-block" href="#text-carousel" data-slide="prev">
+              <a class="control left inline-block" >
                 <span class="glyphicon glyphicon-chevron-left" ></span>
               </a>
             </div>
@@ -148,8 +148,7 @@ if(!empty($_SESSION['current'])){
                 <li><a href="/lien-he">Giới thiệu</a></li>
               </ul>
             </div>
-            <div class="carousel slide carousel-bcl" id="text-carousel" data-ride="carousel" data-interval="false">
-              <div class="carousel-inner" role="listbox">
+            <div class="carousel-bcl">
                 <div class="item active">
                   <a href="/thuc-don/ga" class="active">Thực đơn</a>
                 </div>
@@ -162,14 +161,13 @@ if(!empty($_SESSION['current'])){
                 <div class="item">
                   <a href="/lien-he">Giới thiệu</a>
                 </div>
-              </div>
             </div>
           </div>
 
 
           <div class="col-xs-2 cart-block">
             <div class="cartbox clearfix" id="cart_box">
-              <a class="control right inline-block" href="#text-carousel" data-slide="next">
+              <a class="control right inline-block">
                 <span class="glyphicon glyphicon-chevron-right"></span>
               </a>
               <a href="/gio-hang">
