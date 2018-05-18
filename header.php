@@ -183,7 +183,7 @@ if(!empty($_SESSION['current'])){
       $create_content = "
         <div class='cart-details display-none'>
         <button class='btn btn-xs btn-danger pull-right close-cart-box'>X</button>
-        <h1>Giỏ hàng</h1>
+        <a href='./gio-hang' data-toggle='tooltip' title='Đi tới giỏ hàng'><h1>Giỏ hàng</h1></a>
         <ul class='list-unstyled'>";
 
 
@@ -195,12 +195,12 @@ if(!empty($_SESSION['current'])){
         for($i = 0; $i < count($cart_details); $i++)
           $create_content .= '
                 <li>
-                  <span class="item">
+                  <span class="item" data-toggle="tooltip" title="'.$cart_details[$i]['ITEMNAME'].'">
                     <span class="item-left">
                         <img src="./images/items/'.($cart_details[$i]['ITEMIMGURL']).'" onerror="this.src=\'../images/not-found.png\'" class="disp img-responsive" alt="" />
                         <span class="item-info">
-                            <span>'.($cart_details[$i]['ITEMNAME']).'</span>
-                            <span>'.number_format($cart_details[$i]['ITEMPRICE'], 0).' VNĐ</span>
+                            <span>'.($cart_details[$i]['QUANTITY']).' x '.($cart_details[$i]['ITEMNAME']).'</span>
+                            <span> --- '.number_format($cart_details[$i]['QUANTITY']*$cart_details[$i]['ITEMPRICE'],0).' VNĐ</span>
                         </span>
                     </span>
                     <span class="item-right">

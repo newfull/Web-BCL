@@ -159,7 +159,7 @@ function cart_details($conn, $cartID){
   if($conn == "NULL")
     return null;
 
-  $stmt = $conn->prepare('SELECT item.* from cart_detail cd, item
+  $stmt = $conn->prepare('SELECT item.*, cd.QUANTITY from cart_detail cd, item
     where cd.CARTID = :cart and cd.ITEMID = item.ITEMID');
   $stmt->execute(array(":cart"=>$cartID));
 
@@ -211,7 +211,7 @@ function user_info($conn, $accID){
 
 function Logout($conn){
   if($conn != "NULL")
-    session_unset(); 
+    session_unset();
 }
 
 class bclUser{
