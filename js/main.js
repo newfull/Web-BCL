@@ -328,6 +328,27 @@ $('#user-info').on("mouseenter", function(){ $(this).show();});
 $('#user-info').on("mouseleave", function(){ $(this).hide();})
 };
 
+function cart_hover(){
+$('.text-cart').on("mouseenter", function(){
+  $('.cart-details').css("left", $(this).offset().left-100);
+  if($(window).scrollTop() < 112){
+    $('.cart-details').css("top", $('#navbar').offset().top-$(window).scrollTop()+10);
+  }
+  else
+  $('.cart-details').css("top", $('#navbar').position().top+10);
+
+
+  $('.cart-details').css("z-index", 99999);
+  $('.cart-details').show();
+});
+$('.text-cart').on("mouseleave", function(){ $('.cart-details').hide();})
+$('.cart-details').on("mouseenter", function(){ $(this).show();});
+$('.cart-details').on("mouseleave", function(){ $(this).hide();})
+};
+
+$('.close-cart-box').on("click", function(){
+  $('.cart-details').hide();
+});
 
 $(document).ready(function(e){
     SmoothScroll({ stepSize: 100 });
@@ -335,6 +356,7 @@ $(document).ready(function(e){
     navbar_movealong();
     navbar_hover();
     username_hover();
+    cart_hover();
     check_input_value_email();
     check_input_value_password();
     clear_modal();

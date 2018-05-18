@@ -1,11 +1,12 @@
 <?php
+session_start();
 require_once("config.php");
 require_once("./includes/functions.php");
 
 $cart_details = null;
 $current_user = new bclUser($conn);
-if(!empty($_COOKIE['current'])){
-  $current_user->init_info($_COOKIE['current']);
+if(!empty($_SESSION['current'])){
+  $current_user->init_info($_SESSION['current']);
   $cart_details = cart_details($conn, $current_user->iCartId);
 }
 
@@ -74,7 +75,7 @@ if(!empty($_COOKIE['current'])){
                   <div class="col-xs-12 userbox userbox-mobile">
                     <?php
                       $create_content = "";
-                    if(!isset($_COOKIE['current'])){
+                    if(!isset($_SESSION['current'])){
                     $create_content = "<a href='#popup-login' data-toggle='modal' id='btnLogIn' class='inline-block'>
                     <i class='fa fa-lock'></i> Đăng nhập</a>
                     <a href='#popup-reg' data-toggle='modal' id='btnReg' class='inline-block' ><i class='fa fa-plus'></i> Đăng ký</a>";
@@ -121,6 +122,7 @@ if(!empty($_COOKIE['current'])){
             </div>
           </div>
         </div>
+
       </nav><!-- /Navbar Header Top-->
     </div><!-- /Header Top-->
 
@@ -173,33 +175,45 @@ if(!empty($_COOKIE['current'])){
               <a href="/gio-hang">
                 <i class="fa fa-shopping-cart"></i>
                 <span class="text-cart"> Giỏ hàng</span>
-                <span id="cart_number"><?php if(!empty($cart_details[0])) echo count($cart_details); else echo '0'; ?></span>
+                <span id="cart_number"><?php if(!empty($cart_details[0])) echo '('.count($cart_details).')'; else echo '(0)'; ?></span>
               </a>
             </div>
 
         </div>
       </nav><!-- /Navbar Header Body -->
       <?php
-      $create_content = "<ul class='cart-details' class='list-unstyled'>";
-      for($i = 0; $i < count($cart_details); $i++)
-        $create_content .= '
-              <li>
-                <span class="item">
-                  <span class="item-left">
-                      <img src="./images/items/'.($cart_details[$i]['ITEMIMGURL']).'" onerror="this.src=\'../images/not-found.png\'" class="disp img-responsive" alt="" />
-                      <span class="item-info">
-                          <span>'.($cart_details[$i]['ITEMNAME']).'</span>
-                          <span>'.number_format($cart_details[$i]['ITEMPRICE'], 0).' VNĐ</span>
-                      </span>
-                  </span>
-                  <span class="item-right">
-                      <button class="btn btn-xs btn-danger pull-right">X</button>
-                  </span>
-              </span>
-            </li>';
-      $create_content.= "</ul>";
-            echo $create_content;
-        ?>
+      $create_content = "
+        <div class='cart-details display-none'>
+        <button class='btn btn-xs btn-danger pull-right close-cart-box'>X</button>
+        <h1>Giỏ hàng</h1>
+        <ul class='list-unstyled'>";
+
+
+      if(count($cart_details) == 0){
+        $create_content .= '<img src="./images/empty-cart-icon.png" class="empty-cart img-responsive"/>';
+        $create_content .= '<h2>Chưa có sản phẩm nào</h2>';
+      }
+      else
+        for($i = 0; $i < count($cart_details); $i++)
+          $create_content .= '
+                <li>
+                  <span class="item">
+                    <span class="item-left">
+                        <img src="./images/items/'.($cart_details[$i]['ITEMIMGURL']).'" onerror="this.src=\'../images/not-found.png\'" class="disp img-responsive" alt="" />
+                        <span class="item-info">
+                            <span>'.($cart_details[$i]['ITEMNAME']).'</span>
+                            <span>'.number_format($cart_details[$i]['ITEMPRICE'], 0).' VNĐ</span>
+                        </span>
+                    </span>
+                    <span class="item-right">
+                        <button class="btn btn-xs btn-danger pull-right">X</button>
+                    </span>
+                </span>
+              </li>';
+
+      $create_content.= "</ul></div>";
+      echo $create_content;
+      ?>
 
     </div><!-- /Header Body -->
   </header><!-- /Header-->
@@ -237,7 +251,7 @@ if(!empty($_COOKIE['current'])){
                     <div class="form-group">
 
                       <input type="text" name="login-username" id="login-user"
-                      <?php if(isset($_COOKIE['username'])) echo 'class="form-control focus" value="'.$_COOKIE['username'].'" ';
+                      <?php if(isset($_SESSION['username'])) echo 'class="form-control focus" value="'.$_SESSION['username'].'" ';
                         else echo 'class="form-control focus empty"'; ?> placeholder="" required="">
                       <label class="floating-label">Tên đăng nhập</label>
                     </div>

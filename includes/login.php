@@ -1,8 +1,9 @@
 <?php
+  session_start();
   require_once '../config.php';
   require_once 'functions.php';
   if($conn != "NULL")
-    unset_cookies($conn);
+    session_unset();
 
   $user = trim($_POST['login-username']);
   $password = trim($_POST['login-password']);
@@ -19,14 +20,13 @@
 
    if($row['ACCOUNTPASS']==$password){
      if(isset($_POST['save-user']))
-       setcookie('username', $user, $cookielife, '/');
+       $_SESSION["username"] = $user;
      else{
-       unset($_COOKIE['username']);
-       setcookie('username', null, time() - 3600, '/');
+       unset($_SESSION['username']);
      }
 
      echo "Đăng nhập thành công";
-     setcookie('current', $row['ACCOUNTID'], $cookielife, '/');
+     $_SESSION["current"] = $row['ACCOUNTID'];
      $stmt = $conn->prepare('SELECT * FROM CUSTOMER WHERE CUSTOMERID = :id');
      $stmt->execute(array(":id"=>$row['CUSTOMERID']));
      $row = $stmt->fetch(PDO::FETCH_ASSOC);

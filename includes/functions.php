@@ -1,7 +1,4 @@
 <?php
-$cookiedeadtime = 3600; //3600 = 1hr, cookies die after 1hr
-$cookielife = time() + $cookiedeadtime;
-$unsetvalue = time() - $cookiedeadtime;
 
 function item_category_list($conn){
   if($conn == "NULL")
@@ -212,19 +209,9 @@ function user_info($conn, $accID){
   return $result;
 }
 
-function unset_cookies(){
-
-  $past = time() - 3600;
-  foreach ( $_COOKIE as $key => $value )
-  {
-    if($key != 'username')
-      setcookie( $key, $value, $past, '/' );
-  }
-}
-
 function Logout($conn){
   if($conn != "NULL")
-    unset_cookies($conn);
+    session_unset(); 
 }
 
 class bclUser{
