@@ -2080,3 +2080,42 @@ margin-bottom: 5px;
    margin: 0 -30px;
    outline: none
 }
+
+#slider-carousel{
+  width: 100%;
+  height: auto;
+}
+
+@media (min-width: 1333px){
+  #slider-carousel{
+    left: -3.25%;
+  }
+}
+
+@media (max-width: 1332px){
+  #slider-carousel{
+    left: -4%;
+  }
+}
+
+@media (max-width: 991px){
+  #slider-carousel{
+    left: -1%;
+  }
+}
+
+
+#slider-carousel-prev{
+  top: 38%;
+  left: 80px;
+}
+
+#slider-carousel-next{
+  top: 38%;
+  right: 80px;
+}
+
+
+.carousel-indicators li, .carousel-indicators li.active{
+  margin-right: 10px;
+}
