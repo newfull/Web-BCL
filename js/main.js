@@ -247,7 +247,23 @@ $('.item-card').on('click', function () {
   	});
 
 $('.modal').on('shown.bs.modal', function(){
-    $('body').css("overflow", "hidden");
+	$('body').css("overflow", "hidden");
+});
+
+$('#popup-login').on('shown.bs.modal', function(){
+    if ($(window).width() < 620)
+    {
+        location.href="/quan-ly";
+        return;
+    }
+});
+
+$('#popup-reg').on('shown.bs.modal', function(){
+    if ($(window).width() < 620)
+    {
+        location.href="/quan-ly";
+        return;
+    }
 });
 
 $(document).click(function(event){
