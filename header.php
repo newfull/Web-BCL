@@ -2,14 +2,14 @@
 session_start();
 require_once("config.php");
 require_once("./includes/functions.php");
+require_once("./includes/userinfo.php");
 
 $cart_details = null;
 $current_user = new bclUser($conn);
 if(!empty($_SESSION['current'])){
   $current_user->init_info($_SESSION['current']);
-  $cart_details = cart_details($conn, $current_user->iCartId);
+  $cart_details = cart_details($conn, $current_user->getCart());
 }
-
 ?>
 
 
@@ -30,7 +30,8 @@ if(!empty($_SESSION['current'])){
   <script src="js/html5shiv.js"></script>
   <script src="js/respond.min.js"></script>
   <![endif]-->
-</head><!--/head-->
+</head>
+<!--/head-->
 
 <body>
 
@@ -80,30 +81,18 @@ if(!empty($_SESSION['current'])){
                     <i class='fa fa-lock'></i> Đăng nhập</a>
                     <a href='#popup-reg' data-toggle='modal' id='btnReg' class='inline-block' ><i class='fa fa-plus'></i> Đăng ký</a>";
                   } else {
-                    $create_content = "<a href='/thanh-vien' class='username inline-block'>".$current_user->sCustomerName."</a>
-                    <a href='#' class='inline-block btn-logout'>Đăng xuất</a>";
+                    $create_content = "<a href='/thanh-vien' class='username inline-block'><i class='glyphicon glyphicon-user'></i> ".$current_user->getName()."</a>
+                    <a href='#' class='inline-block btn-logout fn-logout'>Đăng xuất</a>";
                    }
                     echo $create_content;
                   ?>
+
                     <div id="user-info" class="display-none">
                       <div class="list-group">
-                        <div class="list-group-item">
-                          <div class="avartar-user img-circle pull-left">
-                            <img src="/images/avatar.png" class="img-responsive" alt="">
-                          </div>
-                          <div class="username pull-left">
-                            <div class="clearfix"><span></span></div>
-                            <div class="clearfix">
-                              <h5>
-                                <img src="/" alt="" class="img-responsive">0
-                              </h5>
-                            </div>
-                          </div>
-                        </div>
-                        <a href="/thong-tin-tai-khoan" class="list-group-item">Thông tin tài khoản</a>
-                        <a href="/lich-su-giao-dich" class="list-group-item">Lịch sử giao dịch</a>
-                        <a href="/mon-an-yeu-thich" class="list-group-item">Món ăn yêu thích</a>
-                        <a href="/dang-xuat" class="list-group-item">Đăng xuất</a>
+                        <a href="/quan-ly?sec=info" class="list-group-item"><i class="glyphicon glyphicon-user"></i> Thông tin tài khoản</a>
+                        <a href="/quan-ly?sec=his" class="list-group-item"><i class="glyphicon glyphicon-repeat"></i> Lịch sử giao dịch</a>
+                        <a href="/quan-ly?sec=like" class="list-group-item"><i class="glyphicon glyphicon-thumbs-up"></i> Món ăn yêu thích</a>
+                        <a href="#" class="list-group-item fn-logout"><i class="glyphicon glyphicon-log-out"></i> Đăng xuất</a>
                       </div>
                     </div>
                   </div>
@@ -123,8 +112,10 @@ if(!empty($_SESSION['current'])){
           </div>
         </div>
 
-      </nav><!-- /Navbar Header Top-->
-    </div><!-- /Header Top-->
+      </nav>
+      <!-- /Navbar Header Top-->
+    </div>
+    <!-- /Header Top-->
 
     <!-- Header Body-->
     <div class="header-middle">
@@ -144,7 +135,14 @@ if(!empty($_SESSION['current'])){
               <ul class="menu">
                 <li><a href="/thuc-don/ga" class="active">Thực đơn</a></li>
                 <li><a href="/khuyen-mai">Tin tức</a></li>
-                <li><a href="/thanh-vien">Thành viên</a></li>
+                <li><a href=
+                  <?
+                  $create_content = "";
+                  if(!empty($_SESSION['current'])) $create_content = '/thanh-vien';
+                  else $create_content = '"#popup-login" data-toggle="modal"';
+                  echo $create_content;
+                  ?>
+                  >Thành viên</a></li>
                 <li><a href="/lien-he">Giới thiệu</a></li>
               </ul>
             </div>
@@ -156,7 +154,12 @@ if(!empty($_SESSION['current'])){
                   <a href="/khuyen-mai">Tin tức</a>
                 </div>
                 <div class="item">
-                  <a href="/thanh-vien">Thành viên</a>
+                  <a href=<?
+                  $create_content = "";
+                  if(!empty($_SESSION['current'])) $create_content = '/thanh-vien';
+                  else $create_content = '"#popup-login" data-toggle="modal"';
+                  echo $create_content;
+                  ?>>Thành viên</a>
                 </div>
                 <div class="item">
                   <a href="/lien-he">Giới thiệu</a>
@@ -173,12 +176,13 @@ if(!empty($_SESSION['current'])){
               <a href="/gio-hang">
                 <i class="fa fa-shopping-cart"></i>
                 <span class="text-cart"> Giỏ hàng</span>
-                <span id="cart_number"><?php if(!empty($cart_details[0])) echo '('.count($cart_details).')'; else echo '(0)'; ?></span>
+                <span id="cart_number"><?php if(!isEmpty($cart_details)) echo '('.count($cart_details).')'; else echo '(0)'; ?></span>
               </a>
             </div>
 
         </div>
-      </nav><!-- /Navbar Header Body -->
+      </nav>
+      <!-- /Navbar Header Body -->
       <?php
       $create_content = "
         <div class='cart-details display-none'>
@@ -187,7 +191,7 @@ if(!empty($_SESSION['current'])){
         <ul class='list-unstyled'>";
 
 
-      if(count($cart_details) == 0){
+      if(isEmpty($cart_details)){
         $create_content .= '<img src="./images/empty-cart-icon.png" class="empty-cart img-responsive"/>';
         $create_content .= '<h2>Chưa có sản phẩm nào</h2>';
       }
@@ -195,12 +199,15 @@ if(!empty($_SESSION['current'])){
         for($i = 0; $i < count($cart_details); $i++)
           $create_content .= '
                 <li>
-                  <span class="item" data-toggle="tooltip" title="'.$cart_details[$i]['ITEMNAME'].'">
+                  <span class="item" data-toggle="tooltip" title="'.$cart_details[$i]['Ten'].'">
                     <span class="item-left">
-                        <img src="./images/items/'.($cart_details[$i]['ITEMIMGURL']).'" onerror="this.src=\'../images/not-found.png\'" class="disp img-responsive" alt="" />
+                        <img src="./images/items/'.($cart_details[$i]['DuongDan']).'"
+                        onerror="this.src=\'../images/not-found.png\'"
+                        class="disp img-responsive" alt="" />
                         <span class="item-info">
-                            <span>'.($cart_details[$i]['QUANTITY']).' x '.($cart_details[$i]['ITEMNAME']).'</span>
-                            <span> --- '.number_format($cart_details[$i]['QUANTITY']*$cart_details[$i]['ITEMPRICE'],0).' VNĐ</span>
+                             <span class="item-name">'.($cart_details[$i]['Ten']).'</span>
+                             <span class="item-quant">Số lượng: '.($cart_details[$i]['SoLuong']).'</span>
+                             <span class="item-price">₫'.number_format($cart_details[$i]['SoLuong']*$cart_details[$i]['Gia'],0).'</span>
                         </span>
                     </span>
                     <span class="item-right">
@@ -213,8 +220,10 @@ if(!empty($_SESSION['current'])){
       echo $create_content;
       ?>
 
-    </div><!-- /Header Body -->
-  </header><!-- /Header-->
+    </div>
+    <!-- /Header Body -->
+  </header>
+  <!-- /Header-->
 
   <!-- Popup Login - Modal -->
   <div class="modal fade bs-modal-sm" id="popup-login" tabindex="-1" role="dialog" aria-hidden="true">
@@ -345,7 +354,8 @@ if(!empty($_SESSION['current'])){
   </div>
       </div>
     </div>
-  </div><!-- /Popup Login - Modal -->
+  </div>
+  <!-- /Popup Login - Modal -->
 
   <!-- Popup Register - Modal -->
   <div class="modal fade bs-modal-sm" id="popup-reg" tabindex="-1" role="dialog" aria-hidden="true">
@@ -545,7 +555,8 @@ if(!empty($_SESSION['current'])){
   </div>
   </div>
   </div>
-  </div><!-- /Popup Register - Modal -->
+  </div>
+  <!-- /Popup Register - Modal -->
 
   <!-- Popup Terms&Conditions - Modal -->
   <div class="modal fade bs-modal-sm" id="popup-terms" tabindex="-1" role="dialog" aria-hidden="true">
@@ -574,8 +585,10 @@ if(!empty($_SESSION['current'])){
         </div>
       </div>
     </div>
-  </div><!-- /Popup Terms&Conditions - Modal -->
+  </div>
+  <!-- /Popup Terms&Conditions - Modal -->
 
+  <!-- Popup Forgot Password - Modal -->
   <div class="modal fade bs-modal-sm" id="popup-forgotpass" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-sm">
       <div class="modal-content">
@@ -602,7 +615,9 @@ if(!empty($_SESSION['current'])){
       </div>
     </div>
   </div>
+  <!-- /Popup Forgot Password - Modal -->
 
+  <!-- Popup Notfications/Error - Modal -->
   <div class="modal fade" id="error-popup" aria-hidden="true">
   <div class="modal-dialog modal-sm">
     <div class="modal-content">
@@ -625,3 +640,4 @@ if(!empty($_SESSION['current'])){
     </div>
   </div>
 </div>
+<!-- /Popup Notfications/Error - Modal -->

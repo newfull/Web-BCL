@@ -56,23 +56,28 @@
                      else $num = count($list);
                      for($j = 0; $j < $num; $j++){
                        $create_tab_content .= "<div class='item-card inline-block'><div class='front-facing'>";
-                       $create_tab_content .= "<img src='./images/items/".($list[$j]['COMBOIMGURL'])."' onerror='this.src=\"../images/not-found.png\"' class='disp img-responsive'>";
-                       $create_tab_content .= "<p class='title'>".($list[$j]['COMBONAME'])."</p><p class='price'>".number_format($list[$j]['COMBOPRICE'], 0)." VNĐ"."</p>";
-                       $create_tab_content .= "<img onclick='likeitem(".($list[$j]['COMBOID']).")' src='./images/btn-like.png' class='btn-like img-responsive'>";
-                       $create_tab_content .= "<img onclick='addtoCart(".($list[$j]['COMBOID']).")' src='./images/add-to-cart-48.png' class='btn-add-cart img-responsive'>";
+                       $create_tab_content .= "<img src='./images/items/".($list[$j]['DuongDan'])."' onerror='this.src=\"../images/not-found.png\"' class='disp img-responsive'>";
+                       $create_tab_content .= "<p class='title'>".($list[$j]['Ten'])."</p><p class='price'>".number_format($list[$j]['Gia'], 0)." VNĐ"."</p>";
+                       $create_tab_content .= "<img onclick='likecombo(".($list[$j]['Ma']).")' src='./images/";
+                       if(check_exists($current_user->getComboLiked(), $list[$j]['Ma']))
+                         $create_tab_content .= "btn-liked.png";
+                       else
+                         $create_tab_content .= "btn-like.png";
+                       $create_tab_content .= "' class='btn-like img-responsive'>";
+                       $create_tab_content .= "<img onclick='addtoCart(".($list[$j]['Ma']).")' src='./images/add-to-cart-48.png' class='btn-add-cart img-responsive'>";
                        $create_tab_content .= "</div>";
                        $create_tab_content .= "<div class='back-facing'>";
-                       $create_tab_content .= "<p class='title'>".($list[$j]['COMBONAME'])."</p><p class='price'>".number_format($list[$j]['COMBOPRICE'], 0)." VNĐ"."</p>";
-                       $create_tab_content .= "<img onclick='likeitem(".($list[$j]['COMBOID']).")' src='./images/btn-like.png' class='btn-like img-responsive'>";
-                       $create_tab_content .= "<img onclick='addtoCart(".($list[$j]['COMBOID']).")' src='./images/add-to-cart-48.png' class='btn-add-cart img-responsive'>";
+                       $create_tab_content .= "<p class='title'>".($list[$j]['Ten'])."</p><p class='price'>".number_format($list[$j]['Gia'], 0)." VNĐ"."</p>";
+                       $create_tab_content .= "<img onclick='likeitem(".($list[$j]['Ma']).")' src='./images/btn-like.png' class='btn-like img-responsive'>";
+                       $create_tab_content .= "<img onclick='addtoCart(".($list[$j]['Ma']).")' src='./images/add-to-cart-48.png' class='btn-add-cart img-responsive'>";
 
-                       $details = combo_details($conn, $list[$j][0]);
+                       $details = combo_details($conn, $list[$j]['Ma']);
                        if(isEmpty($details)) $lines = 0;
                        else $lines = count($details);
 
                       $create_tab_content .= "<div class='details'>";
                        for($k = 0; $k < $lines; $k++){
-                       $create_tab_content .= "<p data-toggle='tooltip' title='Giá gốc: ".number_format($details[$k]['ITEMPRICE'], 0)." VNĐ'>► ".($details[$k]['QUANTITY'])." ".($details[$k]['UNIT_NAME'])." ".($details[$k]['ITEMNAME'])."</p>";
+                       $create_tab_content .= "<p data-toggle='tooltip' title='Giá gốc: ".number_format($details[$k]['Gia'], 0)." VNĐ'>► ".($details[$k]['SoLuong'])." ".($details[$k]['DonVi'])." ".($details[$k]['Ten'])."</p>";
                         }
 
                      $create_tab_content .= "</div>";
@@ -92,16 +97,21 @@
 
                     for($j = 0; $j < $num; $j++){
                       $create_tab_content .= "<div class='item-card inline-block'><div class='front-facing'>";
-                      $create_tab_content .= "<img src='./images/items/".($list[$j]['ITEMIMGURL'])."' onerror='this.src=\"../images/not-found.png\"' class='disp img-responsive'>";
-                      $create_tab_content .= "<p class='title'>".($list[$j]['ITEMNAME'])."</p><p class='price'>".number_format($list[$j]['ITEMPRICE'], 0)." VNĐ"."</p>";
-                      $create_tab_content .= "<img onclick='likeitem(".($list[$j]['ITEMID']).")' src='./images/btn-like.png' class='btn-like img-responsive'>";
-                      $create_tab_content .= "<img onclick='addtoCart(".($list[$j]['ITEMID']).")' src='./images/add-to-cart-48.png' class='btn-add-cart img-responsive'>";
+                      $create_tab_content .= "<img src='./images/items/".($list[$j]['DuongDan'])."' onerror='this.src=\"../images/not-found.png\"' class='disp img-responsive'>";
+                      $create_tab_content .= "<p class='title'>".($list[$j]['Ten'])."</p><p class='price'>".number_format($list[$j]['Gia'], 0)." VNĐ"."</p>";
+                      $create_tab_content .= "<img onclick='likeitem(".($list[$j]['Ma']).")' src='./images/";
+                      if(check_exists($current_user->getLiked(), $list[$j]['Ma']))
+                        $create_tab_content .= "btn-liked.png";
+                      else
+                        $create_tab_content .= "btn-like.png";
+                      $create_tab_content .= "' class='btn-like img-responsive'>";
+                      $create_tab_content .= "<img onclick='addtoCart(".($list[$j]['Ma']).")' src='./images/add-to-cart-48.png' class='btn-add-cart img-responsive'>";
                       $create_tab_content .= "</div>";
                       $create_tab_content .= "<div class='back-facing'>";
-                      $create_tab_content .= "<p class='title'>".($list[$j]['ITEMNAME'])."</p><p class='price'>".number_format($list[$j]['ITEMPRICE'], 0)." VNĐ"."</p>";
-                      $create_tab_content .= "<img onclick='likeitem(".($list[$j]['ITEMID']).")' src='./images/btn-like.png' class='btn-like img-responsive'>";
-                      $create_tab_content .= "<img onclick='addtoCart(".($list[$j]['ITEMID']).")' src='./images/add-to-cart-48.png' class='btn-add-cart img-responsive'>";
-                      $create_tab_content .= "<div class='details'><p>► ".($list[$j]['ITEMNAME'])."</p></div>";
+                      $create_tab_content .= "<p class='title'>".($list[$j]['Ten'])."</p><p class='price'>".number_format($list[$j]['Gia'], 0)." VNĐ"."</p>";
+                      $create_tab_content .= "<img onclick='likeitem(".($list[$j]['Ma']).")' src='./images/btn-like.png' class='btn-like img-responsive'>";
+                      $create_tab_content .= "<img onclick='addtoCart(".($list[$j]['Ma']).")' src='./images/add-to-cart-48.png' class='btn-add-cart img-responsive'>";
+                      $create_tab_content .= "<div class='details'><p>► ".($list[$j]['Ten'])."</p></div>";
                       $create_tab_content .= "</div></div>";
                     }
 

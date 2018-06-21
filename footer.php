@@ -1,10 +1,13 @@
 	<footer id="footer"><!--Footer-->
+		<!-- Footer Top -->
 		<div class="footer-top">
 			<div class="container">
 
 			</div>
 		</div>
+		<!-- /Footer Top -->
 
+		<!-- Footer Content -->
 		<div class="footer-widget">
 			<div class="container">
 				<div class="row no-gutter">
@@ -63,7 +66,9 @@
 				</div>
 			</div>
 		</div>
+		<!-- /Footer Content -->
 
+		<!-- Footer Bottom -->
 		<div class="footer-bottom">
 			<div class="container">
 				<div class="row">
@@ -88,8 +93,11 @@
 				</div>
 			</div>
 		</div>
-	</footer><!--/Footer-->
+		<!-- /Footer Bottom -->
+	</footer>
+	<!--/Footer-->
 
+	<!-- Script -->
 	<script src="/js/jquery.js"></script>
 	<script src="/js/bootstrap.min.js"></script>
 	<script src="/js/jquery.scrollUp.min.js"></script>
@@ -98,5 +106,5 @@
 	<script src="/js/smoothscroll.js"></script>
 	<script src="/js/velocity.min.js"></script>
 	<script src="/js/slick.min.js"></script>
-
+	<!-- /Script -->
 </body>
