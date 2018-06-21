@@ -1,4 +1,6 @@
 <?php
+require_once 'config.php';
+
 //Kiểm tra chuỗi rỗng
 function isEmpty($array){
   $row = $array[0];
@@ -169,4 +171,28 @@ function init_cart($conn, $accid){
 function user_info($conn, $accid){
   return sp_call_vars($conn, "SP_GET_ACCOUNT_INFO", $accid);
 }
+
+function change_cart_details_quant($conn, $cartid, $itemid, $val){
+  return fn_call_vars($conn, "FN_CHANGE_CART_DETAIL_QUANT", $cartid.",".$itemid.",".$val);
+}
+
+function get_cart_details_val($cart_details){
+  return $cart_details['Gia']*$cart_details['SoLuong'];
+}
+
+function delete_cart_detail($conn, $cartid, $itemid){
+  return sp_call_vars($conn, "SP_DEL_CART_DETAIL", $cartid.",".$itemid);
+}
+
+if(isset($_POST['funct'])) {
+  switch($_POST['funct']){
+    case 'change_cart_details_quant':
+      change_cart_details_quant($conn, $_POST['cart'], $_POST['item'], $_POST['val']);
+      break;
+    case 'delete_cart_detail':
+      delete_cart_detail($conn, $_POST['cart'], $_POST['item']);
+      break;
+  }
+}
+
 ?>

@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once("config.php");
+require_once("./includes/config.php");
 require_once("./includes/functions.php");
 require_once("./includes/userinfo.php");
 
@@ -91,7 +91,7 @@ if(!empty($_SESSION['current'])){
                       <div class="list-group">
                         <a href="/quan-ly?sec=info" class="list-group-item"><i class="glyphicon glyphicon-user"></i> Thông tin tài khoản</a>
                         <a href="/quan-ly?sec=his" class="list-group-item"><i class="glyphicon glyphicon-repeat"></i> Lịch sử giao dịch</a>
-                        <a href="/quan-ly?sec=like" class="list-group-item"><i class="glyphicon glyphicon-thumbs-up"></i> Món ăn yêu thích</a>
+                        <a href="/quan-ly?sec=liked" class="list-group-item"><i class="glyphicon glyphicon-thumbs-up"></i> Món ăn yêu thích</a>
                         <a href="#" class="list-group-item fn-logout"><i class="glyphicon glyphicon-log-out"></i> Đăng xuất</a>
                       </div>
                     </div>
@@ -183,9 +183,10 @@ if(!empty($_SESSION['current'])){
         </div>
       </nav>
       <!-- /Navbar Header Body -->
+
+      <div class='cart-details display-none'>
       <?php
       $create_content = "
-        <div class='cart-details display-none'>
         <button class='btn btn-xs btn-danger pull-right close-cart-box'>X</button>
         <a href='./gio-hang' data-toggle='tooltip' title='Đi tới giỏ hàng'><h1>Giỏ hàng</h1></a>
         <ul class='list-unstyled'>";
@@ -211,15 +212,15 @@ if(!empty($_SESSION['current'])){
                         </span>
                     </span>
                     <span class="item-right">
-                        <button class="btn btn-xs btn-danger pull-right">X</button>
+                        <button class="btn btn-xs btn-danger pull-right" onclick=\'delete_cart_detail('.json_encode($cart_details[$i]).')\'>X</button>
                     </span>
                 </span>
               </li>';
 
-      $create_content.= "</ul></div>";
-      echo $create_content;
-      ?>
-
+        $create_content.= "</ul>";
+        echo $create_content;
+        ?>
+      </div>
     </div>
     <!-- /Header Body -->
   </header>

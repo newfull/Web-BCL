@@ -25,7 +25,7 @@ var position = $(window).scrollTop();
 function navbar_movealong(){
   $(window).scroll(function() {
     var scroll = $(window).scrollTop();
-    
+
     //navbar chạy theo scroll
     if (scroll > stickyNavTop) {
         $('#navbar').addClass('navbar-fixed-top');
@@ -349,6 +349,72 @@ function cart_hover(){
 $('.close-cart-box').on("click", function(){
   $('.cart-details').fadeOut(1000);
 });
+
+function change_quant(cart_detail, val){
+  var id = "val"+cart_detail["Ma"];
+  var curval = parseInt($('.spinner #' + id).val(), 10);
+  if((curval > 1 && curval < 99) || (curval == 99 && val < 0) || (curval == 1 && val > 0)){
+    $.ajax({
+      cache: false,
+      type: "POST",
+      url:'./includes/functions.php',
+      data: {
+        funct: 'change_cart_details_quant',
+        cart: cart_detail["Gio"],
+        item: cart_detail["Ma"],
+        val: val
+      },
+      complete: function (response) {
+        $(".cart-details").load("./header.php .cart-details");
+        $(".wrapper-cart").load("./gio-hang.php .wrapper-cart");
+      }
+    });
+  }else
+    if(curval == 1 && val < 0)
+    {
+      var r = confirm("Bạn muốn xoá sản phẩm này khỏi giỏ hàng?");
+      if (r == true) {
+        $.ajax({
+          cache: false,
+          type: "POST",
+          url:'./includes/functions.php',
+          data: {
+            funct: 'delete_cart_detail',
+            cart: cart_detail["Gio"],
+            item: cart_detail["Ma"]
+          },
+          success: function () {
+            $("#cart_number").load("./header.php #cart_number");
+            $(".cart-details").load("./header.php .cart-details");
+            $(".wrapper-cart").load("./gio-hang.php .wrapper-cart");
+          }
+        });
+      }
+    }
+}
+
+function delete_cart_detail(cart_detail){
+  var id = "val"+cart_detail["Ma"];
+
+  var r = confirm("Bạn muốn xoá sản phẩm " + cart_detail["Ten"] + " khỏi giỏ hàng?");
+  if (r == true) {
+    $.ajax({
+      cache: false,
+      type: "POST",
+      url:'./includes/functions.php',
+      data: {
+        funct: 'delete_cart_detail',
+        cart: cart_detail["Gio"],
+        item: cart_detail["Ma"]
+      },
+      success: function () {
+        $("#cart_number").load("./header.php #cart_number");
+        $(".cart-details").load("./header.php .cart-details");
+        $(".wrapper-cart").load("./gio-hang.php .wrapper-cart");
+      }
+    });
+  }
+}
 
 $(document).ready(function(e){
     SmoothScroll({ stepSize: 100 });

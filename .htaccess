@@ -11,16 +11,6 @@ RewriteRule ^(.*?)/?$ $1.html [L]
 RewriteCond #%{REQUEST_FILENAME} -f [NC]
 RewriteRule ^(.*?)/?$ #$1 [L]\
 
-<Files header.php>
-    Order Allow,Deny
-    Deny from all
-</Files>
-
-<Files footer.php>
-    Order Allow,Deny
-    Deny from all
-</Files>
-
 <Files admin.php>
     Order Allow,Deny
     Deny from all

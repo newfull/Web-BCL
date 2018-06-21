@@ -3,6 +3,7 @@
 </head>
 <?php include_once("header.php");?>
 
+<div class="wrapper-cart">
 <?php
 $create_content = '';
 if(isEmpty($cart_details)){
@@ -50,18 +51,18 @@ else
             </div>
 
             <div class="cart-item-middle">
-              <p class="current-price">'.number_format($cart_details[$i]['SoLuong']*$cart_details[$i]['Gia'],0).'₫</p>
+              <p class="current-price" id="price'.($cart_details[$i]['Ma']).'">'.number_format(get_cart_details_val($cart_details[$i]),0).'₫</p>
             </div>
 
             <div class="cart-item-right">
               <div class="input-group spinner">
-                <input type="text" class="form-control" value="'.($cart_details[$i]['SoLuong']).'">
-                <div class="input-group-btn-vertical">
-                  <button class="btn btn-default" type="button"><i class="fa fa-caret-up"></i></button>
-                  <button class="btn btn-default" type="button"><i class="fa fa-caret-down"></i></button>
+                <input type="text" id="val'.($cart_details[$i]['Ma']).'" class="form-control" value="'.($cart_details[$i]['SoLuong']).'" disabled>
+                <div class="input-group-btn-vertical" id="'.($cart_details[$i]['Ma']).'">
+                  <button class="btn btn-default" type="button" onclick=\'change_quant('.json_encode($cart_details[$i]).',1)\'><i class="fa fa-caret-up"></i></button>
+                  <button class="btn btn-default" type="button" onclick=\'change_quant('.json_encode($cart_details[$i]).',-1)\'><i class="fa fa-caret-down"></i></button>
                 </div>
               </div>
-              <span class="btn-delete">
+              <span class="btn-delete" onclick=\'delete_cart_detail('.json_encode($cart_details[$i]).')\'>
                 <i class="glyphicon glyphicon-trash"></i>
               </span>
             </div>
@@ -120,6 +121,6 @@ else
 </div>
 <?}
 ?>
-
+</div>
 
 <?php include_once("footer.php");?>

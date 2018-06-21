@@ -2485,6 +2485,10 @@ margin-bottom: 5px;
   margin-top: -25px;
 }
 
+.cart-item-right .btn-delete:hover{
+  text-shadow: 0 0 3px #FF0000;
+}
+
 .list-header {
     width: 100%;
     height: 40px;
