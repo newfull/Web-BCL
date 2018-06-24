@@ -252,21 +252,11 @@ nav.nav-header {
 }
 
 .n-vertical.top {
-  top: -13px
+  top: -13.5px
 }
 
 .n-vertical.bottom {
-  bottom: -14px
-}
-
-@media (max-width: 991px) {
-  .n-vertical.top {
-    top: -13.5px
-  }
-
-  .n-vertical.bottom {
-    bottom: -13.5px
-  }
+  bottom: -13.5px
 }
 
 .n-vertical span {
@@ -468,7 +458,7 @@ input[type=radio   ]:not(old) + label{
 }
 
 input[type=radio]:not(old):checked + label{
-  background-position : 0 -48px;
+  background-position : 0 -24px;
 }
 
 .chkbox{
@@ -477,7 +467,7 @@ input[type=radio]:not(old):checked + label{
   color: #15608c;
 }
 
-#chkbox-label, #chkbox-agreement, #chkbox-email{
+#chkbox-label, #chkbox-agreement, #chkbox-email, #chkbox-not{
   padding-top: 10px;
   margin-left: 0px;
   font-size: 16px;
@@ -515,7 +505,7 @@ input[type=radio]:not(old):checked + label{
   transform: rotate(-45deg);
 }
 
-.chkbox label:hover::after {
+.chkbox label:hover:after {
   opacity: 0.5;
 }
 
@@ -1946,6 +1936,9 @@ margin-bottom: 5px;
   font-size: 16px;
   text-align: left;
   color: black;
+  height: 150px;
+  overflow-x: hidden;
+  overflow-y: scroll;
 }
 
 .userbox .username{
@@ -2485,7 +2478,7 @@ margin-bottom: 5px;
   margin-top: -25px;
 }
 
-.cart-item-right .btn-delete:hover{
+.cart-item-right .btn-delete i:hover{
   text-shadow: 0 0 3px #FF0000;
 }
 
@@ -2528,4 +2521,92 @@ margin-bottom: 5px;
 .btn-xem-menu{
   margin-top: 20px;
   width: 200px;
+}
+
+@media(min-width: 960px){
+   .user-sect-left-rev{
+     display: block;
+   }
+
+   .user-sect-right-rev{
+     display: block;
+   }
+}
+
+.user-sect a{
+  color: crimson;
+}
+
+.user-sect .active a{
+  color: white;
+  background-color: crimson !important;
+}
+
+.sect-title{
+  padding-left: 10px;
+  max-width: 500px;
+  height: 70px;
+  margin: 10px;
+}
+
+.sect-title h2{
+  font-weight: bold;
+  color: rgba(211,12,25,1);
+  font-size: 25px;
+}
+
+.contact-info address{
+  margin-left: 30%;
+}
+
+.contact-info address p{
+  font-size: 16px;
+}
+
+.contact-info address #bcl-name{
+  font-size: 18px;
+  font-weight: bold;
+}
+
+#liked .item-card {
+  width: 200px;
+  height: 200px;
+}
+#liked .item-card.open {
+  width: 200px;
+  height: 200px;
+}
+
+#liked .item-card .front-facing {
+  background: url("");
+  background-color: white;
+}
+
+#liked .item-card .front-facing .disp{
+  max-width: 200px;
+  max-height: 120px;
+}
+
+#liked .item-card .front-facing .title {
+  font-size: 16px;
+  margin-bottom: 6px;
+}
+
+#liked .item-card .price{
+  font-size: 18px;
+  padding-top: 4px;
+}
+
+#liked .item-card .back-facing .title {
+  font-size: 16px;
+}
+
+#liked .item-card .back-facing .details{
+  font-size: 13px;
+  height: 100px;
+}
+
+#user-chkbox-not,  #popup-user-chkbox-not{
+  margin-left: 50px;
+  margin-right: -30px;
 }

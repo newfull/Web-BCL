@@ -19,6 +19,18 @@ function scroll_to_top(){
   });
 }
 
+jQuery.fn.shake = function(intShakes, intDistance, intDuration) {
+    this.each(function() {
+        $(this).css("position","relative");
+        for (var x=1; x<=intShakes; x++) {
+        $(this).animate({left:(intDistance*-1)}, (((intDuration/intShakes)/4)))
+    .animate({left:intDistance}, ((intDuration/intShakes)/2))
+    .animate({left:0}, (((intDuration/intShakes)/4)));
+    }
+  });
+return this;
+};
+
 var stickyNavTop = $('#navbar').offset().top;
 var position = $(window).scrollTop();
 
@@ -92,6 +104,17 @@ function check_input_value_password() {
         }
     })
 }
+
+function AllowNumbersOnly(e) {
+    var code = (e.which) ? e.which : e.keyCode;
+    if (code > 31 && (code < 48 || code > 57)) {
+      e.preventDefault();
+    }
+}
+
+$('input[type="tel"]').keydown(function(event){
+  return AllowNumbersOnly(event);
+});
 
 function clear_modal(){
   $(".modal").on("hidden.bs.modal", function(){
@@ -176,52 +199,6 @@ function date_change(){
     });
 };
 
-function checkPhoneNumber() {
-    var flag = false;
-    var phone = $('#input').val().trim(); // ID của trường Số điện thoại
-    phone = phone.replace('(+84)', '0');
-    phone = phone.replace('+84', '0');
-    phone = phone.replace('0084', '0');
-    phone = phone.replace(/ /g, '');
-    if (phone != '') {
-        var firstNumber = phone.substring(0, 2);
-        if ((firstNumber == '09' || firstNumber == '08') && phone.length == 10) {
-            if (phone.match(/^\d{10}/)) {
-                flag = true;
-            }
-        } else if (firstNumber == '01' && phone.length == 11) {
-            if (phone.match(/^\d{11}/)) {
-                flag = true;
-            }
-        }
-    }
-    return flag;
-};
-
-function checkEmail() {
-    var email = document.getElementById('email');
-    var filter = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
-    if (!filter.test(email.value)) {
-             alert('Hay nhap dia chi email hop le.\nExample@gmail.com');
-             email.focus;
-             return false;
-    }
-    else{
-             alert('OK roi day, Email nay hop le.');
-    }
-}
-
-function validateNumber(event) {
-    var key = window.event ? event.keyCode : event.which;
-    if (event.keyCode === 8 || event.keyCode === 46) {
-        return true;
-    } else if ( key < 48 || key > 57 ) {
-        return false;
-    } else {
-        return true;
-    }
-};
-
 $('.carousel .vertical .item').each(function(){
   var next = $(this).next();
   if (!next.length) {
@@ -259,7 +236,7 @@ $('.modal').on('hidden.bs.modal', function () {
 $('#popup-login').on('shown.bs.modal', function(){
     if ($(window).width() < 620)
     {
-        location.href="/quan-ly";
+        location.href="/dang-nhap";
         return;
     }
 });
@@ -267,9 +244,17 @@ $('#popup-login').on('shown.bs.modal', function(){
 $('#popup-reg').on('shown.bs.modal', function(){
     if ($(window).width() < 620)
     {
-        location.href="/quan-ly";
+        location.href="/dang-ky";
         return;
     }
+});
+
+$('#popup-user').on('shown.bs.modal', function(){
+  if ($(window).width() < 620)
+  {
+      location.href="/quan-ly";
+      return;
+  }
 });
 
 $(document).click(function(event){
@@ -298,15 +283,18 @@ $('#login').submit(function(e){
 });
 
 $('.fn-logout').on("click", function(){
-  $.ajax({
+  var r = confirm("Bạn thật sự muốn đăng xuất?");
+  if (r == true) {
+    $.ajax({
       url:'../includes/logout.php',
       type:'post',
       success:function(response){
         $('#error-popup .modal-body').html(response);
         $('#error-popup').modal('show');
         setTimeout(function(){ window.location = "/"; },800);
-   }
-  });
+      }
+    });
+  }
 });
 
 function username_hover(){
@@ -364,7 +352,7 @@ function change_quant(cart_detail, val){
         item: cart_detail["Ma"],
         val: val
       },
-      complete: function (response) {
+      success: function () {
         $(".cart-details").load("./header.php .cart-details");
         $(".wrapper-cart").load("./gio-hang.php .wrapper-cart");
       }
@@ -385,7 +373,55 @@ function change_quant(cart_detail, val){
           },
           success: function () {
             $("#cart_number").load("./header.php #cart_number");
-            $(".cart-details").load("./header.php .cart-details");
+            focus_cart_box();
+
+            $(".cart-details .list-unstyled").load("./header.php .cart-details .list-unstyled");
+            $(".wrapper-cart").load("./gio-hang.php .wrapper-cart");
+          }
+        });
+      }
+    }
+}
+
+function change_combo_quant(cart_details_combo, val){
+  var id = "comboval"+cart_details_combo["Ma"];
+  var curval = parseInt($('.spinner #' + id).val(), 10);
+  console.log(curval);
+  if((curval > 1 && curval < 99) || (curval == 99 && val < 0) || (curval == 1 && val > 0)){
+    $.ajax({
+      cache: false,
+      type: "POST",
+      url:'./includes/functions.php',
+      data: {
+        funct: 'change_cart_details_combo_quant',
+        cart: cart_details_combo["Gio"],
+        combo: cart_details_combo["Ma"],
+        val: val
+      },
+      success: function () {
+        $(".cart-details").load("./header.php .cart-details");
+        $(".wrapper-cart").load("./gio-hang.php .wrapper-cart");
+      }
+    });
+  }else
+    if(curval == 1 && val < 0)
+    {
+      var r = confirm("Bạn muốn xoá sản phẩm này khỏi giỏ hàng?");
+      if (r == true) {
+        $.ajax({
+          cache: false,
+          type: "POST",
+          url:'./includes/functions.php',
+          data: {
+            funct: 'delete_cart_detail_combo',
+            cart: cart_details_combo["Gio"],
+            combo: cart_details_combo["Ma"]
+          },
+          success: function () {
+            $("#cart_number").load("./header.php #cart_number");
+            focus_cart_box();
+
+            $(".cart-details .list-unstyled").load("./header.php .cart-details .list-unstyled");
             $(".wrapper-cart").load("./gio-hang.php .wrapper-cart");
           }
         });
@@ -409,12 +445,217 @@ function delete_cart_detail(cart_detail){
       },
       success: function () {
         $("#cart_number").load("./header.php #cart_number");
-        $(".cart-details").load("./header.php .cart-details");
+        focus_cart_box();
+
+
+        $(".cart-details .list-unstyled").load("./header.php .cart-details .list-unstyled");
         $(".wrapper-cart").load("./gio-hang.php .wrapper-cart");
       }
     });
   }
 }
+
+function delete_cart_detail_combo(cart_detail_combo){
+  var id = "comboval"+cart_detail_combo["Ma"];
+
+  var r = confirm("Bạn muốn xoá sản phẩm " + cart_detail_combo["Ten"] + " khỏi giỏ hàng?");
+  if (r == true) {
+    $.ajax({
+      cache: false,
+      type: "POST",
+      url:'./includes/functions.php',
+      data: {
+        funct: 'delete_cart_detail_combo',
+        cart: cart_detail_combo["Gio"],
+        combo: cart_detail_combo["Ma"]
+      },
+      success: function () {
+        $("#cart_number").load("./header.php #cart_number");
+        focus_cart_box();
+
+        $(".cart-details .list-unstyled").load("./header.php .cart-details .list-unstyled");
+        $(".wrapper-cart").load("./gio-hang.php .wrapper-cart");
+      }
+    });
+  }
+}
+
+function likeitem(accid, itemid){
+  $.ajax({
+    cache: false,
+    type: "POST",
+    url:'./includes/functions.php',
+    data: {
+      funct: 'like_item',
+      account: accid,
+      item: itemid
+    },
+    success: function (response) {
+      var btn = "";
+
+      if(response == "0")
+      btn = "./images/btn-liked.png";
+      else
+      btn = "./images/btn-like.png";
+
+      $("#item"+itemid).attr("src", btn);
+      $("#item"+itemid+"-2").attr("src", btn);
+
+      $(".liked-items").load("./quan-ly.php .liked-items");
+    }
+  });
+}
+
+function likecombo(accid, comboid){
+  $.ajax({
+    cache: false,
+    type: "POST",
+    url:'./includes/functions.php',
+    data: {
+      funct: 'like_combo',
+      account: accid,
+      combo: comboid
+    },
+    success: function (response) {
+      var btn = "";
+
+      if(response == "0")
+      btn = "./images/btn-liked.png";
+      else
+      btn = "./images/btn-like.png";
+
+      $("#combo"+comboid).attr("src", btn);
+      $("#combo"+comboid+"-2").attr("src", btn);
+
+      $(".liked-combos").load("./quan-ly.php .liked-combos");
+    }
+  });
+}
+
+function addItemtoCart(cartid, itemid){
+  $.ajax({
+    cache: false,
+    type: "POST",
+    url:'./includes/functions.php',
+    data: {
+      funct: 'add_item_to_cart',
+      cart: cartid,
+      item: itemid
+    },
+    success: function () {
+      $("#cart_number").load("./header.php #cart_number");
+      focus_cart_box();
+
+      $(".cart-details .list-unstyled").load("./header.php .cart-details .list-unstyled");
+      $(".wrapper-cart").load("./gio-hang.php .wrapper-cart");
+    }
+  });
+}
+
+function addCombotoCart(cartid, comboid){
+  $.ajax({
+    cache: false,
+    type: "POST",
+    url:'./includes/functions.php',
+    data: {
+      funct: 'add_combo_to_cart',
+      cart: cartid,
+      combo: comboid
+    },
+    success: function () {
+      $("#cart_number").load("./header.php #cart_number");
+      focus_cart_box();
+
+      $(".cart-details .list-unstyled").load("./header.php .cart-details .list-unstyled");
+      $(".wrapper-cart").load("./gio-hang.php .wrapper-cart");
+    }
+  });
+}
+
+function focus_cart_box(){
+  backupcolor = $("#cart_number").css("color");
+  backupweight = $("#cart_number").css("font-weight");
+
+  $("#cart_number, .text-cart, .fa-shopping-cart").css({"color": "red","font-weight": "bold"});
+
+  setTimeout(function(){
+    $("#cart_number, .text-cart, .fa-shopping-cart").css({"color": backupcolor,"font-weight": backupweight});
+  },1000);
+}
+
+$(window).focus(function() {
+  $("#cart_number").load("./header.php #cart_number");
+  $(".cart-details .list-unstyled").load("./header.php .cart-details .list-unstyled");
+  $(".wrapper-cart").load("./gio-hang.php .wrapper-cart");
+
+  content = '.sect-content';
+  id = $(content).parent().attr('id');
+  switch(id){
+    case 'user-sect':
+      current_tab = $('.sect-content ul li.active a').attr('href');
+      switch(current_tab){
+        case '#liked':
+          $(".liked-items").load("./quan-ly.php .liked-items-content");
+          $(".liked-combos").load("./quan-ly.php .liked-combos-content");
+          break;
+        case '#his':
+          $(".wrapper-his").load("./quan-ly.php .wrapper-his");
+          break;
+        case '#user':
+
+          break;
+        case '#eadd':
+
+          break;
+      }
+      break;
+    case 'info-sect':
+       $(content).load("./gioi-thieu.php .sect-content");
+       break;
+     case 'blog-sect':
+       $(content).load("./khuyen-mai.php .sect-content");
+       break;
+   }
+
+});
+
+$('a[data-toggle="pill"]').on('shown.bs.tab', function (e) {
+  current_tab = $(this).attr('href');
+  switch(current_tab){
+    case '#liked':
+      $(".liked-items").load("./quan-ly.php .liked-items-content");
+      $(".liked-combos").load("./quan-ly.php .liked-combos-content");
+      break;
+    case '#his':
+      $(".wrapper-his").load("./quan-ly.php .wrapper-his");
+      break;
+    case '#user':
+
+      break;
+    case '#eadd':
+
+      break;
+  }
+});
+
+$('a[data-toggle="pill"]').click(function() {
+  current_tab = $(this).attr('href');
+  switch(current_tab){
+    case '#liked':
+      $(".liked-items").load("./quan-ly.php .liked-items-content");
+      $(".liked-combos").load("./quan-ly.php .liked-combos-content");
+      break;
+    case '#his':
+      $(".wrapper-his").load("./quan-ly.php .wrapper-his");
+      break;
+    case '#user':
+
+      break;
+    case '#eadd':
+
+      break;
+    }
+});
 
 $(document).ready(function(e){
     SmoothScroll({ stepSize: 100 });
@@ -423,13 +664,11 @@ $(document).ready(function(e){
     navbar_hover();
     username_hover();
     cart_hover();
-    check_input_value_email();
-    check_input_value_password();
     clear_modal();
     load_days();
     date_change();
-    $('[id="phonenumber"]').keypress(validateNumber);
-
+    check_input_value_email();
+    check_input_value_password();
 
     $('.carousel-bcl').slick({
       prevArrow: '.glyphicon-chevron-left',
@@ -459,5 +698,4 @@ $(document).ready(function(e){
         settings: { slidesToShow: 1}
       }]
     });
-
 });

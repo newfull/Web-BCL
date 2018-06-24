@@ -1,0 +1,76 @@
+
+@import url("//fonts.googleapis.com/css?family=Kaushan+Script&text=!");
+
+.container-about-us {
+  min-height: 450px;
+  height: 100vh;
+  margin: 0;
+}
+
+.container-about-us .stage {
+  height: 300px;
+  width: 500px;
+  top: 10%; right: 0; bottom: 0; left: 0;
+  perspective: 9999px;
+  transform-style: preserve-3d;
+}
+
+.container-about-us .layer {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  transform-style: preserve-3d;
+  animation: ಠ_ಠ 5s infinite alternate ease-in-out -7.5s;
+  animation-fill-mode: forwards;
+  transform: rotateY(40deg) rotateX(33deg) translateZ(0);
+}
+
+.container-about-us .layer:after {
+  font: 135px/0.9 'Courier';
+  content: 'ABOUT\Aó‿ó US';
+  white-space: pre;
+  text-align: center;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  font-weight: bold;
+  color: darken(#fff, 4%);
+  letter-spacing: -2px;
+  text-shadow: 4px 0 10px hsla(0, 0%, 0%, .13);
+}
+
+$i: 1;
+$NUM_LAYERS: 20;
+@for $i from 1 through $NUM_LAYERS {
+  .container-about-us .layer:nth-child(#{$i}):after{
+    transform: translateZ(($i - 1) * -1.5px);
+  }
+}
+
+.container-about-us .layer:nth-child(n+#{round($NUM_LAYERS/2)}):after {
+  -webkit-text-stroke: 3px hsla(0, 0%, 0%, .25);
+}
+
+.container-about-us .layer:nth-child(n+#{round($NUM_LAYERS/2 + 1)}):after {
+  -webkit-text-stroke: 15px crimson;
+  text-shadow: 6px 0 6px darken(crimson,35%),
+               5px 5px 5px darken(crimson,40%),
+               0 6px 6px darken(crimson,35%);
+}
+
+.container-about-us .layer:nth-child(n+#{round($NUM_LAYERS/2 + 2)}):after {
+  -webkit-text-stroke: 15px darken(crimson, 10%);
+}
+
+.container-about-us .layer:last-child:after {
+  -webkit-text-stroke: 17px hsla(0, 0%, 0%, .1);
+}
+
+.container-about-us .layer:first-child:after{
+  color: #fff;
+  text-shadow: none;
+}
+
+@keyframes ಠ_ಠ {
+  100% { transform: rotateY(-40deg) rotateX(-43deg); }
+}

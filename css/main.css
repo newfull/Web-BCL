@@ -9,10 +9,14 @@
 @import "bootstrap-select.min.css";
 @import "jquery.mobile.custom.structure.min.css";
 @import "slick.css";
+@import "bootstrap.vertical-tabs.min.css";
+@import "custom.css";
 
 @import url(http://fonts.googleapis.com/css?family=Roboto:400,300,400italic,500,700,100);
 @import url(http://fonts.googleapis.com/css?family=Open+Sans:400,800,300,600,700);
 @import url(http://fonts.googleapis.com/css?family=Abel);
+@import url(http://fonts.googleapis.com/css?family=Pacifico&text=Pure);
+@import url(https://fonts.googleapis.com/css?family=Righteous);
 
 body {
   font-family: 'Cambria', sans-serif;
@@ -635,11 +639,8 @@ h2.title:before{
 	position: absolute;
 	background: #fff;
 	bottom: -6px;
-	width: 220px;
-	height: 30px;
 	z-index: -1;
 	left: 50%;
-	margin-left: -110px;
 }
 
 .category-products .panel {
@@ -771,7 +772,7 @@ h2.title:before{
 
 
 h2.title {
-  color: #FE980F;
+  color: crimson;
   font-family: 'Roboto', sans-serif;
   font-size: 18px;
   font-weight: 700;

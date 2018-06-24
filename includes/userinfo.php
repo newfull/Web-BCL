@@ -4,6 +4,7 @@ require_once 'functions.php';
 class bclUser{
   private $conn;
   private $iAccountId = "";
+  private $iAccountUser = "";
   private $sAccountName = "";
   private $sAccountEmail = "";
   private $sAccountPhone = "";
@@ -25,13 +26,14 @@ class bclUser{
       $row = user_info($this->conn, $id)[0];
       $this->setID($id);
       $this->setName($row['ACCOUNTNAME']);
+      $this->setUser($row['ACCOUNTUSER']);
       $this->setLiked($row['ACCOUNTLIKEDITEMS']);
       $this->setComboLiked($row['ACCOUNTLIKEDCOMBOS']);
       $this->setEmail($row['ACCOUNTEMAIL']);
       $this->setPhone($row['ACCOUNTPHONE']);
       $this->setSex($row['ACCOUNTSEX']);
       $this->setAdd($row['ACCOUNTADD']);
-      $this->setDOB($row['ACCOUNTDOB']);
+      $this->setDOB(strtotime($row['ACCOUNTDOB']));
       $this->setNoti($row['ACCOUNTNOTI']);
       $this->setCart(init_cart($this->conn, $id));
     }
@@ -41,7 +43,10 @@ class bclUser{
       $this->iAccountId = $val;
     }
     private function setName($val) {
-      $this->sAccountName = shorten_string($val);
+      $this->sAccountName = $val;
+    }
+    private function setUser($val) {
+      $this->sAccountUser = $val;
     }
     private function setEmail($val) {
       $this->sAccountEmail = $val;
@@ -77,6 +82,9 @@ class bclUser{
     }
     public function getName() {
       return $this->sAccountName;
+    }
+    public function getUser() {
+      return $this->sAccountUser;
     }
     public function getEmail() {
       return $this->sAccountEmail;
@@ -115,6 +123,9 @@ class bclUser{
       case 'sAccountName':
         return $this->setName($value);
         break;
+      case 'sAccountUser':
+        return $this->setUser($value);
+        break;
       case 'sAccountEmail':
         return $this->setEmail($value);
         break;
@@ -152,6 +163,9 @@ class bclUser{
         break;
       case 'sAccountName':
         return $this->getName();
+        break;
+      case 'sAccountUser':
+        return $this->getUser();
         break;
       case 'sAccountEmail':
         return $this->getEmail();

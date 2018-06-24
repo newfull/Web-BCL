@@ -4,14 +4,22 @@
 <?php include_once("header.php");?>
 <?php $tabs_name = item_category_list($conn); ?>
 
-<div class="thucdon-tabs">
+<div class="container container-sect menu-sect col-xs-12 col-lg-12" id="menu-sect">
+<div class="row sect-title">
+  <div class="col-lg-2">
+  </div>
+  <div class="col-lg-10">
+    <h2><i class="glyphicon glyphicon-cutlery"></i> THỰC ĐƠN</h2>
+  </div>
+</div>
+<div class="thucdon-tabs sect-content">
 <div class="container">
     <div class="row">
         <div class="col-xs-12">
             <div class="tab" role="tabpanel">
 
                 <!-- Nav tabs -->
-                <ul class="nav nav-tabs" role="tablist">
+                <ul class="nav nav-tabs nav-tabs-item-cat" role="tablist">
                   <li role='presentation'><a href='#Section0' role='tab' data-toggle='tab'></i>Combo</a></li>
                   <?php
                   $create_tab_content = "";
@@ -47,10 +55,9 @@
                     ?>
                   </div>
                 <!-- Tab panes -->
-                <div class="tab-content tabs">
-                  <div role='tabpanel' class='tab-pane fade in' id='Section0'>
+                <div class="tab-content tabs menu-content">
                     <?php
-                     $create_tab_content = "";
+                     $create_tab_content = "<div role='tabpanel' class='tab-pane fade in' id='Section0'>";
                      $list = combo_list($conn);
                      if(isEmpty($list)) $num = 0;
                      else $num = count($list);
@@ -58,18 +65,32 @@
                        $create_tab_content .= "<div class='item-card inline-block'><div class='front-facing'>";
                        $create_tab_content .= "<img src='./images/items/".($list[$j]['DuongDan'])."' onerror='this.src=\"../images/not-found.png\"' class='disp img-responsive'>";
                        $create_tab_content .= "<p class='title'>".($list[$j]['Ten'])."</p><p class='price'>".number_format($list[$j]['Gia'], 0)." VNĐ"."</p>";
-                       $create_tab_content .= "<img onclick='likecombo(".($list[$j]['Ma']).")' src='./images/";
-                       if(check_exists($current_user->getComboLiked(), $list[$j]['Ma']))
-                         $create_tab_content .= "btn-liked.png";
+                       if(!empty($_SESSION['current'])){
+                         $create_tab_content .= "<img onclick='likecombo(".$current_user->getID().",".($list[$j]['Ma']).")' src='./images/";
+                         if(check_exists($current_user->getComboLiked(), $list[$j]['Ma']))
+                           $create_tab_content .= "btn-liked.png";
+                         else
+                           $create_tab_content .= "btn-like.png";
+                         $create_tab_content .= "' class='btn-like img-responsive' id='combo".($list[$j]['Ma'])."'>";
+                         $create_tab_content .= "<img onclick='addCombotoCart(".$current_user->getCart().",".($list[$j]['Ma']).")' src='./images/add-to-cart-48.png' class='btn-add-cart img-responsive'>";
+                       }
                        else
-                         $create_tab_content .= "btn-like.png";
-                       $create_tab_content .= "' class='btn-like img-responsive'>";
-                       $create_tab_content .= "<img onclick='addtoCart(".($list[$j]['Ma']).")' src='./images/add-to-cart-48.png' class='btn-add-cart img-responsive'>";
+                        $create_tab_content .= "<a href='#popup-login' data-toggle='modal'><img src='./images/add-to-cart-48.png' class='btn-add-cart img-responsive'></a>";
+
                        $create_tab_content .= "</div>";
                        $create_tab_content .= "<div class='back-facing'>";
                        $create_tab_content .= "<p class='title'>".($list[$j]['Ten'])."</p><p class='price'>".number_format($list[$j]['Gia'], 0)." VNĐ"."</p>";
-                       $create_tab_content .= "<img onclick='likeitem(".($list[$j]['Ma']).")' src='./images/btn-like.png' class='btn-like img-responsive'>";
-                       $create_tab_content .= "<img onclick='addtoCart(".($list[$j]['Ma']).")' src='./images/add-to-cart-48.png' class='btn-add-cart img-responsive'>";
+                       if(!empty($_SESSION['current'])){
+                         $create_tab_content .= "<img onclick='likecombo(".$current_user->getID().",".($list[$j]['Ma']).")' src='./images/";
+                         if(check_exists($current_user->getComboLiked(), $list[$j]['Ma']))
+                           $create_tab_content .= "btn-liked.png";
+                         else
+                           $create_tab_content .= "btn-like.png";
+                         $create_tab_content .= "' class='btn-like img-responsive' id='combo".($list[$j]['Ma'])."-2'>";
+                         $create_tab_content .= "<img onclick='addCombotoCart(".$current_user->getCart().",".($list[$j]['Ma']).")' src='./images/add-to-cart-48.png' class='btn-add-cart img-responsive'>";
+                       }
+                       else
+                        $create_tab_content .= "<a href='#popup-login' data-toggle='modal'><img src='./images/add-to-cart-48.png' class='btn-add-cart img-responsive'></a>";
 
                        $details = combo_details($conn, $list[$j]['Ma']);
                        if(isEmpty($details)) $lines = 0;
@@ -82,10 +103,10 @@
 
                      $create_tab_content .= "</div>";
                      $create_tab_content .= "</div></div>";
-}
+                    }
+                      $create_tab_content .= "</div>";
                      echo $create_tab_content;
                      ?>
-                </div>
 
                   <?php
                   $create_tab_content = "";
@@ -99,18 +120,33 @@
                       $create_tab_content .= "<div class='item-card inline-block'><div class='front-facing'>";
                       $create_tab_content .= "<img src='./images/items/".($list[$j]['DuongDan'])."' onerror='this.src=\"../images/not-found.png\"' class='disp img-responsive'>";
                       $create_tab_content .= "<p class='title'>".($list[$j]['Ten'])."</p><p class='price'>".number_format($list[$j]['Gia'], 0)." VNĐ"."</p>";
-                      $create_tab_content .= "<img onclick='likeitem(".($list[$j]['Ma']).")' src='./images/";
-                      if(check_exists($current_user->getLiked(), $list[$j]['Ma']))
-                        $create_tab_content .= "btn-liked.png";
+                      if(!empty($_SESSION['current'])){
+                        $create_tab_content .= "<img onclick='likeitem(".$current_user->getID().",".($list[$j]['Ma']).")' src='./images/";
+                        if(check_exists($current_user->getLiked(), $list[$j]['Ma']))
+                          $create_tab_content .= "btn-liked.png";
+                        else
+                          $create_tab_content .= "btn-like.png";
+                        $create_tab_content .= "' class='btn-like img-responsive' id='item".($list[$j]['Ma'])."'>";
+                        $create_tab_content .= "<img onclick='addItemtoCart(".$current_user->getCart().",".($list[$j]['Ma']).")' src='./images/add-to-cart-48.png' class='btn-add-cart img-responsive'>";
+                      }
                       else
-                        $create_tab_content .= "btn-like.png";
-                      $create_tab_content .= "' class='btn-like img-responsive'>";
-                      $create_tab_content .= "<img onclick='addtoCart(".($list[$j]['Ma']).")' src='./images/add-to-cart-48.png' class='btn-add-cart img-responsive'>";
+                       $create_tab_content .= "<a href='#popup-login' data-toggle='modal'><img src='./images/add-to-cart-48.png' class='btn-add-cart img-responsive'></a>";
+
                       $create_tab_content .= "</div>";
                       $create_tab_content .= "<div class='back-facing'>";
                       $create_tab_content .= "<p class='title'>".($list[$j]['Ten'])."</p><p class='price'>".number_format($list[$j]['Gia'], 0)." VNĐ"."</p>";
-                      $create_tab_content .= "<img onclick='likeitem(".($list[$j]['Ma']).")' src='./images/btn-like.png' class='btn-like img-responsive'>";
-                      $create_tab_content .= "<img onclick='addtoCart(".($list[$j]['Ma']).")' src='./images/add-to-cart-48.png' class='btn-add-cart img-responsive'>";
+                      if(!empty($_SESSION['current'])){
+                        $create_tab_content .= "<img onclick='likeitem(".$current_user->getID().",".($list[$j]['Ma']).")' src='./images/";
+                        if(check_exists($current_user->getLiked(), $list[$j]['Ma']))
+                          $create_tab_content .= "btn-liked.png";
+                        else
+                          $create_tab_content .= "btn-like.png";
+                        $create_tab_content .= "' class='btn-like img-responsive' id='item".($list[$j]['Ma'])."-2'>";
+                        $create_tab_content .= "<img onclick='addItemtoCart(".$current_user->getCart().",".($list[$j]['Ma']).")' src='./images/add-to-cart-48.png' class='btn-add-cart img-responsive'>";
+                      }
+                      else
+                       $create_tab_content .= "<a href='#popup-login' data-toggle='modal'><img src='./images/add-to-cart-48.png' class='btn-add-cart img-responsive'></a>";
+
                       $create_tab_content .= "<div class='details'><p>► ".($list[$j]['Ten'])."</p></div>";
                       $create_tab_content .= "</div></div>";
                     }
@@ -134,7 +170,7 @@
     </div>
 </div>
 </div>
-
+</div>
 <?php include_once("footer.php");?>
 
 <?php
@@ -144,6 +180,6 @@ if($conn != "NULL"){
   if($selection != "combo")
     $section_id = array_search($selection, array_column($tabs_name, 'ITEM_CATEGORYALIAS')) + 1;
 
-  echo "<script>$('.nav-tabs li:eq($section_id) a').tab('show');</script>";
+  echo "<script>$('.nav-tabs-item-cat li:eq($section_id) a').tab('show');</script>";
 }
 ?>

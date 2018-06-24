@@ -5,10 +5,12 @@ require_once("./includes/functions.php");
 require_once("./includes/userinfo.php");
 
 $cart_details = null;
+$cart_details_combo = null;
 $current_user = new bclUser($conn);
 if(!empty($_SESSION['current'])){
   $current_user->init_info($_SESSION['current']);
   $cart_details = cart_details($conn, $current_user->getCart());
+  $cart_details_combo = cart_details_combo($conn, $current_user->getCart());
 }
 ?>
 
@@ -81,7 +83,7 @@ if(!empty($_SESSION['current'])){
                     <i class='fa fa-lock'></i> Đăng nhập</a>
                     <a href='#popup-reg' data-toggle='modal' id='btnReg' class='inline-block' ><i class='fa fa-plus'></i> Đăng ký</a>";
                   } else {
-                    $create_content = "<a href='/thanh-vien' class='username inline-block'><i class='glyphicon glyphicon-user'></i> ".$current_user->getName()."</a>
+                    $create_content = "<a href='/quan-ly' class='username inline-block'><i class='glyphicon glyphicon-user'></i> ".shorten_string($current_user->getName())."</a>
                     <a href='#' class='inline-block btn-logout fn-logout'>Đăng xuất</a>";
                    }
                     echo $create_content;
@@ -89,8 +91,8 @@ if(!empty($_SESSION['current'])){
 
                     <div id="user-info" class="display-none">
                       <div class="list-group">
-                        <a href="/quan-ly?sec=info" class="list-group-item"><i class="glyphicon glyphicon-user"></i> Thông tin tài khoản</a>
-                        <a href="/quan-ly?sec=his" class="list-group-item"><i class="glyphicon glyphicon-repeat"></i> Lịch sử giao dịch</a>
+                        <a href="/quan-ly" class="list-group-item"><i class="glyphicon glyphicon-user"></i> Thông tin tài khoản</a>
+                        <a href="/quan-ly?sec=his" class="list-group-item"><i class="glyphicon glyphicon-repeat"></i> Lịch sử mua hàng</a>
                         <a href="/quan-ly?sec=liked" class="list-group-item"><i class="glyphicon glyphicon-thumbs-up"></i> Món ăn yêu thích</a>
                         <a href="#" class="list-group-item fn-logout"><i class="glyphicon glyphicon-log-out"></i> Đăng xuất</a>
                       </div>
@@ -135,15 +137,13 @@ if(!empty($_SESSION['current'])){
               <ul class="menu">
                 <li><a href="/thuc-don/ga" class="active">Thực đơn</a></li>
                 <li><a href="/khuyen-mai">Tin tức</a></li>
-                <li><a href=
-                  <?
+                <li><a href=<?
                   $create_content = "";
-                  if(!empty($_SESSION['current'])) $create_content = '/thanh-vien';
+                  if(!empty($_SESSION['current'])) $create_content = '/quan-ly';
                   else $create_content = '"#popup-login" data-toggle="modal"';
                   echo $create_content;
-                  ?>
-                  >Thành viên</a></li>
-                <li><a href="/lien-he">Giới thiệu</a></li>
+                  ?>>Tài khoản</a></li>
+                <li><a href="/gioi-thieu">Giới thiệu</a></li>
               </ul>
             </div>
             <div class="carousel-bcl">
@@ -156,13 +156,13 @@ if(!empty($_SESSION['current'])){
                 <div class="item">
                   <a href=<?
                   $create_content = "";
-                  if(!empty($_SESSION['current'])) $create_content = '/thanh-vien';
+                  if(!empty($_SESSION['current'])) $create_content = '/quan-ly';
                   else $create_content = '"#popup-login" data-toggle="modal"';
                   echo $create_content;
-                  ?>>Thành viên</a>
+                  ?>>Tài khoản</a>
                 </div>
                 <div class="item">
-                  <a href="/lien-he">Giới thiệu</a>
+                  <a href="/gioi-thieu">Giới thiệu</a>
                 </div>
             </div>
           </div>
@@ -176,7 +176,22 @@ if(!empty($_SESSION['current'])){
               <a href="/gio-hang">
                 <i class="fa fa-shopping-cart"></i>
                 <span class="text-cart"> Giỏ hàng</span>
-                <span id="cart_number"><?php if(!isEmpty($cart_details)) echo '('.count($cart_details).')'; else echo '(0)'; ?></span>
+                <span id="cart_number">
+                  <?php
+                  if((isEmpty($cart_details))&&(isEmpty($cart_details_combo)))
+                    echo '(0)';
+                  else{
+                    if(isEmpty($cart_details_combo))
+                       echo '('.count($cart_details).')';
+                    else
+                      if(isEmpty($cart_details))
+                         echo '('.count($cart_details_combo).')';
+                      else{
+                        $cart_length = count($cart_details_combo)+count($cart_details);
+                        echo '('.$cart_length.')';
+                      }
+                  }
+                  ?></span>
               </a>
             </div>
 
@@ -185,18 +200,40 @@ if(!empty($_SESSION['current'])){
       <!-- /Navbar Header Body -->
 
       <div class='cart-details display-none'>
-      <?php
-      $create_content = "
         <button class='btn btn-xs btn-danger pull-right close-cart-box'>X</button>
         <a href='./gio-hang' data-toggle='tooltip' title='Đi tới giỏ hàng'><h1>Giỏ hàng</h1></a>
-        <ul class='list-unstyled'>";
+        <ul class='list-unstyled'>
+      <?php
+      $create_content = "";
 
-
-      if(isEmpty($cart_details)){
+      if((isEmpty($cart_details))&&(isEmpty($cart_details_combo))){
         $create_content .= '<img src="./images/empty-cart-icon.png" class="empty-cart img-responsive"/>';
         $create_content .= '<h2>Chưa có sản phẩm nào</h2>';
       }
       else
+      {
+        if(!isEmpty($cart_details_combo)){
+        for($i = 0; $i < count($cart_details_combo); $i++)
+          $create_content .= '
+                <li>
+                  <span class="item" data-toggle="tooltip" title="'.$cart_details_combo[$i]['Ten'].'">
+                    <span class="item-left">
+                        <img src="./images/items/'.($cart_details_combo[$i]['DuongDan']).'"
+                        onerror="this.src=\'../images/not-found.png\'"
+                        class="disp img-responsive" alt="" />
+                        <span class="item-info">
+                             <span class="item-name">'.($cart_details_combo[$i]['Ten']).'</span>
+                             <span class="item-quant">Số lượng: '.($cart_details_combo[$i]['SoLuong']).'</span>
+                             <span class="item-price">₫'.number_format($cart_details_combo[$i]['SoLuong']*$cart_details_combo[$i]['Gia'],0).'</span>
+                        </span>
+                    </span>
+                    <span class="item-right">
+                        <button class="btn btn-xs btn-danger pull-right" onclick=\'delete_cart_detail_combo('.json_encode($cart_details_combo[$i]).')\'>X</button>
+                    </span>
+                </span>
+              </li>';
+        }
+        if(!isEmpty($cart_details)){
         for($i = 0; $i < count($cart_details); $i++)
           $create_content .= '
                 <li>
@@ -216,10 +253,11 @@ if(!empty($_SESSION['current'])){
                     </span>
                 </span>
               </li>';
-
-        $create_content.= "</ul>";
+          }
+        }
         echo $create_content;
         ?>
+        </ul>
       </div>
     </div>
     <!-- /Header Body -->
@@ -250,7 +288,6 @@ if(!empty($_SESSION['current'])){
           </div>
 
           <div class="modal-body">
-
             <div id="signin-panel" class="tab-content">
               <div class="tab-pane fade active in" id="signin">
               <form id='login' action='' method='post' accept-charset='UTF-8'>
@@ -435,13 +472,13 @@ if(!empty($_SESSION['current'])){
                     </div>
                     <div class="col-xs-1"></div>
                     <div class="col-xs-2">
-                      <select class="date_day"></select>
+                      <select class="date_day" name="date-day"></select>
                     </div>
                     <div class="col-xs-2 ">
-                      <select class="date_month"></select>
+                      <select class="date_month" name="date-month"></select>
                     </div>
                     <div class="col-xs-3">
-                      <select class="date_year"></select>
+                      <select class="date_year" name="date-year"></select>
                     </div>
                   </div>
 
@@ -475,7 +512,7 @@ if(!empty($_SESSION['current'])){
                       <label class="nhan">Điện thoại <imp>(*)</imp>: </label>
                     </div>
                     <div class="col-xs-8">
-                      <input id="phonenumber" class="form-control" name="phonenumber" type="text" maxlength="11" required="">
+                      <input id="phonenumber" class="form-control" name="phonenumber" type="tel" maxlength="11" required="">
                     </div>
                   </div>
 
@@ -588,35 +625,6 @@ if(!empty($_SESSION['current'])){
     </div>
   </div>
   <!-- /Popup Terms&Conditions - Modal -->
-
-  <!-- Popup Forgot Password - Modal -->
-  <div class="modal fade bs-modal-sm" id="popup-forgotpass" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-sm">
-      <div class="modal-content">
-        <div class="popup-wap clearfix">
-          <div class="modal-header">
-            <div class="btn-close" data-dismiss="modal"></div>
-            <div class="form-group text-center">
-              <div class="avatar-login inline-block">
-                <img src="" class="avatar img-responsive">
-              </div>
-              <div class="title-login inline-block">Quên mật khẩu</div>
-            </div>
-          </div>
-
-          <div class="modal-body">
-            <div id="signup-panel" class="tab-content">
-              <div class="tab-pane fade active in" id="signup">
-                <div class="content">
-                              </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!-- /Popup Forgot Password - Modal -->
 
   <!-- Popup Notfications/Error - Modal -->
   <div class="modal fade" id="error-popup" aria-hidden="true">

@@ -80,7 +80,6 @@
 						<div class="social-icons">
 							<ul class="nomargin">
 								<a href="#"><i class="fa fa-facebook-square fa-3x social-fb" id="social"></i></a>
-								<a href="#"><i class="fa fa-twitter-square fa-3x social-tw" id="social"></i></a>
 								<a href="#"><i class="fa fa-google-plus-square fa-3x social-gp" id="social"></i></a>
 							</ul>
 						</div>
@@ -88,7 +87,6 @@
 					<ul class="insset-footer fright">
 						<li><a href="/gioi-thieu">Giới thiệu</a></li>
 						<li><a href="/khuyen-mai">Tin tức</a></li>
-						<li><a href="/gioi-thieu?ref=1">Liên hệ</a></li>
 					</ul>
 				</div>
 			</div>
