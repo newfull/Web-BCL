@@ -19,6 +19,27 @@ function scroll_to_top(){
   });
 }
 
+function clear_log(){
+  console.API;
+
+  if (typeof console._commandLineAPI !== 'undefined') {
+      console.API = console._commandLineAPI; //chrome
+  } else if (typeof console._inspectorCommandLineAPI !== 'undefined') {
+      console.API = console._inspectorCommandLineAPI; //Safari
+  } else if (typeof console.clear !== 'undefined') {
+      console.API = console;
+  }
+
+  console.API.clear();
+}
+
+//var timerID = setInterval(function() { clear_log(); }, 1 * 1000);
+
+function toggleSidenav() {
+  document.body.classList.toggle('sidenav-active');
+  document.body.classList.toggle('noscroll');
+}
+
 jQuery.fn.shake = function(intShakes, intDistance, intDuration) {
     this.each(function() {
         $(this).css("position","relative");
@@ -37,7 +58,7 @@ var position = $(window).scrollTop();
 function navbar_movealong(){
   $(window).scroll(function() {
     var scroll = $(window).scrollTop();
-
+    var height = $(document).height();
     //navbar chạy theo scroll
     if (scroll > stickyNavTop) {
         $('#navbar').addClass('navbar-fixed-top');
@@ -312,7 +333,7 @@ function username_hover(){
 function cart_hover(){
   var timeoutId;
   $('.text-cart').on("mouseenter", function(){
-    $('.cart-details').css("left", $(this).offset().left-100);
+    $('.cart-details').css("left", $(this).offset().left-150);
     if($(window).scrollTop() < 112){
       $('.cart-details').css("top", $('#navbar').offset().top-$(window).scrollTop()+40);
     }
@@ -335,7 +356,7 @@ function cart_hover(){
 };
 
 $('.close-cart-box').on("click", function(){
-  $('.cart-details').fadeOut(1000);
+  $('.cart-details').hide();
 });
 
 function change_quant(cart_detail, val){
@@ -353,8 +374,7 @@ function change_quant(cart_detail, val){
         val: val
       },
       success: function () {
-        $(".cart-details").load("./header.php .cart-details");
-        $(".wrapper-cart").load("./gio-hang.php .wrapper-cart");
+        reload_cart();
       }
     });
   }else
@@ -372,11 +392,7 @@ function change_quant(cart_detail, val){
             item: cart_detail["Ma"]
           },
           success: function () {
-            $("#cart_number").load("./header.php #cart_number");
-            focus_cart_box();
-
-            $(".cart-details .list-unstyled").load("./header.php .cart-details .list-unstyled");
-            $(".wrapper-cart").load("./gio-hang.php .wrapper-cart");
+            reload_cart();
           }
         });
       }
@@ -399,8 +415,7 @@ function change_combo_quant(cart_details_combo, val){
         val: val
       },
       success: function () {
-        $(".cart-details").load("./header.php .cart-details");
-        $(".wrapper-cart").load("./gio-hang.php .wrapper-cart");
+        reload_cart();
       }
     });
   }else
@@ -418,11 +433,7 @@ function change_combo_quant(cart_details_combo, val){
             combo: cart_details_combo["Ma"]
           },
           success: function () {
-            $("#cart_number").load("./header.php #cart_number");
-            focus_cart_box();
-
-            $(".cart-details .list-unstyled").load("./header.php .cart-details .list-unstyled");
-            $(".wrapper-cart").load("./gio-hang.php .wrapper-cart");
+            reload_cart();
           }
         });
       }
@@ -444,12 +455,7 @@ function delete_cart_detail(cart_detail){
         item: cart_detail["Ma"]
       },
       success: function () {
-        $("#cart_number").load("./header.php #cart_number");
-        focus_cart_box();
-
-
-        $(".cart-details .list-unstyled").load("./header.php .cart-details .list-unstyled");
-        $(".wrapper-cart").load("./gio-hang.php .wrapper-cart");
+        reload_cart();
       }
     });
   }
@@ -470,11 +476,25 @@ function delete_cart_detail_combo(cart_detail_combo){
         combo: cart_detail_combo["Ma"]
       },
       success: function () {
-        $("#cart_number").load("./header.php #cart_number");
-        focus_cart_box();
+        reload_cart();
+      }
+    });
+  }
+}
 
-        $(".cart-details .list-unstyled").load("./header.php .cart-details .list-unstyled");
-        $(".wrapper-cart").load("./gio-hang.php .wrapper-cart");
+function delete_all_cart_detail(cartid){
+  var r = confirm("Bạn muốn xoá toàn bộ sản phẩm khỏi giỏ hàng?");
+  if (r == true) {
+    $.ajax({
+      cache: false,
+      type: "POST",
+      url:'./includes/functions.php',
+      data: {
+        funct: 'delete_all_cart_detail',
+        cart: cartid
+      },
+      success: function () {
+        reload_cart();
       }
     });
   }
@@ -543,11 +563,7 @@ function addItemtoCart(cartid, itemid){
       item: itemid
     },
     success: function () {
-      $("#cart_number").load("./header.php #cart_number");
-      focus_cart_box();
-
-      $(".cart-details .list-unstyled").load("./header.php .cart-details .list-unstyled");
-      $(".wrapper-cart").load("./gio-hang.php .wrapper-cart");
+      reload_cart();
     }
   });
 }
@@ -563,51 +579,33 @@ function addCombotoCart(cartid, comboid){
       combo: comboid
     },
     success: function () {
-      $("#cart_number").load("./header.php #cart_number");
-      focus_cart_box();
-
-      $(".cart-details .list-unstyled").load("./header.php .cart-details .list-unstyled");
-      $(".wrapper-cart").load("./gio-hang.php .wrapper-cart");
+      reload_cart();
     }
   });
 }
 
-function focus_cart_box(){
-  backupcolor = $("#cart_number").css("color");
-  backupweight = $("#cart_number").css("font-weight");
-
-  $("#cart_number, .text-cart, .fa-shopping-cart").css({"color": "red","font-weight": "bold"});
+function reload_cart(){
+  $("#cart_number").load("./header.php #cart_number");
+  $("#cart_number, .text-cart, .fa-shopping-cart").css({"font-weight": "bold"});
 
   setTimeout(function(){
-    $("#cart_number, .text-cart, .fa-shopping-cart").css({"color": backupcolor,"font-weight": backupweight});
+    $("#cart_number, .text-cart, .fa-shopping-cart").css({"font-weight": 500});
   },1000);
+
+  $(".cart-details .list-unstyled").load("./header.php .cart-details .list-unstyled");
+  $(".wrapper-cart").load("./gio-hang.php .wrapper-cart-content");
 }
 
 $(window).focus(function() {
   $("#cart_number").load("./header.php #cart_number");
   $(".cart-details .list-unstyled").load("./header.php .cart-details .list-unstyled");
-  $(".wrapper-cart").load("./gio-hang.php .wrapper-cart");
+  $(".wrapper-cart").load("./gio-hang.php .wrapper-cart-content");
 
   content = '.sect-content';
   id = $(content).parent().attr('id');
   switch(id){
     case 'user-sect':
-      current_tab = $('.sect-content ul li.active a').attr('href');
-      switch(current_tab){
-        case '#liked':
-          $(".liked-items").load("./quan-ly.php .liked-items-content");
-          $(".liked-combos").load("./quan-ly.php .liked-combos-content");
-          break;
-        case '#his':
-          $(".wrapper-his").load("./quan-ly.php .wrapper-his");
-          break;
-        case '#user':
-
-          break;
-        case '#eadd':
-
-          break;
-      }
+      reload_info();
       break;
     case 'info-sect':
        $(content).load("./gioi-thieu.php .sect-content");
@@ -619,45 +617,177 @@ $(window).focus(function() {
 
 });
 
-$('a[data-toggle="pill"]').on('shown.bs.tab', function (e) {
-  current_tab = $(this).attr('href');
-  switch(current_tab){
-    case '#liked':
-      $(".liked-items").load("./quan-ly.php .liked-items-content");
-      $(".liked-combos").load("./quan-ly.php .liked-combos-content");
-      break;
-    case '#his':
-      $(".wrapper-his").load("./quan-ly.php .wrapper-his");
-      break;
-    case '#user':
+function reload_info(){
+  $(".info1").load("./quan-ly.php .info1-content");
+  $(".info2").load("./quan-ly.php .info2-content");
+  $(".liked-items").load("./quan-ly.php .liked-items-content");
+  $(".liked-combos").load("./quan-ly.php .liked-combos-content");
+  $(".current-address").load("./quan-ly.php .cur-add");
+  $(".wrapper-his").load("./quan-ly.php .wrapper-his-content");
 
-      break;
-    case '#eadd':
+  load_dob(get_dob());
+}
 
-      break;
-  }
+$("a[data-toggle='pill']").click(function(){
+  reload_info();
 });
 
-$('a[data-toggle="pill"]').click(function() {
-  current_tab = $(this).attr('href');
-  switch(current_tab){
-    case '#liked':
-      $(".liked-items").load("./quan-ly.php .liked-items-content");
-      $(".liked-combos").load("./quan-ly.php .liked-combos-content");
-      break;
-    case '#his':
-      $(".wrapper-his").load("./quan-ly.php .wrapper-his");
-      break;
-    case '#user':
+$("a[data-toggle='pill']").on("shown.bs.tabs", function(){
+  reload_info();
+});
 
-      break;
-    case '#eadd':
-
-      break;
+function get_dob(){
+  var res = "";
+  jQuery.ajaxSetup({async:false});
+  $.ajax({
+    cache: false,
+    async: false,
+    type: "GET",
+    url:'./includes/functions.php',
+    dateType: "text",
+    data: {
+      request: 'DOB'
+    },
+    success: function (response) {
+       res = response;
     }
+  });
+  jQuery.ajaxSetup({async:true});
+
+  return res;
+}
+
+function select_option(el, val){
+  el = el.replace("#","");
+  var sel = document.getElementById(el);
+  if(sel != null){
+    var opts = sel.options;
+    var opt;
+    for(j = 0; opt = opts[j]; j++) {
+        if(opt.text == val) {
+            sel.selectedIndex = j;
+            break;
+        }
+    }
+  }
+}
+
+function load_dob(dob){
+    dob = new Date(dob); // for mySQL date
+  //dob = new Date(dob*1000); //for php date
+    select_option('#user-dob-day', dob.getDate());
+    select_option('#user-dob-month', dob.getMonth()+1);
+    select_option('#user-dob-year', dob.getFullYear());
+}
+
+function sortByKey(array, key) {
+  return array.sort(function(a, b) {
+    var x = a[key]; var y = b[key];
+    return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+});
+}
+
+function load_address(){
+  var x = "";
+  $.getJSON("../js/geodata/tinh_tp.json", function(json) {
+    var json = Object.keys(json).map(e => ({id: e, name_with_type: json[e].name_with_type}))
+        .sort((a, b) => (a.name_with_type > b.name_with_type)? 1 : -1);
+    for (i in json) {
+      x = "";
+      x = "<option value='" + json[i].id + "'>"+ json[i].name_with_type +"</option>";
+      $("#user-add-city").append(x).selectpicker('refresh');
+    }
+  });
+}
+
+function show_dists(){
+  $("#row-user-ward").addClass('display-none');
+
+  $("#user-add-ward").find('option').remove();
+  $("#user-add-ward").selectpicker('refresh');
+
+  $("#row-user-dist").removeClass('display-none');
+
+  $("#user-add-dist").find('option').remove();
+  $("#user-add-dist").selectpicker('refresh');
+
+  var x = "";
+  var code = $("#user-add-city").val();
+  var url = "../js/geodata/quan-huyen/" + code + ".json";
+  $.getJSON(url, function(json) {
+    var json = Object.keys(json).map(e => ({id: e, name_with_type: json[e].name_with_type}))
+        .sort((a, b) => (a.name_with_type > b.name_with_type)? 1 : -1);
+    for (i in json) {
+      x = "";
+      x = "<option value='" +  json[i].id + "'>"+ json[i].name_with_type +"</option>";
+      $("#user-add-dist").append(x).selectpicker('refresh');
+    }
+  });
+}
+
+$("#user-add-city").change(function(){
+  show_dists();
+});
+
+function show_wards(){
+  $("#row-user-ward").removeClass('display-none');
+
+  $("#user-add-ward").find('option').remove();
+  $("#user-add-ward").selectpicker('refresh');
+
+  var x = "";
+  var code = $("#user-add-dist").val();
+  var url = "../js/geodata/xa-phuong/" + code + ".json";
+  $.getJSON(url, function(json) {
+    var json = Object.keys(json).map(e => ({id: e, name_with_type: json[e].name_with_type, path_with_type: json[e].path_with_type}))
+        .sort((a, b) => (a.name_with_type > b.name_with_type)? 1 : -1);
+    for (i in json) {
+        x = "";
+        x = "<option value='" + json[i].path_with_type + "'>"+ json[i].name_with_type +"</option>";
+        $("#user-add-ward").append(x).selectpicker('refresh');
+    }
+  });
+}
+
+$("#user-add-dist").change(function(){
+  show_wards();
+});
+
+$("#user-add-ward").change(function(){
+  $("#row-user-street").removeClass('display-none');
+});
+
+function get_add(){
+  var res = "";
+  jQuery.ajaxSetup({async:false});
+  $.ajax({
+    cache: false,
+    async: false,
+    type: "GET",
+    url:'./includes/functions.php',
+    dateType: "text",
+    data: {
+      request: 'add'
+    },
+    success: function (response) {
+       res = response;
+    }
+  });
+  jQuery.ajaxSetup({async:true});
+
+  return JSON.parse(res);
+}
+
+$("a[href='#eadd']").click(function(){
+    $("#user-add-city").selectpicker("val", "");
+    $("#row-user-ward").addClass('display-none');
+    $("#row-user-dist").addClass('display-none');
+    $("#row-user-street").addClass('display-none');
 });
 
 $(document).ready(function(e){
+    $('.selectpicker').selectpicker();
+
     SmoothScroll({ stepSize: 100 });
     scroll_to_top();
     navbar_movealong();
@@ -665,37 +795,12 @@ $(document).ready(function(e){
     username_hover();
     cart_hover();
     clear_modal();
-    load_days();
     date_change();
     check_input_value_email();
     check_input_value_password();
 
-    $('.carousel-bcl').slick({
-      prevArrow: '.glyphicon-chevron-left',
-      nextArrow: '.glyphicon-chevron-right',
-      accessibility: true,
-      infinite: true,
-      slidesToShow: 3,
-      responsive: [{
-        breakpoint: 935,
-        settings: { slidesToShow: 2}
-      }, {
-        breakpoint: 769,
-        settings: { slidesToShow: 1}
-      }]
-    });
+    load_days();
+    load_dob(get_dob());
 
-    $('.carousel-tabs').slick({
-      prevArrow: '.glyphicon-backward',
-      nextArrow: '.glyphicon-forward',
-      infinite: true,
-      slidesToShow: 3,
-      responsive: [{
-        breakpoint: 935,
-        settings: { slidesToShow: 2}
-      }, {
-        breakpoint: 769,
-        settings: { slidesToShow: 1}
-      }]
-    });
+    load_address();
 });

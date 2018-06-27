@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once 'config.php';
 
 function getday($ts){
@@ -253,6 +254,10 @@ function user_info($conn, $accid){
   return sp_call_vars($conn, "SP_GET_ACCOUNT_INFO", $accid);
 }
 
+function user_address($conn, $accid){
+  return sp_call_vars($conn, "SP_GET_ACCOUNT_ADDRESS", $accid);
+}
+
 function change_cart_details_quant($conn, $cartid, $itemid, $val){
   return fn_call_vars($conn, "FN_CHANGE_CART_DETAIL_QUANT", $cartid.",".$itemid.",".$val);
 }
@@ -273,6 +278,9 @@ function delete_cart_detail_combo($conn, $cartid, $comboid){
   return sp_exec_vars($conn, "SP_DEL_CART_DETAIL_COMBO", $cartid.",".$comboid);
 }
 
+function delete_all_cart_detail($conn, $cartid){
+  return sp_exec_vars($conn, "SP_DEL_ALL_CART_DETAIL", $cartid);
+}
 
 function like_goods($conn, $accid, $goodid, $type){
   if($type != "combo")
@@ -323,6 +331,9 @@ if(isset($_POST['funct'])) {
     case 'delete_cart_detail_combo':
       delete_cart_detail_combo($conn, $_POST['cart'], $_POST['combo']);
       break;
+    case 'delete_all_cart_detail':
+      delete_all_cart_detail($conn, $_POST['cart']);
+      break;
     case 'like_item':
       echo like_goods($conn, $_POST['account'], $_POST['item'], "item");
       break;
@@ -336,6 +347,14 @@ if(isset($_POST['funct'])) {
       add_cart_detail_combo($conn, $_POST['cart'], $_POST['combo']);
       break;
   }
+}
+
+if(isset($_GET['request'])){
+  if($_GET['request'] == 'DOB')
+    echo user_info($conn, $_SESSION['current'])[0]['ACCOUNTDOB'];
+
+  if($_GET['request'] == 'add')
+    echo json_encode(user_address($conn, $_SESSION['current'])[0]);
 }
 
 ?>

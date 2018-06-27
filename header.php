@@ -1,5 +1,4 @@
 <?php
-session_start();
 require_once("./includes/config.php");
 require_once("./includes/functions.php");
 require_once("./includes/userinfo.php");
@@ -59,6 +58,29 @@ if(!empty($_SESSION['current'])){
       <nav class="nav-header navbar navbar-default clearfix"><!-- Navbar Header Top-->
         <div class="container clearfix">
           <div class="navbar-top clearfix">
+            <div class="cover" onclick="toggleSidenav();"></div>
+            <div class="hamburger" id="hamburger" onclick="toggleSidenav();">
+              <div></div>
+              <div></div>
+              <div></div>
+            </div>
+            <nav class="sidenav">
+              <div class="logo">
+                <img src="../images/logo.png"/>
+              </div>
+              <div class="links">
+                <a href="/trang-chu" class="active">Trang chủ</a>
+                <a href="/thuc-don/ga">Thực đơn</a>
+                <a href="/khuyen-mai">Tin tức</a>
+                <a href=<?
+                  $create_content = "";
+                  if(!empty($_SESSION['current'])) $create_content = '/quan-ly';
+                  else $create_content = '"#popup-login" data-toggle="modal"';
+                  echo $create_content;
+                  ?>>Tài khoản</a>
+                <a href="/gioi-thieu">Giới thiệu</a>
+              </div>
+            </nav>
             <div class="flip-container">
               <div class="flipper brand">
                 <a href="/trang-chu">
@@ -122,57 +144,60 @@ if(!empty($_SESSION['current'])){
     <!-- Header Body-->
     <div class="header-middle">
       <nav id="navbar" class="navbar navbar-default navbar-bcl"><!-- Navbar Header Body -->
-        <div class="container">
-          <div class="col-xs-2 logo-block">
-            <div class="logo clearfix">
-              <a href="/trang-chu"><img src="/images/name.png"/ class="logo-bcl"></a>
+        <div class="row">
+          <div class="hidden-xs col-md-1 col-lg-1">
+          </div>
+          <div class="col-xs-2 col-md-1 col-lg-1 logo-block">
+              <div class="logo clearfix">
+                <img src="/images/name.png" class="logo-bcl" onclick="toggleSidenav();"/>
+            </div>
+          </div>
 
-              <a class="control left inline-block" >
-                <span class="glyphicon glyphicon-chevron-left" ></span>
+          <div class="hidden-xs col-sm-8 col-md-8 col-lg-8 col-centered list-block">
+                      <div class="danh-muc">
+                        <ul class="menu">
+                          <li><a href="/thuc-don/ga" class="active">Thực đơn</a></li>
+                          <li><a href="/khuyen-mai">Tin tức</a></li>
+                          <li><a href="/quan-ly">Tài khoản</a></li>
+                          <li><a href="/gioi-thieu">Giới thiệu</a></li>
+                        </ul>
+                      </div>
+                    </div>
+
+            <div class="col-xs-8 hidden-md hidden-lg">
+            <div id="text-carousel" class="carousel slide" data-ride="carousel">
+                <!-- Wrapper for slides -->
+                <div class="row">
+                    <div class="col-xs-offset-3 col-xs-6">
+                        <div class="carousel-inner">
+                            <div class="item active">
+                             <div class="carousel-content"> <a href="/thuc-don/ga" class="active">Thực đơn</a></div>
+                            </div>
+                            <div class="item">
+                              <a href="/khuyen-mai">Tin tức</a>
+                            </div>
+                            <div class="item">
+                              <a>Tài khoản</a>
+                            </div>
+                            <div class="item">
+                              <a href="/gioi-thieu">Giới thiệu</a>
+                            </div>
+                        </div>
+                        </div>
+                </div>
+                <!-- Controls --> <a class="left carousel-control" href="#text-carousel" data-slide="prev">
+                <span class="glyphicon glyphicon-chevron-left"></span>
               </a>
-            </div>
-          </div>
-          <div class="col-xs-8 col-centered list-block">
-            <div class="danh-muc">
-              <ul class="menu">
-                <li><a href="/thuc-don/ga" class="active">Thực đơn</a></li>
-                <li><a href="/khuyen-mai">Tin tức</a></li>
-                <li><a href=<?
-                  $create_content = "";
-                  if(!empty($_SESSION['current'])) $create_content = '/quan-ly';
-                  else $create_content = '"#popup-login" data-toggle="modal"';
-                  echo $create_content;
-                  ?>>Tài khoản</a></li>
-                <li><a href="/gioi-thieu">Giới thiệu</a></li>
-              </ul>
-            </div>
-            <div class="carousel-bcl">
-                <div class="item active">
-                  <a href="/thuc-don/ga" class="active">Thực đơn</a>
-                </div>
-                <div class="item">
-                  <a href="/khuyen-mai">Tin tức</a>
-                </div>
-                <div class="item">
-                  <a href=<?
-                  $create_content = "";
-                  if(!empty($_SESSION['current'])) $create_content = '/quan-ly';
-                  else $create_content = '"#popup-login" data-toggle="modal"';
-                  echo $create_content;
-                  ?>>Tài khoản</a>
-                </div>
-                <div class="item">
-                  <a href="/gioi-thieu">Giới thiệu</a>
-                </div>
-            </div>
-          </div>
-
-
-          <div class="col-xs-2 cart-block">
-            <div class="cartbox clearfix" id="cart_box">
-              <a class="control right inline-block">
+             <a class="right carousel-control" href="#text-carousel" data-slide="next">
                 <span class="glyphicon glyphicon-chevron-right"></span>
               </a>
+
+            </div>
+          </div>
+
+
+          <div class="col-xs-2 col-md-1 col-lg-1 cart-block">
+            <div class="cartbox" id="cart_box">
               <a href="/gio-hang">
                 <i class="fa fa-shopping-cart"></i>
                 <span class="text-cart"> Giỏ hàng</span>
@@ -194,7 +219,8 @@ if(!empty($_SESSION['current'])){
                   ?></span>
               </a>
             </div>
-
+            <div class="hidden-xs col-md-1 col-lg-1">
+            </div>
         </div>
       </nav>
       <!-- /Navbar Header Body -->

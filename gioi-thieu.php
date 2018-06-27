@@ -15,7 +15,7 @@
   <div class="row sect-content">
     <div class="col-xs-12 col-md-5">
     <div class="container-about-us">
-      <div class="stage">
+      <!-- <div class="stage">
         <div class="layer"></div>
         <div class="layer"></div>
         <div class="layer"></div>
@@ -36,7 +36,7 @@
         <div class="layer"></div>
         <div class="layer"></div>
         <div class="layer"></div>
-      </div><br><br>
+      </div><br><br> -->
       <div class="contact-info">
         <h2 class="title text-center"><i class="glyphicon glyphicon-map-marker"></i> Thông tin liên hệ</h2>
 

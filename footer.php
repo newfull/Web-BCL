@@ -96,7 +96,7 @@
 	<!--/Footer-->
 
 	<!-- Script -->
-	<script src="/js/jquery.js"></script>
+	<script src="/js/jquery.min.js"></script>
 	<script src="/js/bootstrap.min.js"></script>
 	<script src="/js/jquery.scrollUp.min.js"></script>
 	<script src="/js/main.js"></script>
@@ -104,5 +104,6 @@
 	<script src="/js/smoothscroll.js"></script>
 	<script src="/js/velocity.min.js"></script>
 	<script src="/js/slick.min.js"></script>
+	<script src="/js/bootstrap-select.min.js"></script>
 	<!-- /Script -->
 </body>

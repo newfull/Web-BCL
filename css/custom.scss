@@ -74,3 +74,102 @@ $NUM_LAYERS: 20;
 @keyframes ಠ_ಠ {
   100% { transform: rotateY(-40deg) rotateX(-43deg); }
 }
+
+
+//Variables
+$nav-width: 225px;
+
+//The icon for opening sidenav
+.hamburger {
+  position: absolute;
+  z-index: 9999;
+  padding-top: 20px;
+  margin-left: 0.25%;
+  display: inline-block;
+
+  &:hover {
+    cursor: pointer;
+  }
+
+  div {
+    background-color: crimson;
+    border-radius: 1px;
+    height: 6px;
+    width: 30px;
+
+    &:not(:last-child) {
+      margin-bottom: 5px;
+    }
+  }
+}
+
+//The sidenav itself
+nav.sidenav {
+  background-color: white;
+  z-index: 999;
+  display: inline-block;
+  position: fixed;
+  height: 100vh;
+  width: $nav-width;
+  left: -$nav-width;
+  transition: transform 0.3s;
+
+  .logo {
+    margin: 12vh 0;
+    text-align: center;
+
+    img {
+      border-radius: 50%;
+    }
+  }
+
+  a {
+    display: block;
+    text-decoration: none;
+    text-align: center;
+    color: crimson;
+    padding: 5px 0;
+
+    &:hover {
+      background-color: #f5f5f5;
+    }
+
+    &:visited {
+      color: crimson;
+    }
+
+    &.active {
+      background-color: crimson;
+      color: white;
+    }
+  }
+}
+
+//When sidenav is open:
+//a. Create a transparent overlay over the content
+.sidenav-active .cover {
+  background-color: rgba(0,0,0,0.3);
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100vh;
+  z-index: 5000;
+  transition: background-color .3s, transform 0.3s;
+}
+
+//b. Nudge everything to the side
+nav.sidenav, .hamburger, .cover {
+  transition: transform 0.3s;
+
+  .sidenav-active & {
+    transform: translateX($nav-width);
+  }
+}
+
+//c. Prevent body scroll
+.noscroll {
+  position: relative; //for ios
+  overflow: hidden;
+}
