@@ -27,7 +27,7 @@
 						<a href="/trang-chu"><img src="/images/brand.png" class="img-responsive logo-bcl"></a>
 					</div>
 					<div class="col-xs-2 thuc-don-1">
-						<h2>Thực đơn</h2>
+						<h2><a href="/thuc-don/all">Thực đơn</a></h2>
 						<ul class="list-unstyled quick-links item-list">
 							<li><a href="/thuc-don/ga">Gà</a></li>
 							<li><a href="/thuc-don/burger">Hamburger</a></li>

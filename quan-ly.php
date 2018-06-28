@@ -396,7 +396,7 @@ if(!empty($_SESSION['current'])){
         $selection = $_GET['sec'];
         if($conn != "NULL"){
           $section_id = "0";
-          $choice =array("user","","his","liked");
+          $choice =array("user","eadd","his","liked");
           $section_id = array_search($selection, $choice);
 
           echo "<script>$('.nav-pills-user li:eq($section_id) a').tab('show');</script>";

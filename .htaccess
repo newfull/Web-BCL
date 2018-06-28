@@ -52,7 +52,8 @@ Redirect /tinhtien /thanh-toan
 Redirect /tinh-tien /thanh-toan
 Redirect /tinh_tien /thanh-toan
 
-
+Redirect /thuc-don/ /thuc-don?select=all
+Redirect /thuc-don/all /thuc-don?select=all
 Redirect /thuc-don/ga /thuc-don?select=ga
 Redirect /thuc-don/com /thuc-don?select=com
 Redirect /thuc-don/burger /thuc-don?select=burger

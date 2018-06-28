@@ -803,4 +803,33 @@ $(document).ready(function(e){
     load_dob(get_dob());
 
     load_address();
+
+    $('.carousel-bcl').slick({
+           prevArrow: '.carousel-bcl-control-left',
+           nextArrow: '.carousel-bcl-control-right',
+           accessibility: true,
+           infinite: true,
+           slidesToShow: 3,
+           responsive: [{
+             breakpoint: 935,
+             settings: { slidesToShow: 2}
+           }, {
+             breakpoint: 769,
+             settings: { slidesToShow: 1}
+           }]
+         });
+
+    $('.carousel-tabs').slick({
+       prevArrow: '.menu-tabs-control-left',
+       nextArrow: '.menu-tabs-control-right',
+       infinite: true,
+       slidesToShow: 3,
+       responsive: [{
+         breakpoint: 935,
+         settings: { slidesToShow: 2}
+       }, {
+         breakpoint: 769,
+         settings: { slidesToShow: 1}
+       }]
+     });
 });

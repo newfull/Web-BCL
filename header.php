@@ -70,7 +70,7 @@ if(!empty($_SESSION['current'])){
               </div>
               <div class="links">
                 <a href="/trang-chu" class="active">Trang chủ</a>
-                <a href="/thuc-don/ga">Thực đơn</a>
+                <a href="/thuc-don/">Thực đơn</a>
                 <a href="/khuyen-mai">Tin tức</a>
                 <a href=<?
                   $create_content = "";
@@ -81,6 +81,7 @@ if(!empty($_SESSION['current'])){
                 <a href="/gioi-thieu">Giới thiệu</a>
               </div>
             </nav>
+
             <div class="flip-container">
               <div class="flipper brand">
                 <a href="/trang-chu">
@@ -145,18 +146,19 @@ if(!empty($_SESSION['current'])){
     <div class="header-middle">
       <nav id="navbar" class="navbar navbar-default navbar-bcl"><!-- Navbar Header Body -->
         <div class="row">
-          <div class="hidden-xs col-md-1 col-lg-1">
+          <div class="hidden-xs hidden-sm col-md-1 col-lg-1">
           </div>
-          <div class="col-xs-2 col-md-1 col-lg-1 logo-block">
+          <div class="col-xs-5 col-sm-3 col-md-1 col-lg-1 logo-block">
               <div class="logo clearfix">
                 <img src="/images/name.png" class="logo-bcl" onclick="toggleSidenav();"/>
+                <span class="glyphicon glyphicon-chevron-left control carousel-bcl-control-left"></span>
             </div>
           </div>
 
-          <div class="hidden-xs col-sm-8 col-md-8 col-lg-8 col-centered list-block">
+          <div class="hidden-xs hidden-sm col-md-8 col-lg-8 list-block">
                       <div class="danh-muc">
                         <ul class="menu">
-                          <li><a href="/thuc-don/ga" class="active">Thực đơn</a></li>
+                          <li><a href="/thuc-don" class="active">Thực đơn</a></li>
                           <li><a href="/khuyen-mai">Tin tức</a></li>
                           <li><a href="/quan-ly">Tài khoản</a></li>
                           <li><a href="/gioi-thieu">Giới thiệu</a></li>
@@ -164,14 +166,11 @@ if(!empty($_SESSION['current'])){
                       </div>
                     </div>
 
-            <div class="col-xs-8 hidden-md hidden-lg">
-            <div id="text-carousel" class="carousel slide" data-ride="carousel">
+            <div class="col-xs-5 col-sm-7 hidden-md hidden-lg">
+            <div class="carousel-bcl">
                 <!-- Wrapper for slides -->
-                <div class="row">
-                    <div class="col-xs-offset-3 col-xs-6">
-                        <div class="carousel-inner">
                             <div class="item active">
-                             <div class="carousel-content"> <a href="/thuc-don/ga" class="active">Thực đơn</a></div>
+                             <div class="carousel-content"> <a href="/thuc-don" class="active">Thực đơn</a></div>
                             </div>
                             <div class="item">
                               <a href="/khuyen-mai">Tin tức</a>
@@ -182,22 +181,12 @@ if(!empty($_SESSION['current'])){
                             <div class="item">
                               <a href="/gioi-thieu">Giới thiệu</a>
                             </div>
-                        </div>
-                        </div>
-                </div>
-                <!-- Controls --> <a class="left carousel-control" href="#text-carousel" data-slide="prev">
-                <span class="glyphicon glyphicon-chevron-left"></span>
-              </a>
-             <a class="right carousel-control" href="#text-carousel" data-slide="next">
-                <span class="glyphicon glyphicon-chevron-right"></span>
-              </a>
-
             </div>
           </div>
 
-
-          <div class="col-xs-2 col-md-1 col-lg-1 cart-block">
+          <div class="col-xs-2 col-sm-2 col-md-1 col-lg-1 cart-block">
             <div class="cartbox" id="cart_box">
+              <span class="glyphicon glyphicon-chevron-right control carousel-bcl-control-right"></span>
               <a href="/gio-hang">
                 <i class="fa fa-shopping-cart"></i>
                 <span class="text-cart"> Giỏ hàng</span>
@@ -219,7 +208,8 @@ if(!empty($_SESSION['current'])){
                   ?></span>
               </a>
             </div>
-            <div class="hidden-xs col-md-1 col-lg-1">
+          </div>
+            <div class="hidden-xs hidden-sm col-md-1 col-lg-1">
             </div>
         </div>
       </nav>

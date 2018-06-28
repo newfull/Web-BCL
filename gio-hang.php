@@ -35,7 +35,7 @@
         <div class="c_container left-c_container">
           <div class="list-header">
             <div class="row">
-            <div class="col-xs-12 col-sm-5 col-md-5 col-lg-5">
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
             <span class="list-header-left">Tổng số sản phẩm:
               <?
               if(isEmpty($cart_details_combo))
@@ -59,7 +59,7 @@
               </span>
             </span>
           </div>
-          <div class="hidden-xs col-sm-4 col-md-4 col-lg-4">
+          <div class="hidden-xs col-sm-3 col-md-3 col-lg-3">
             <label class="list-header-middle">GIÁ</label>
           </div>
           <div class="hidden-xs col-sm-3 col-md-3 col-lg-3">
@@ -74,7 +74,7 @@
             <div class="cart-item">
             <div class="cart-item-inner">
             <div class="row item-name">
-            <div class="col-xs-12 col-lg-5">
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
             <div class="cart-item-left">
             <div class="img-wrap">
             <img src="./images/items/'.($cart_details_combo[$i]['DuongDan']).'"
@@ -92,13 +92,16 @@
             </div>
             </div>
 
-            <div class="col-xs-4 col-lg-4">
+            <div class="col-xs-2 hidden-sm hidden-md hidden-lg">
+            </div>
+
+            <div class="col-xs-5 col-sm-3 col-md-3 col-lg-3">
             <div class="cart-item-middle">
             <p class="current-price">'.number_format(get_cart_details_val($cart_details_combo[$i]),0).'₫</p>
             </div>
             </div>
 
-            <div class="col-xs-4 col-lg-3">
+            <div class="col-xs-5 col-sm-3 col-md-3 col-lg-3">
             <div class="cart-item-right">
             <div class="input-group spinner">
             <input type="text" id="comboval'.($cart_details_combo[$i]['Ma']).'" class="form-control" value="'.($cart_details_combo[$i]['SoLuong']).'" readonly>
@@ -122,6 +125,8 @@
             $create_content .= '
             <div class="cart-item">
             <div class="cart-item-inner">
+            <div class="row item-name">
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
             <div class="cart-item-left">
             <div class="img-wrap">
             <img src="./images/items/'.($cart_details[$i]['DuongDan']).'"
@@ -138,11 +143,18 @@
             </div>
 
             </div>
+            </div>
 
+            <div class="col-xs-2 hidden-sm hidden-md hidden-lg">
+            </div>
+
+            <div class="col-xs-5 col-sm-3 col-md-3 col-lg-3">
             <div class="cart-item-middle">
             <p class="current-price">'.number_format(get_cart_details_val($cart_details[$i]),0).'₫</p>
             </div>
+            </div>
 
+            <div class="col-xs-5 col-sm-3 col-md-3 col-lg-3">
             <div class="cart-item-right">
             <div class="input-group spinner">
             <input type="text" id="val'.($cart_details[$i]['Ma']).'" class="form-control" value="'.($cart_details[$i]['SoLuong']).'" readonly>
@@ -154,6 +166,8 @@
             <span class="btn-delete">
             <i class="glyphicon glyphicon-trash" onclick=\'delete_cart_detail('.json_encode($cart_details[$i]).')\'></i>
             </span>
+            </div>
+            </div>
             </div>
             </div>
             </div>';
@@ -177,7 +191,7 @@
                       <i class="glyphicon glyphicon-map-marker"></i>
                       <div class="current-address"><? echo $current_user->getAdd(); ?></div>
                       <div class="location-change">
-                        <a data-target='#popup-user' data-toggle='modal' data-dismiss='modal' class="location-link">THAY ĐỔI</a>
+                        <a href='/quan-ly?sec=eadd' class="location-link">THAY ĐỔI</a>
                       </div>
                     </div>
                   </div>

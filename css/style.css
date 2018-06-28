@@ -169,7 +169,6 @@ nav.nav-header {
   border-radius: 0
 }
 
-
 .navbar-top-wap {
   background-image: url(../images/nav-top.png);
   width: 250px;
@@ -792,10 +791,6 @@ imp{
   .navbar-top-wap{
     margin-right: 50px;
   }
-
-  .cartbox{
-    margin-right: 30px;
-  }
 }
 
 @media(max-width: 1020px){
@@ -1028,7 +1023,6 @@ imp{
 .logo-bcl{
   margin-top: 5px;
   width: 100px;
-  z-index: 888
 }
 
 .cartbox {
@@ -1041,7 +1035,7 @@ imp{
   font-weight: 450;
   right: 50px;
   text-align: right;
-  margin-top: -2px;
+  margin-top: 0px;
 
   float: right;
   overflow: auto;
@@ -1066,7 +1060,7 @@ imp{
 
 #carousel-header{
   top: -15px;
-  left: 110px;
+  left: 230px;
 }
 
 .carousel-inner.vertical {
@@ -1113,55 +1107,23 @@ imp{
 @media(max-width: 1400px){
   #carousel-header{
     top: -15px;
-    left: 50px;
+    left: 200px;
   }
 }
 
 @media(max-width: 1200px){
   #carousel-header{
-    top: 10px;
-    left: 65px;
-    width: 580px;
+    display: none;
   }
-
-  .carousel-inner.vertical{
-    height: 64px;
-  }
-
 }
 
 @media(max-width: 1000px){
-  #carousel-header{
-    top: 15px;
-    left: 65px;
-    width: 580px;
-  }
-
-  .carousel-inner.vertical{
-    height: 64px;
-  }
-
   .header-top .navbar-top-wap{
     margin-right: 30px;
   }
-
 }
 
-@media(max-width: 991px){
-  #carousel-header{
-    top: 18px;
-    left: 62px;
-    width: 560px;
-  }
-
-  .carousel-inner.vertical{
-    height: 61px;
-  }
-
-  .header-top .container{
-    margin-left: 30px;
-  }
-
+@media(max-width: 1040px){
   .header-top .navbar-top-wap{
     margin-right: -200px;
   }
@@ -1191,19 +1153,9 @@ imp{
   .header-top .navbar-top-wap{
     margin-right: -13%;
     }
-
-    #carousel-header{
-      top: 25px;
-      left: 150px;
-    }
-
 }
 
 @media(max-width: 890px){
-  #carousel-header{
-    top: 6px;
-    left: 150px;
-  }
   .header-top .navbar-top-wap{
     margin-right: -9%;
     }
@@ -1211,9 +1163,6 @@ imp{
 }
 
 @media(max-width: 850px){
-  #carousel-header{
-    display: none;
-  }
 
   .header-top .navbar-top-wap{
     margin-right: 10%;
@@ -1356,6 +1305,10 @@ imp{
 }
 
 @media(max-width: 385px){
+  .hamburger{
+    display: none;
+  }
+
   .header-top .flip-container{
     margin-left: -30px;
   }
@@ -1395,30 +1348,40 @@ imp{
 .danh-muc .menu{
   position: relative;
   display: inline;
-  max-width: 800px;
-  width: auto;
-  margin-left: -55px;
+  width: 100%;
 }
 
 .carousel-bcl{
-  display: none;
   height: auto;
   width: auto;
   overflow: hidden;
+  top: -15px;
+  left: -30px;
 }
 
+.carousel-bcl .item{
+  padding-left: 100px;
+}
+
+@media(max-width: 767px){
+  .carousel-bcl{
+    left: -60px;
+  }
+}
 
 #navbar .logo{
   display: inline-block;
 }
 
-#navbar .control{
-  display: none;
-  line-height: 40px;
-  width: 5px;
-  font-size: 15px;
+#navbar span.control{
+  width: 10px;
+  top: 5px;
+  font-size: 0px;
   color: black;
-  text-align:center;
+}
+
+#navbar span.carousel-bcl-control-right{
+  top: 0px;
 }
 
 .danh-muc .menu li, .carousel-bcl .item a{
@@ -1463,7 +1426,6 @@ imp{
 }
 
 .thucdon-tabs .tab .carousel-tabs{
-  display: none;
   max-height: 45px;
   width: 100%;
   overflow: hidden;
@@ -1561,6 +1523,11 @@ imp{
   .danh-muc{
     display: none;
   }
+
+  #navbar span.control{
+    font-size: 15px;
+    right: 5px;
+  }
 }
 
 .thucdon-tabs .control{
@@ -1575,7 +1542,7 @@ imp{
   margin-top: 3px;
 }
 
-@media(max-width: 991px){
+@media(max-width: 1200px){
   .thucdon-tabs .control{
     display: inline-block;
   }
@@ -2186,7 +2153,6 @@ margin-bottom: 5px;
 .cart-item-left {
     display: table-cell;
     vertical-align: top;
-    width: calc(100% - 156px - 139px);
     padding-left: 10px
 }
 
@@ -2213,7 +2179,6 @@ margin-bottom: 5px;
 
 .cart-item-left .content {
     display: inline-block;
-    width: 332px
 }
 
 .cart-item-left .content .title {
@@ -2371,7 +2336,6 @@ margin-bottom: 5px;
 
 .sect-title{
   padding-left: 10px;
-  max-width: 500px;
   height: 70px;
   margin: 10px;
 }
@@ -2457,7 +2421,7 @@ label.user-city, label.user-dist{
   margin-top: 5px;
 }
 
-.add_street { padding: .5em 1em; width: 100%; }
+.add_street, .search_menu { padding: .5em 1em; width: 100%; }
 
 .btn-huy{
   background-color: #f1022a;
