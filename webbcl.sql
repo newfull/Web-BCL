@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jun 27, 2018 at 04:57 AM
+-- Generation Time: Jun 28, 2018 at 06:44 PM
 -- Server version: 10.1.32-MariaDB
 -- PHP Version: 7.1.17
 
@@ -390,10 +390,12 @@ DELIMITER ;
 --
 -- Table structure for table `account`
 --
+-- Creation: Jun 24, 2018 at 03:17 PM
+--
 
 DROP TABLE IF EXISTS `account`;
-CREATE TABLE IF NOT EXISTS `account` (
-  `ACCOUNTID` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Mã tài khoản',
+CREATE TABLE `account` (
+  `ACCOUNTID` int(11) NOT NULL COMMENT 'Mã tài khoản',
   `ACCOUNTUSER` varchar(20) NOT NULL COMMENT 'Tên đăng nhập',
   `ACCOUNTPASS` varchar(20) NOT NULL COMMENT 'Mật khẩu',
   `ACCOUNTNAME` varchar(30) NOT NULL COMMENT 'Tên người dùng',
@@ -406,10 +408,12 @@ CREATE TABLE IF NOT EXISTS `account` (
   `ACCOUNTVALID` int(1) NOT NULL DEFAULT '1' COMMENT 'Tình trạng hoạt động',
   `ACCOUNTLIKEDITEMS` text COMMENT 'Sản phẩm đang thích',
   `ACCOUNTLIKEDCOMBOS` text COMMENT 'Combo đang thích',
-  `ACCOUNTNOTI` int(1) NOT NULL DEFAULT '1' COMMENT 'Nhận thông báo từ website',
-  PRIMARY KEY (`ACCOUNTID`),
-  UNIQUE KEY `ACCOUNTUSER` (`ACCOUNTUSER`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COMMENT='Tài khoản đăng nhập';
+  `ACCOUNTNOTI` int(1) NOT NULL DEFAULT '1' COMMENT 'Nhận thông báo từ website'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Tài khoản đăng nhập';
+
+--
+-- RELATIONSHIPS FOR TABLE `account`:
+--
 
 --
 -- Dumping data for table `account`
@@ -435,19 +439,24 @@ DELIMITER ;
 --
 -- Table structure for table `admin`
 --
+-- Creation: Jun 20, 2018 at 12:07 PM
+--
 
 DROP TABLE IF EXISTS `admin`;
-CREATE TABLE IF NOT EXISTS `admin` (
-  `EMPID` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Mã nhân viên',
+CREATE TABLE `admin` (
+  `EMPID` int(11) NOT NULL COMMENT 'Mã nhân viên',
   `EMPNAME` varchar(30) NOT NULL COMMENT 'Tên nhân viên',
   `EMPDOB` date NOT NULL COMMENT 'Ngày sinh',
   `EMPADD` varchar(500) NOT NULL COMMENT 'Địa chỉ',
   `EMPPHONE` varchar(11) NOT NULL COMMENT 'Số điện thoại',
   `EMPSAL` decimal(13,2) NOT NULL COMMENT 'Lương nhân viên',
   `EMPLVL` int(1) NOT NULL DEFAULT '1' COMMENT '1 - quản lý, 2 - nhân viên',
-  `EMPPAYRATE` decimal(2,0) NOT NULL DEFAULT '1' COMMENT 'Hệ số lương',
-  PRIMARY KEY (`EMPID`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='Bảng tài khoản Admin';
+  `EMPPAYRATE` decimal(2,0) NOT NULL DEFAULT '1' COMMENT 'Hệ số lương'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Bảng tài khoản Admin';
+
+--
+-- RELATIONSHIPS FOR TABLE `admin`:
+--
 
 --
 -- Dumping data for table `admin`
@@ -461,33 +470,46 @@ INSERT INTO `admin` (`EMPID`, `EMPNAME`, `EMPDOB`, `EMPADD`, `EMPPHONE`, `EMPSAL
 --
 -- Table structure for table `blog`
 --
+-- Creation: Jun 28, 2018 at 04:43 PM
+--
 
 DROP TABLE IF EXISTS `blog`;
-CREATE TABLE IF NOT EXISTS `blog` (
-  `BLOGID` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Mã bài',
+CREATE TABLE `blog` (
+  `BLOGID` int(11) NOT NULL COMMENT 'Mã bài',
   `BLOGTITLE` varchar(500) NOT NULL COMMENT 'Tựa đề',
+  `BLOGIMG` text NOT NULL COMMENT 'Đường dẫn tới ảnh hiển thị',
   `BLOGCONTENT` varchar(5000) NOT NULL COMMENT 'Nội dung',
   `BLOGDATE` datetime NOT NULL COMMENT 'Ngày tạo',
-  `EMPID` int(11) NOT NULL COMMENT 'Người tạo',
-  PRIMARY KEY (`BLOGID`),
-  KEY `EMPID` (`EMPID`) USING BTREE
+  `EMPID` int(11) NOT NULL COMMENT 'Người tạo'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Tin tức khuyến mãi';
+
+--
+-- RELATIONSHIPS FOR TABLE `blog`:
+--   `EMPID`
+--       `admin` -> `EMPID`
+--
 
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `cart`
 --
+-- Creation: Jun 16, 2018 at 04:57 PM
+--
 
 DROP TABLE IF EXISTS `cart`;
-CREATE TABLE IF NOT EXISTS `cart` (
-  `CARTID` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Mã giỏ',
+CREATE TABLE `cart` (
+  `CARTID` int(11) NOT NULL COMMENT 'Mã giỏ',
   `ACCOUNTID` int(11) DEFAULT NULL COMMENT 'Mã tài khoản',
   `CARTTIME` datetime NOT NULL COMMENT 'Thời điểm tạo giỏ',
-  `ACTIVE` int(1) NOT NULL DEFAULT '1' COMMENT 'Đang kích hoạt',
-  PRIMARY KEY (`CARTID`),
-  KEY `ACCOUNTID` (`ACCOUNTID`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COMMENT='Giỏ hàng';
+  `ACTIVE` int(1) NOT NULL DEFAULT '1' COMMENT 'Đang kích hoạt'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Giỏ hàng';
+
+--
+-- RELATIONSHIPS FOR TABLE `cart`:
+--   `ACCOUNTID`
+--       `account` -> `ACCOUNTID`
+--
 
 --
 -- Dumping data for table `cart`
@@ -516,15 +538,23 @@ DELIMITER ;
 --
 -- Table structure for table `cart_detail`
 --
+-- Creation: Jun 21, 2018 at 04:31 AM
+--
 
 DROP TABLE IF EXISTS `cart_detail`;
-CREATE TABLE IF NOT EXISTS `cart_detail` (
+CREATE TABLE `cart_detail` (
   `CARTID` int(11) NOT NULL COMMENT 'Mã giỏ',
   `ITEMID` int(11) NOT NULL COMMENT 'Mã món',
-  `QUANTITY` int(11) NOT NULL DEFAULT '1' COMMENT 'Số lượng',
-  PRIMARY KEY (`CARTID`,`ITEMID`),
-  KEY `ITEMID` (`ITEMID`)
+  `QUANTITY` int(11) NOT NULL DEFAULT '1' COMMENT 'Số lượng'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Chi tiết giỏ hàng';
+
+--
+-- RELATIONSHIPS FOR TABLE `cart_detail`:
+--   `CARTID`
+--       `cart` -> `CARTID`
+--   `ITEMID`
+--       `item` -> `ITEMID`
+--
 
 --
 -- Dumping data for table `cart_detail`
@@ -542,32 +572,52 @@ INSERT INTO `cart_detail` (`CARTID`, `ITEMID`, `QUANTITY`) VALUES
 --
 -- Table structure for table `cart_detail_combo`
 --
+-- Creation: Jun 23, 2018 at 02:40 PM
+--
 
 DROP TABLE IF EXISTS `cart_detail_combo`;
-CREATE TABLE IF NOT EXISTS `cart_detail_combo` (
+CREATE TABLE `cart_detail_combo` (
   `CARTID` int(11) NOT NULL COMMENT 'Mã giỏ',
   `COMBOID` int(11) NOT NULL COMMENT 'Mã combo',
-  `QUANTITY` int(2) NOT NULL DEFAULT '1' COMMENT 'Số lượng',
-  PRIMARY KEY (`CARTID`,`COMBOID`),
-  KEY `COMBOID` (`COMBOID`)
+  `QUANTITY` int(2) NOT NULL DEFAULT '1' COMMENT 'Số lượng'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- RELATIONSHIPS FOR TABLE `cart_detail_combo`:
+--   `CARTID`
+--       `cart` -> `CARTID`
+--   `COMBOID`
+--       `combo` -> `COMBOID`
+--
+
+--
+-- Dumping data for table `cart_detail_combo`
+--
+
+INSERT INTO `cart_detail_combo` (`CARTID`, `COMBOID`, `QUANTITY`) VALUES
+(7, 4, 4);
 
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `combo`
 --
+-- Creation: Jun 06, 2018 at 04:12 AM
+--
 
 DROP TABLE IF EXISTS `combo`;
-CREATE TABLE IF NOT EXISTS `combo` (
-  `COMBOID` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Mã Combo',
+CREATE TABLE `combo` (
+  `COMBOID` int(11) NOT NULL COMMENT 'Mã Combo',
   `COMBONAME` varchar(30) NOT NULL COMMENT 'Tên Combo',
   `COMBOPRICE` decimal(13,2) NOT NULL COMMENT 'Giá Combo',
   `COMBOLIKE` int(11) NOT NULL DEFAULT '0' COMMENT 'Số lượt thích',
   `COMBOSTATUS` int(1) NOT NULL DEFAULT '1' COMMENT '1 - Đang bán, 0 - Ngừng bán',
-  `COMBOIMGURL` text NOT NULL COMMENT 'Đường dẫn hình ảnh',
-  PRIMARY KEY (`COMBOID`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COMMENT='Combo';
+  `COMBOIMGURL` text NOT NULL COMMENT 'Đường dẫn hình ảnh'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Combo';
+
+--
+-- RELATIONSHIPS FOR TABLE `combo`:
+--
 
 --
 -- Dumping data for table `combo`
@@ -584,15 +634,23 @@ INSERT INTO `combo` (`COMBOID`, `COMBONAME`, `COMBOPRICE`, `COMBOLIKE`, `COMBOST
 --
 -- Table structure for table `combo_detail`
 --
+-- Creation: Jun 06, 2018 at 04:12 AM
+--
 
 DROP TABLE IF EXISTS `combo_detail`;
-CREATE TABLE IF NOT EXISTS `combo_detail` (
+CREATE TABLE `combo_detail` (
   `COMBOID` int(11) NOT NULL COMMENT 'Mã Combo',
   `ITEMID` int(11) NOT NULL COMMENT 'Mã món',
-  `QUANTITY` int(11) NOT NULL DEFAULT '1' COMMENT 'Số lượng',
-  PRIMARY KEY (`COMBOID`,`ITEMID`),
-  KEY `ITEMID` (`ITEMID`)
+  `QUANTITY` int(11) NOT NULL DEFAULT '1' COMMENT 'Số lượng'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Chi tiết combo';
+
+--
+-- RELATIONSHIPS FOR TABLE `combo_detail`:
+--   `ITEMID`
+--       `item` -> `ITEMID`
+--   `COMBOID`
+--       `combo` -> `COMBOID`
+--
 
 --
 -- Dumping data for table `combo_detail`
@@ -616,10 +674,12 @@ INSERT INTO `combo_detail` (`COMBOID`, `ITEMID`, `QUANTITY`) VALUES
 --
 -- Table structure for table `item`
 --
+-- Creation: Jun 06, 2018 at 04:12 AM
+--
 
 DROP TABLE IF EXISTS `item`;
-CREATE TABLE IF NOT EXISTS `item` (
-  `ITEMID` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Mã món',
+CREATE TABLE `item` (
+  `ITEMID` int(11) NOT NULL COMMENT 'Mã món',
   `ITEMNAME` varchar(30) NOT NULL COMMENT 'Tên món',
   `ITEMPRICE` decimal(13,2) NOT NULL COMMENT 'Giá',
   `ITEM_TYPEID` int(11) NOT NULL COMMENT 'Mã loại',
@@ -627,10 +687,14 @@ CREATE TABLE IF NOT EXISTS `item` (
   `ITEMLIKED` int(11) NOT NULL DEFAULT '0' COMMENT 'Số lượt thích',
   `ITEMSTATUS` int(1) NOT NULL DEFAULT '1' COMMENT '1 - Đang bán, 0 - Ngừng bán',
   `ITEMIMGURL` text NOT NULL COMMENT 'Đường dẫn hình ảnh',
-  `ITEMISNEW` int(1) NOT NULL DEFAULT '1' COMMENT 'Nếu mới bán: 1, còn lại: 0',
-  PRIMARY KEY (`ITEMID`),
-  KEY `ITEM_TYPEID` (`ITEM_TYPEID`)
-) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8 COMMENT='Món ăn';
+  `ITEMISNEW` int(1) NOT NULL DEFAULT '1' COMMENT 'Nếu mới bán: 1, còn lại: 0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Món ăn';
+
+--
+-- RELATIONSHIPS FOR TABLE `item`:
+--   `ITEM_TYPEID`
+--       `item_type` -> `ITEM_TYPEID`
+--
 
 --
 -- Dumping data for table `item`
@@ -687,15 +751,20 @@ DELIMITER ;
 --
 -- Table structure for table `item_category`
 --
+-- Creation: Jun 06, 2018 at 04:12 AM
+--
 
 DROP TABLE IF EXISTS `item_category`;
-CREATE TABLE IF NOT EXISTS `item_category` (
-  `ITEM_CATEGORYID` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Mã danh mục',
+CREATE TABLE `item_category` (
+  `ITEM_CATEGORYID` int(11) NOT NULL COMMENT 'Mã danh mục',
   `ITEM_CATEGORYNAME` varchar(30) NOT NULL COMMENT 'Tên danh mục',
   `ITEM_CATEGORYIMGNAME` text NOT NULL COMMENT 'Tên hình ảnh hiển thị',
-  `ITEM_CATEGORYALIAS` varchar(20) NOT NULL COMMENT 'Id gọi tắt',
-  PRIMARY KEY (`ITEM_CATEGORYID`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+  `ITEM_CATEGORYALIAS` varchar(20) NOT NULL COMMENT 'Id gọi tắt'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- RELATIONSHIPS FOR TABLE `item_category`:
+--
 
 --
 -- Dumping data for table `item_category`
@@ -713,21 +782,24 @@ INSERT INTO `item_category` (`ITEM_CATEGORYID`, `ITEM_CATEGORYNAME`, `ITEM_CATEG
 --
 -- Table structure for table `item_promotion`
 --
+-- Creation: Jun 28, 2018 at 04:42 PM
+--
 
 DROP TABLE IF EXISTS `item_promotion`;
-CREATE TABLE IF NOT EXISTS `item_promotion` (
-  `ITMPR_ID` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Mã khuyến mãi',
+CREATE TABLE `item_promotion` (
+  `ITMPR_ID` int(11) NOT NULL COMMENT 'Mã khuyến mãi',
   `NAME` varchar(30) NOT NULL COMMENT 'Tên khuyến mãi',
   `STATUS` int(1) NOT NULL COMMENT 'Trạng thái của mã giảm giá',
   `STARTDATE` date NOT NULL COMMENT 'Ngày bắt đầu',
   `ENDDATE` date NOT NULL COMMENT 'Ngày kết thúc',
-  `HOURLYPR` int(1) NOT NULL DEFAULT '0' COMMENT 'Có khung giờ cố định?',
-  `STARTHOUR` int(2) DEFAULT NULL COMMENT 'Giờ bắt đầu (24h)',
-  `ENDHOUR` int(2) DEFAULT NULL COMMENT 'Giờ kết thúc (24h)',
-  `EMPID` int(11) NOT NULL COMMENT 'Người tạo',
-  PRIMARY KEY (`ITMPR_ID`),
-  KEY `ACCOUNTID` (`EMPID`)
+  `EMPID` int(11) NOT NULL COMMENT 'Người tạo'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Khuyến mãi theo sản phẩm';
+
+--
+-- RELATIONSHIPS FOR TABLE `item_promotion`:
+--   `EMPID`
+--       `admin` -> `EMPID`
+--
 
 --
 -- Triggers `item_promotion`
@@ -748,18 +820,26 @@ DELIMITER ;
 --
 -- Table structure for table `item_promotion_detail`
 --
+-- Creation: Jun 06, 2018 at 04:12 AM
+--
 
 DROP TABLE IF EXISTS `item_promotion_detail`;
-CREATE TABLE IF NOT EXISTS `item_promotion_detail` (
+CREATE TABLE `item_promotion_detail` (
   `ITMPR_ID` int(11) NOT NULL COMMENT 'Mã khuyến mãi',
   `ITEMID` int(11) NOT NULL COMMENT 'Mã món',
   `MINQUANT` int(11) NOT NULL DEFAULT '1' COMMENT 'Số lượng tối thiểu',
   `MAXQUANT` int(11) NOT NULL DEFAULT '1' COMMENT 'Số lượng tối đa',
   `NEWPRICE` decimal(10,0) DEFAULT NULL COMMENT 'Giá mới (nếu có) [Bỏ trống nếu khuyến mãi %]',
-  `PRVALUE` int(2) DEFAULT '5' COMMENT 'Giá trị khuyến mãi (%) [Bỏ trống nếu đổi giá tự do]',
-  PRIMARY KEY (`ITMPR_ID`,`ITEMID`),
-  KEY `ITEMID` (`ITEMID`)
+  `PRVALUE` int(2) DEFAULT '5' COMMENT 'Giá trị khuyến mãi (%) [Bỏ trống nếu đổi giá tự do]'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Chi tiết khuyến mãi theo sản phẩm';
+
+--
+-- RELATIONSHIPS FOR TABLE `item_promotion_detail`:
+--   `ITMPR_ID`
+--       `item_promotion` -> `ITMPR_ID`
+--   `ITEMID`
+--       `item` -> `ITEMID`
+--
 
 --
 -- Triggers `item_promotion_detail`
@@ -788,16 +868,22 @@ DELIMITER ;
 --
 -- Table structure for table `item_type`
 --
+-- Creation: Jun 06, 2018 at 04:12 AM
+--
 
 DROP TABLE IF EXISTS `item_type`;
-CREATE TABLE IF NOT EXISTS `item_type` (
-  `ITEM_TYPEID` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Mã loại',
+CREATE TABLE `item_type` (
+  `ITEM_TYPEID` int(11) NOT NULL COMMENT 'Mã loại',
   `ITEM_TYPENAME` varchar(30) NOT NULL COMMENT 'Tên loại',
   `UNIT_NAME` varchar(20) DEFAULT 'Phần' COMMENT 'Tên đơn vị tính',
-  `ITEM_CATEGORYID` int(11) NOT NULL COMMENT 'Mã danh mục',
-  PRIMARY KEY (`ITEM_TYPEID`),
-  KEY `ITEM_CATEGORYID` (`ITEM_CATEGORYID`)
-) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8 COMMENT='Loại';
+  `ITEM_CATEGORYID` int(11) NOT NULL COMMENT 'Mã danh mục'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Loại';
+
+--
+-- RELATIONSHIPS FOR TABLE `item_type`:
+--   `ITEM_CATEGORYID`
+--       `item_category` -> `ITEM_CATEGORYID`
+--
 
 --
 -- Dumping data for table `item_type`
@@ -822,16 +908,23 @@ INSERT INTO `item_type` (`ITEM_TYPEID`, `ITEM_TYPENAME`, `UNIT_NAME`, `ITEM_CATE
 --
 -- Table structure for table `receipt`
 --
+-- Creation: Jun 28, 2018 at 04:41 PM
+--
 
 DROP TABLE IF EXISTS `receipt`;
-CREATE TABLE IF NOT EXISTS `receipt` (
-  `RECEIPTID` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Mã hóa đơn',
+CREATE TABLE `receipt` (
+  `RECEIPTID` int(11) NOT NULL COMMENT 'Mã hóa đơn',
   `ACCOUNTID` int(11) NOT NULL COMMENT 'Mã tài khoản',
-  `RECEIPTTIME` datetime NOT NULL COMMENT 'Thời điểm thanh toán',
-  `RECEIPTVALUE` decimal(13,2) NOT NULL COMMENT 'Giá trị hóa đơn',
-  PRIMARY KEY (`RECEIPTID`),
-  KEY `ACCOUNTID` (`ACCOUNTID`)
+  `RECEIPTTIME` datetime NOT NULL COMMENT 'Thời gian tạo hoá đơn',
+  `RECEIPTADD` text NOT NULL COMMENT 'Địa chỉ nhận hàng',
+  `RECEIPTVALUE` decimal(13,2) NOT NULL COMMENT 'Giá trị hóa đơn'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Hóa đơn';
+
+--
+-- RELATIONSHIPS FOR TABLE `receipt`:
+--   `ACCOUNTID`
+--       `account` -> `ACCOUNTID`
+--
 
 --
 -- Triggers `receipt`
@@ -849,37 +942,48 @@ DELIMITER ;
 --
 -- Table structure for table `receipt_detail`
 --
+-- Creation: Jun 06, 2018 at 04:12 AM
+--
 
 DROP TABLE IF EXISTS `receipt_detail`;
-CREATE TABLE IF NOT EXISTS `receipt_detail` (
+CREATE TABLE `receipt_detail` (
   `RECEIPTID` int(11) NOT NULL COMMENT 'Mã hóa đơn',
   `ITEMID` int(11) NOT NULL COMMENT 'Mã món',
   `QUANTITY` int(11) NOT NULL DEFAULT '1' COMMENT 'Số lượng',
-  `VALUE` decimal(13,2) NOT NULL COMMENT 'Tổng giá',
-  PRIMARY KEY (`RECEIPTID`,`ITEMID`),
-  KEY `ITEMID` (`ITEMID`)
+  `VALUE` decimal(13,2) NOT NULL COMMENT 'Tổng giá'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Chi tiết hóa đơn';
+
+--
+-- RELATIONSHIPS FOR TABLE `receipt_detail`:
+--   `RECEIPTID`
+--       `receipt` -> `RECEIPTID`
+--   `ITEMID`
+--       `item` -> `ITEMID`
+--
 
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `receipt_promotion`
 --
+-- Creation: Jun 27, 2018 at 05:07 PM
+--
 
 DROP TABLE IF EXISTS `receipt_promotion`;
-CREATE TABLE IF NOT EXISTS `receipt_promotion` (
-  `RCPPR_ID` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Mã khuyến mãi',
+CREATE TABLE `receipt_promotion` (
+  `RCPPR_ID` int(11) NOT NULL COMMENT 'Mã khuyến mãi',
   `NAME` varchar(30) NOT NULL COMMENT 'Tên khuyến mãi',
   `STATUS` int(1) NOT NULL COMMENT 'Trạng thái của mã giảm giá',
   `STARTDATE` date NOT NULL COMMENT 'Ngày bắt đầu',
   `ENDDATE` date NOT NULL COMMENT 'Ngày kết thúc',
-  `HOURLYPR` int(1) NOT NULL DEFAULT '0' COMMENT 'Có khung giờ cố định?',
-  `STARTHOUR` int(11) DEFAULT NULL COMMENT 'Giờ bắt đầu',
-  `ENDHOUR` int(11) DEFAULT NULL COMMENT 'Giờ kết thúc',
-  `EMPID` int(11) NOT NULL COMMENT 'Người tạo',
-  PRIMARY KEY (`RCPPR_ID`),
-  KEY `ACCOUNTID` (`EMPID`)
+  `EMPID` int(11) NOT NULL COMMENT 'Người tạo'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Khuyến mãi trên hóa đơn';
+
+--
+-- RELATIONSHIPS FOR TABLE `receipt_promotion`:
+--   `EMPID`
+--       `admin` -> `EMPID`
+--
 
 --
 -- Triggers `receipt_promotion`
@@ -908,17 +1012,23 @@ DELIMITER ;
 --
 -- Table structure for table `receipt_promotion_detail`
 --
+-- Creation: Jun 06, 2018 at 04:12 AM
+--
 
 DROP TABLE IF EXISTS `receipt_promotion_detail`;
-CREATE TABLE IF NOT EXISTS `receipt_promotion_detail` (
-  `RCPPR_DTLID` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Mã chi tiết khuyến mãi',
+CREATE TABLE `receipt_promotion_detail` (
+  `RCPPR_DTLID` int(11) NOT NULL COMMENT 'Mã chi tiết khuyến mãi',
   `RCPPR_ID` int(11) NOT NULL COMMENT 'Mã khuyến mãi',
   `MINRCPVALUE` decimal(13,2) NOT NULL COMMENT 'Giá trị hóa đơn tối thiểu',
   `MAXRCPVALUE` decimal(13,2) NOT NULL COMMENT 'Giá trị hóa đơn tối đa',
-  `PROVALUE` int(2) NOT NULL DEFAULT '10' COMMENT 'Giá trị khuyến mãi (%)',
-  PRIMARY KEY (`RCPPR_DTLID`),
-  KEY `RCPPR_ID` (`RCPPR_ID`)
+  `PROVALUE` int(2) NOT NULL DEFAULT '10' COMMENT 'Giá trị khuyến mãi (%)'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Chi tiết khuyến mãi';
+
+--
+-- RELATIONSHIPS FOR TABLE `receipt_promotion_detail`:
+--   `RCPPR_ID`
+--       `receipt_promotion` -> `RCPPR_ID`
+--
 
 --
 -- Triggers `receipt_promotion_detail`
@@ -942,17 +1052,215 @@ DELIMITER ;
 -- --------------------------------------------------------
 
 --
--- Table structure for table `receipt_promotion_req`
+-- Table structure for table `reg-email`
+--
+-- Creation: Jun 27, 2018 at 05:10 PM
 --
 
-DROP TABLE IF EXISTS `receipt_promotion_req`;
-CREATE TABLE IF NOT EXISTS `receipt_promotion_req` (
-  `RCPPR_DTLID` int(11) NOT NULL COMMENT 'Mã chi tiết khuyến mãi',
-  `ITEMID` int(11) NOT NULL COMMENT 'Mã món',
-  `MINQUANT` int(11) NOT NULL DEFAULT '1' COMMENT 'Số lượng tối thiểu',
-  PRIMARY KEY (`RCPPR_DTLID`,`ITEMID`),
-  KEY `ITEMID` (`ITEMID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Điều kiện khuyến mãi';
+DROP TABLE IF EXISTS `reg-email`;
+CREATE TABLE `reg-email` (
+  `EMAIL` text NOT NULL COMMENT 'Email đăng ký nhận tin'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- RELATIONSHIPS FOR TABLE `reg-email`:
+--
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `account`
+--
+ALTER TABLE `account`
+  ADD PRIMARY KEY (`ACCOUNTID`),
+  ADD UNIQUE KEY `ACCOUNTUSER` (`ACCOUNTUSER`);
+
+--
+-- Indexes for table `admin`
+--
+ALTER TABLE `admin`
+  ADD PRIMARY KEY (`EMPID`);
+
+--
+-- Indexes for table `blog`
+--
+ALTER TABLE `blog`
+  ADD PRIMARY KEY (`BLOGID`),
+  ADD KEY `EMPID` (`EMPID`) USING BTREE;
+
+--
+-- Indexes for table `cart`
+--
+ALTER TABLE `cart`
+  ADD PRIMARY KEY (`CARTID`),
+  ADD KEY `ACCOUNTID` (`ACCOUNTID`);
+
+--
+-- Indexes for table `cart_detail`
+--
+ALTER TABLE `cart_detail`
+  ADD PRIMARY KEY (`CARTID`,`ITEMID`),
+  ADD KEY `ITEMID` (`ITEMID`);
+
+--
+-- Indexes for table `cart_detail_combo`
+--
+ALTER TABLE `cart_detail_combo`
+  ADD PRIMARY KEY (`CARTID`,`COMBOID`),
+  ADD KEY `COMBOID` (`COMBOID`);
+
+--
+-- Indexes for table `combo`
+--
+ALTER TABLE `combo`
+  ADD PRIMARY KEY (`COMBOID`);
+
+--
+-- Indexes for table `combo_detail`
+--
+ALTER TABLE `combo_detail`
+  ADD PRIMARY KEY (`COMBOID`,`ITEMID`),
+  ADD KEY `ITEMID` (`ITEMID`);
+
+--
+-- Indexes for table `item`
+--
+ALTER TABLE `item`
+  ADD PRIMARY KEY (`ITEMID`),
+  ADD KEY `ITEM_TYPEID` (`ITEM_TYPEID`);
+
+--
+-- Indexes for table `item_category`
+--
+ALTER TABLE `item_category`
+  ADD PRIMARY KEY (`ITEM_CATEGORYID`);
+
+--
+-- Indexes for table `item_promotion`
+--
+ALTER TABLE `item_promotion`
+  ADD PRIMARY KEY (`ITMPR_ID`),
+  ADD KEY `ACCOUNTID` (`EMPID`);
+
+--
+-- Indexes for table `item_promotion_detail`
+--
+ALTER TABLE `item_promotion_detail`
+  ADD PRIMARY KEY (`ITMPR_ID`,`ITEMID`),
+  ADD KEY `ITEMID` (`ITEMID`);
+
+--
+-- Indexes for table `item_type`
+--
+ALTER TABLE `item_type`
+  ADD PRIMARY KEY (`ITEM_TYPEID`),
+  ADD KEY `ITEM_CATEGORYID` (`ITEM_CATEGORYID`);
+
+--
+-- Indexes for table `receipt`
+--
+ALTER TABLE `receipt`
+  ADD PRIMARY KEY (`RECEIPTID`),
+  ADD KEY `ACCOUNTID` (`ACCOUNTID`);
+
+--
+-- Indexes for table `receipt_detail`
+--
+ALTER TABLE `receipt_detail`
+  ADD PRIMARY KEY (`RECEIPTID`,`ITEMID`),
+  ADD KEY `ITEMID` (`ITEMID`);
+
+--
+-- Indexes for table `receipt_promotion`
+--
+ALTER TABLE `receipt_promotion`
+  ADD PRIMARY KEY (`RCPPR_ID`),
+  ADD KEY `ACCOUNTID` (`EMPID`);
+
+--
+-- Indexes for table `receipt_promotion_detail`
+--
+ALTER TABLE `receipt_promotion_detail`
+  ADD PRIMARY KEY (`RCPPR_DTLID`),
+  ADD KEY `RCPPR_ID` (`RCPPR_ID`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `account`
+--
+ALTER TABLE `account`
+  MODIFY `ACCOUNTID` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Mã tài khoản', AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT for table `admin`
+--
+ALTER TABLE `admin`
+  MODIFY `EMPID` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Mã nhân viên', AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `blog`
+--
+ALTER TABLE `blog`
+  MODIFY `BLOGID` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Mã bài';
+
+--
+-- AUTO_INCREMENT for table `cart`
+--
+ALTER TABLE `cart`
+  MODIFY `CARTID` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Mã giỏ', AUTO_INCREMENT=8;
+
+--
+-- AUTO_INCREMENT for table `combo`
+--
+ALTER TABLE `combo`
+  MODIFY `COMBOID` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Mã Combo', AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for table `item`
+--
+ALTER TABLE `item`
+  MODIFY `ITEMID` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Mã món', AUTO_INCREMENT=31;
+
+--
+-- AUTO_INCREMENT for table `item_category`
+--
+ALTER TABLE `item_category`
+  MODIFY `ITEM_CATEGORYID` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Mã danh mục', AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT for table `item_promotion`
+--
+ALTER TABLE `item_promotion`
+  MODIFY `ITMPR_ID` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Mã khuyến mãi';
+
+--
+-- AUTO_INCREMENT for table `item_type`
+--
+ALTER TABLE `item_type`
+  MODIFY `ITEM_TYPEID` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Mã loại', AUTO_INCREMENT=26;
+
+--
+-- AUTO_INCREMENT for table `receipt`
+--
+ALTER TABLE `receipt`
+  MODIFY `RECEIPTID` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Mã hóa đơn';
+
+--
+-- AUTO_INCREMENT for table `receipt_promotion`
+--
+ALTER TABLE `receipt_promotion`
+  MODIFY `RCPPR_ID` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Mã khuyến mãi';
+
+--
+-- AUTO_INCREMENT for table `receipt_promotion_detail`
+--
+ALTER TABLE `receipt_promotion_detail`
+  MODIFY `RCPPR_DTLID` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Mã chi tiết khuyến mãi';
 
 --
 -- Constraints for dumped tables
@@ -1040,13 +1348,6 @@ ALTER TABLE `receipt_promotion`
 --
 ALTER TABLE `receipt_promotion_detail`
   ADD CONSTRAINT `receipt_promotion_detail_ibfk_1` FOREIGN KEY (`RCPPR_ID`) REFERENCES `receipt_promotion` (`RCPPR_ID`) ON DELETE CASCADE;
-
---
--- Constraints for table `receipt_promotion_req`
---
-ALTER TABLE `receipt_promotion_req`
-  ADD CONSTRAINT `receipt_promotion_req_ibfk_1` FOREIGN KEY (`ITEMID`) REFERENCES `item` (`ITEMID`) ON DELETE CASCADE,
-  ADD CONSTRAINT `receipt_promotion_req_ibfk_2` FOREIGN KEY (`RCPPR_DTLID`) REFERENCES `receipt_promotion_detail` (`RCPPR_DTLID`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
