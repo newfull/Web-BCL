@@ -2439,3 +2439,8 @@ label.user-city, label.user-dist{
     overflow: auto;
     white-space: nowrap;
 }
+
+.error-label{
+  color: red;
+  font-weight: bold;
+}

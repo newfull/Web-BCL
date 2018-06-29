@@ -37,7 +37,7 @@
             <div class="row">
             <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
             <span class="list-header-left">Tổng số sản phẩm:
-              <?
+              <?php
               if(isEmpty($cart_details_combo))
                  echo count($cart_details);
               else
@@ -50,7 +50,7 @@
              ?>
               <span class="btn-delete">
                 <i class="glyphicon glyphicon-trash" onclick="delete_all_cart_detail(
-                <?
+                <?php
                 if(isEmpty($cart_details_combo))
                   echo $cart_details[0]['Gio'];
                 else
@@ -67,7 +67,7 @@
           </div>
           </div>
         </div>
-          <?
+          <?php
           if(!isEmpty($cart_details_combo)){
             for($i = 0; $i < count($cart_details_combo); $i++)
             $create_content .= '
@@ -189,7 +189,7 @@
                     <div class="location-label">Địa chỉ giao hàng</div>
                     <div class="location-content">
                       <i class="glyphicon glyphicon-map-marker"></i>
-                      <div class="current-address"><? echo $current_user->getAdd(); ?></div>
+                      <div class="current-address"><?php echo $current_user->getAdd(); ?></div>
                       <div class="location-change">
                         <a href='/quan-ly?sec=eadd' class="location-link">THAY ĐỔI</a>
                       </div>
@@ -205,7 +205,7 @@
                     <div class="checkout-summary-rows">
                       <div class="checkout-summary-row">
                         <div class="checkout-summary-label">Tạm tính (
-                          <?
+                          <?php
                         if(isEmpty($cart_details_combo))
                            echo count($cart_details);
                         else
@@ -216,7 +216,7 @@
                             echo $cart_length;
                           }
                        ?> sản phẩm)</div>
-                        <div class="checkout-summary-value"><? echo number_format(cart_value($conn, $current_user->getCart()),0); ?> ₫</div>
+                        <div class="checkout-summary-value"><?php echo number_format(cart_value($conn, $current_user->getCart()),0); ?> ₫</div>
                       </div><div class="checkout-summary-row">
                         <div class="checkout-summary-label">Phí giao hàng
                         </div>
@@ -229,7 +229,7 @@
                       <div class="checkout-order-total-row">
                         <div class="checkout-order-total-title">Tổng cộng
                         </div>
-                        <div class="checkout-order-total-fee"><? echo number_format(cart_value($conn, $current_user->getCart()),0); ?> ₫
+                        <div class="checkout-order-total-fee"><?php echo number_format(cart_value($conn, $current_user->getCart()),0); ?> ₫
                         </div>
                       </div>
                       <button type="button" class="next-btn next-btn-primary next-btn-large checkout-order-total-button" data-target='#checkout' data-toggle='modal' data-dismiss='modal'>ĐẶT HÀNG</button>
@@ -239,7 +239,7 @@
               </div>
             </div>
 </div>
-      <?}
+      <?php }
       ?>
     </div>
   </div>

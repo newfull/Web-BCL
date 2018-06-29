@@ -623,6 +623,10 @@ function reload_info(){
   $(".liked-items").load("./quan-ly.php .liked-items-content");
   $(".liked-combos").load("./quan-ly.php .liked-combos-content");
   $(".current-address").load("./quan-ly.php .cur-add");
+  $("#user-add-city").selectpicker("val", "");
+  $("#row-user-ward").addClass('display-none');
+  $("#row-user-dist").addClass('display-none');
+  $("#row-user-street").addClass('display-none');
   $(".wrapper-his").load("./quan-ly.php .wrapper-his-content");
 
   load_dob(get_dob());
@@ -779,10 +783,67 @@ function get_add(){
 }
 
 $("a[href='#eadd']").click(function(){
-    $("#user-add-city").selectpicker("val", "");
-    $("#row-user-ward").addClass('display-none');
-    $("#row-user-dist").addClass('display-none');
-    $("#row-user-street").addClass('display-none');
+  $("#user-add-city").selectpicker("val", "");
+  $("#row-user-ward").addClass('display-none');
+  $("#row-user-dist").addClass('display-none');
+  $("#row-user-street").addClass('display-none');
+});
+
+function checkPhoneNumber(phone) {
+    phone = phone.replace('(+84)', '0');
+    phone = phone.replace('+84', '0');
+    phone = phone.replace('0084', '0');
+    phone = phone.replace(/ /g, '');
+    if (phone != '') {
+        var firstNumber = phone.substring(0, 2);
+        if ((firstNumber == '09' || firstNumber == '08') && phone.length == 10) {
+            if (phone.match(/^\d{10}/)) {
+                return true;
+            }
+        } else if (firstNumber == '01' && phone.length == 11) {
+            if (phone.match(/^\d{11}/)) {
+                return true;
+            }
+        }
+    }
+
+    return false;
+};
+
+function checkEmail(email) {
+    var filter = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+    if (!filter.test(email.value)) {
+      return false;
+    }
+    else{
+      return true;
+    }
+}
+
+$(".update-info").click(function(){
+  var name = $('#user-name').val();
+  var username = $('#user-username').val();
+  var email = $('#user-email').val();
+  var dob_d = $('#user-dob-day').val();
+  var dob_m = $('#user-dob-month').val();
+  var dob_y = $('#user-dob-year').val();
+
+  var male = "";
+  if($('#user-gender-nam').is(":checked"))
+    male = 1;
+  else male = 0;
+
+  var phone = $('#user-phonenumber').val();
+
+  var error = $('.user-error-label');
+  if(name == "")
+    error.html('Không được để trống họ tên');
+  else
+    if(checkEmail(email))
+      error.html('Email không hợp lệ!');
+    else
+      if(checkPhoneNumber(phone))
+        error.html('Số điện thoại không hợp lệ');
 });
 
 $(document).ready(function(e){

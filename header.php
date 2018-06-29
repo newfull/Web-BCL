@@ -72,7 +72,7 @@ if(!empty($_SESSION['current'])){
                 <a href="/trang-chu" class="active">Trang chủ</a>
                 <a href="/thuc-don/">Thực đơn</a>
                 <a href="/khuyen-mai">Tin tức</a>
-                <a href=<?
+                <a href=<?php
                   $create_content = "";
                   if(!empty($_SESSION['current'])) $create_content = '/quan-ly';
                   else $create_content = '"#popup-login" data-toggle="modal"';
