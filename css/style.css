@@ -1061,6 +1061,7 @@ imp{
 #carousel-header{
   top: -15px;
   left: 230px;
+  max-width: 888px;
 }
 
 .carousel-inner.vertical {
@@ -1918,42 +1919,9 @@ margin-bottom: 5px;
   margin-right: 10px;
 }
 
-.info-sect {
+#info-sect {
     padding: 16px 12px 0;
     background: #fff
-}
-
-.info-sect-heading {
-    font-size: 18px;
-    color: #212121;
-    margin-bottom: 14px;
-    position: relative;
-    font-weight: 500
-}
-
-.info-sect-content {
-    border-bottom: 1px solid #eff0f5;
-    padding-bottom: 16px
-}
-
-.info-sect-content:after {
-    content: "";
-    display: table;
-    clear: both
-}
-
-.info-sect:last-child .info-sect-content {
-    border-bottom: none
-}
-
-.info-sect-edit {
-    position: absolute;
-    top: 0;
-    right: 0;
-    text-decoration: none;
-    font-size: 14px;
-    color: #1a9cb7;
-    cursor: pointer
 }
 
 .checkout-summary-rows {
@@ -2315,21 +2283,11 @@ margin-bottom: 5px;
   width: 200px;
 }
 
-@media(min-width: 960px){
-   .user-sect-left-rev{
-     display: block;
-   }
-
-   .user-sect-right-rev{
-     display: block;
-   }
-}
-
-.user-sect a{
+#user-sect a, #login-sect a{
   color: crimson;
 }
 
-.user-sect .active a{
+#user-sect .active a, #login-sect .active a{
   color: white;
   background-color: crimson !important;
 }
@@ -2442,5 +2400,9 @@ label.user-city, label.user-dist{
 
 .error-label{
   color: red;
+  font-weight: bold;
+}
+
+#search_result #search_txt{
   font-weight: bold;
 }

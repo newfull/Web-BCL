@@ -6,7 +6,7 @@
 <?php
 if(!empty($_SESSION['current'])){
   ?>
-  <div class="container container-sect user-sect col-xs-12 col-lg-12" id="user-sect">
+  <div class="container container-sect col-xs-12 col-lg-12" id="user-sect">
     <div class="row sect-title">
       <div class="col-lg-2">
       </div>
@@ -16,7 +16,7 @@ if(!empty($_SESSION['current'])){
     </div>
 
     <div class="row sect-content">
-      <div class="col-lg-2 user-sect-left-rev display-none">
+      <div class="hidden-xs col-lg-2">
       </div>
       <div class="col-xs-5 col-lg-2">
         <!-- Nav tabs -->
@@ -35,7 +35,7 @@ if(!empty($_SESSION['current'])){
           <div id="user" class="tab-pane fade in active">
             <div class="wrapper-user">
               <div class="wrapper-user-content">
-                <form id='user_info' action='' method='post' accept-charset='UTF-8'>
+                <form id='user_info' onsubmit="return false;">
                   <div class="info1">
                     <div class="info1-content">
                       <div class="row">
@@ -49,7 +49,7 @@ if(!empty($_SESSION['current'])){
                         </div>
                         <div class="col-xs-12 col-lg-4">
                           <input id="user-name" name="name" class="form-control" type="text" required=""
-                          <?php echo " value='".$current_user->getName()."'";?>
+                          <? echo " value='".$current_user->getName()."'";?>
                           >
                         </div>
                         <div class="hidden-xs col-lg-4">
@@ -62,7 +62,7 @@ if(!empty($_SESSION['current'])){
                         </div>
                         <div class="col-xs-12 col-lg-4">
                           <input id="user-username" class="form-control" type="text" required="" readonly
-                          <?php echo " value='".$current_user->getUser()."'";?>
+                          <? echo " value='".$current_user->getUser()."'";?>
                           >
                         </div>
                         <div class="hidden-xs col-lg-4">
@@ -75,20 +75,8 @@ if(!empty($_SESSION['current'])){
                         </div>
                         <div class="col-xs-12 col-lg-4">
                           <input id="user-email" name="email" class="form-control" type="text" required=""
-                          <?php echo " value='".$current_user->getEmail()."'";?>
+                          <? echo " value='".$current_user->getEmail()."'";?>
                           >
-                        </div>
-                        <div class="hidden-xs col-lg-4">
-                        </div>
-                      </div>
-
-                      <div class="row">
-                        <div class="col-xs-12 col-lg-4">
-                          <label class="nhan">Địa chỉ: </label>
-                        </div>
-                        <div class="col-xs-12 col-lg-4">
-                          <input id="user-address" name="address" class="form-control" type="text" required="" readonly
-                          <?php echo " value='".$current_user->getAdd()."'";?>>
                         </div>
                         <div class="hidden-xs col-lg-4">
                         </div>
@@ -148,7 +136,7 @@ if(!empty($_SESSION['current'])){
                         </div>
                         <div class="col-xs-12 col-lg-4">
                           <input id="user-phonenumber" class="form-control" name="phonenumber" type="text" maxlength="11" required=""
-                          <?php echo " value='".$current_user->getPhone()."'";?>
+                          <? echo " value='".$current_user->getPhone()."'";?>
                           >
                         </div>
                         <div class="hidden-xs col-lg-4">
@@ -182,12 +170,12 @@ if(!empty($_SESSION['current'])){
                     </div>
                     <div class="col-xs-12 col-md-6 col-lg-3">
                       <div class="form-group">
-                        <button type="reset" class="btn btn-default btn-block btn-lg btn-huy" onclick="reload_info()">Huỷ</button>
+                        <button type="reset" class="btn btn-default btn-block btn-lg btn-huy" onclick="reload_user_sect()">Huỷ</button>
                       </div>
                     </div>
                     <div class="col-xs-12 col-md-6 col-lg-3">
                       <div class="form-group">
-                        <button class="btn btn-danger btn-block btn-lg btn-dk update-info" type="button">Cập nhật</button>
+                        <button class="btn btn-danger btn-block btn-lg btn-dk update-info" type="submit">Cập nhật</button>
                       </div>
                     </div>
                     <div class="hidden-xs col-lg-4">
@@ -200,13 +188,18 @@ if(!empty($_SESSION['current'])){
           <div id="eadd" class="tab-pane fade">
             <div class="wrapper-add">
               <div class="wrapper-add-content">
-                <form id='user_change_add' action='' method='post' accept-charset='UTF-8'>
+                <form id='user_change_add'>
+                  <div class="row">
+                    <div class="col-xs-12 col-lg-12">
+                      <label class="error-label user-add-error-label"></label>
+                    </div>
+                  </div>
                   <div class="row">
                     <div class="col-xs-12 col-lg-4">
                       <label class="nhan">Địa chỉ hiện tại: </label>
                     </div>
                     <div class="col-xs-12 col-lg-6 current-address">
-                      <label class="cur-add"><?php echo $current_user->getAdd(); ?></label>
+                      <label class="cur-add"><? echo $current_user->getAdd(); ?></label>
                     </div>
                     <div class="hidden-xs col-lg-2">
                     </div>
@@ -214,7 +207,7 @@ if(!empty($_SESSION['current'])){
                   <br>
                   <div class="row" id="row-user-city">
                     <div class="col-xs-12 col-lg-4">
-                      <label class="nhan user-city">Tỉnh: </label>
+                      <label class="nhan user-city">Tỉnh/ thành phố: </label>
                     </div>
                     <div class="col-xs-12 col-lg-4">
                       <select class="selectpicker" data-live-search="true" data-size="14" title="---Chọn một tỉnh/thành phố---" name="add_city" id="user-add-city" data-width="100%"></select>
@@ -250,7 +243,7 @@ if(!empty($_SESSION['current'])){
                       <label class="nhan">Đường: </label>
                     </div>
                     <div class="col-xs-12 col-lg-4">
-                      <input class="add_street" name="add_street" type="text" required="">
+                      <input class="add_street" id="user-add-street" name="add_street" type="text" required="">
                     </div>
                     <div class="hidden-xs col-lg-4">
                     </div>
@@ -261,12 +254,12 @@ if(!empty($_SESSION['current'])){
                     </div>
                     <div class="col-xs-4 col-md-2 col-lg-1">
                       <div class="form-group">
-                        <button type="reset" class="btn btn-default" onclick="reload_info()">Huỷ</button>
+                        <button type="reset" class="btn btn-default" onclick="reload_add_sect()">Huỷ</button>
                       </div>
                     </div>
                     <div class="col-xs-5 col-md-2 col-lg-1">
                       <div class="form-group">
-                        <button class="btn btn-danger update-add">Cập nhật</button>
+                        <button class="btn btn-danger update-add" type="button">Cập nhật</button>
                       </div>
                     </div>
                     <div class="col-xs-1 col-md-3 col-lg-5">
@@ -286,7 +279,7 @@ if(!empty($_SESSION['current'])){
           <div id="liked" class="tab-pane fade">
             <div class="liked-combos">
               <div class="liked-combos-content">
-                <?php
+                <?
                 $create_tab_content = "";
                 $list = liked_combos($conn, $current_user->getID());
                 if(isEmpty($list)) $num = 0;
@@ -307,7 +300,7 @@ if(!empty($_SESSION['current'])){
             </div>
             <div class="liked-items">
               <div class="liked-items-content">
-                <?php
+                <?
                 $create_tab_content = "";
                 $list = liked_items($conn, $current_user->getID());
                 if(isEmpty($list)) $num = 0;
@@ -332,7 +325,12 @@ if(!empty($_SESSION['current'])){
           <div id="epass" class="tab-pane fade">
             <div class="wrapper-change-pass">
               <div class="wrapper-change-pass-content">
-                <form id='change-password' action='' method='post' accept-charset='UTF-8'>
+                <form id='change-password' onsubmit="return false;">
+                  <div class="row">
+                    <div class="col-xs-12 col-lg-12">
+                      <label class="error-label user-pass-error-label"></label>
+                    </div>
+                  </div>
                   <div class="row">
                     <div class="col-xs-12 col-lg-4">
                       <label class="nhan">Mật khẩu cũ: </label>
@@ -369,12 +367,12 @@ if(!empty($_SESSION['current'])){
                     </div>
                     <div class="col-xs-4 col-md-2 col-lg-1">
                       <div class="form-group">
-                        <button type="reset" class="btn btn-default" onclick="reload_info()">Huỷ</button>
+                        <button type="reset" class="btn btn-default" onclick="reload_epass_sect()">Huỷ</button>
                       </div>
                     </div>
                     <div class="col-xs-5 col-md-2 col-lg-1">
                       <div class="form-group">
-                        <button class="btn btn-danger update-pass">Cập nhật</button>
+                        <button class="btn btn-danger update-pass" type="submit">Cập nhật</button>
                       </div>
                     </div>
                     <div class="col-xs-1 col-md-3 col-lg-5">
@@ -384,15 +382,15 @@ if(!empty($_SESSION['current'])){
               </div>
             </div>
           </div>
-          <div class="hidden-lg user-sect-right-rev display-none">
-          </div>
         </div>
       </div>
-      <?php
+    </div>
+  </div>
+      <?
     }
     else{ ?>
       <script type="text/javascript">location.href = './dang-nhap';</script>
-      <?php } ?>
+      <? } ?>
       <?php include_once("footer.php");?>
 
       <?php

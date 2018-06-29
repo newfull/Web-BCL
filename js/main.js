@@ -617,19 +617,41 @@ $(window).focus(function() {
 
 });
 
-function reload_info(){
+function reload_user_sect(){
   $(".info1").load("./quan-ly.php .info1-content");
   $(".info2").load("./quan-ly.php .info2-content");
+  load_dob(get_dob());
+}
+
+function reload_likes_sect(){
   $(".liked-items").load("./quan-ly.php .liked-items-content");
   $(".liked-combos").load("./quan-ly.php .liked-combos-content");
+}
+
+function reload_add_sect(){
   $(".current-address").load("./quan-ly.php .cur-add");
+  $(".user-add-error-label").html("");
   $("#user-add-city").selectpicker("val", "");
   $("#row-user-ward").addClass('display-none');
   $("#row-user-dist").addClass('display-none');
   $("#row-user-street").addClass('display-none');
-  $(".wrapper-his").load("./quan-ly.php .wrapper-his-content");
+}
 
-  load_dob(get_dob());
+function reload_his_sect(){
+  $(".wrapper-his").load("./quan-ly.php .wrapper-his-content");
+}
+
+function reload_epass_sect(){
+  $(".user-pass-error-label").html("");
+  $("#change-password input[type='password']").val("");
+}
+
+function reload_info(){
+  reload_user_sect();
+  reload_likes_sect();
+  reload_add_sect();
+  reload_his_sect();
+  reload_epass_sect();
 }
 
 $("a[data-toggle='pill']").click(function(){
@@ -759,6 +781,7 @@ $("#user-add-dist").change(function(){
 
 $("#user-add-ward").change(function(){
   $("#row-user-street").removeClass('display-none');
+  $('#user-add-street').val("");
 });
 
 function get_add(){
@@ -790,6 +813,7 @@ $("a[href='#eadd']").click(function(){
 });
 
 function checkPhoneNumber(phone) {
+    var flag = false;
     phone = phone.replace('(+84)', '0');
     phone = phone.replace('+84', '0');
     phone = phone.replace('0084', '0');
@@ -798,21 +822,21 @@ function checkPhoneNumber(phone) {
         var firstNumber = phone.substring(0, 2);
         if ((firstNumber == '09' || firstNumber == '08') && phone.length == 10) {
             if (phone.match(/^\d{10}/)) {
-                return true;
+                flag = true;
             }
         } else if (firstNumber == '01' && phone.length == 11) {
             if (phone.match(/^\d{11}/)) {
-                return true;
+                flag = true;
             }
         }
     }
 
-    return false;
+    return flag;
 };
 
 function checkEmail(email) {
     var filter = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
-    if (!filter.test(email.value)) {
+    if (!filter.test(email)) {
       return false;
     }
     else{
@@ -834,16 +858,168 @@ $(".update-info").click(function(){
   else male = 0;
 
   var phone = $('#user-phonenumber').val();
-
   var error = $('.user-error-label');
+
+  var noti = "";
+  if($('#user-chkbox-not').is(":checked"))
+    noti = 1;
+  else noti = 0;
+
   if(name == "")
     error.html('Không được để trống họ tên');
   else
-    if(checkEmail(email))
+    if(checkEmail(email) == false)
       error.html('Email không hợp lệ!');
     else
-      if(checkPhoneNumber(phone))
+      if(checkPhoneNumber(phone) == false)
         error.html('Số điện thoại không hợp lệ');
+      else
+        {
+          $.ajax({
+            cache: false,
+            type: "POST",
+            url:'./includes/functions.php',
+            data: {
+              funct: 'change_user_info',
+              name: name,
+              email: email,
+              phone: phone,
+              sex: male,
+              day: dob_d,
+              month: dob_m,
+              year: dob_y,
+              noti: noti
+            },
+            success: function () {
+              error.html('Thay đổi thông tin thành công');
+            }
+          });
+        }
+});
+
+$(".update-add").click(function(){
+  var error = $('.user-add-error-label');
+  if($('#user-add-city').val() == "")
+    error.html('Xin hãy chọn một tỉnh, thành phố');
+  else
+    if($('#user-add-dist').val() == "")
+      error.html('Xin hãy chọn một quận, huyện');
+    else
+      if($('#user-add-ward').val() == "")
+        error.html('Xin hãy chọn một xã, phường');
+      else
+        if($('#user-add-street').val() == "")
+          error.html("Xin hãy điền đầy đủ địa chỉ");
+        else
+        {
+          error.html("");
+          var add = $('#user-add-street').val() + ", " + $('#user-add-ward').val();
+
+          $.ajax({
+            cache: false,
+            type: "POST",
+            url:'./includes/functions.php',
+            data: {
+              funct: 'change_add',
+              address: add
+            },
+            success: function () {
+              error.html('Thay đổi địa chỉ thành công');
+              reload_add_sect();
+            }
+          });
+        }
+});
+
+$(".update-pass").click(function(){
+  var error = $('.user-pass-error-label');
+  if($('#old-password').val() == "")
+    error.html('Xin hãy nhập vào mật khẩu cũ');
+  else
+    if($('#new-password').val() == "")
+      error.html('Xin hãy nhập mật khẩu mới');
+    else
+      if($('#new-password-valid').val() == "")
+        error.html('Xin hãy xác nhận lại mật khẩu mới');
+      else
+        if($('#new-password').val() != $('#new-password-valid').val())
+          error.html("Bạn đã nhập sai mật khẩu mới!");
+        else
+          if($('#new-password').val().length < 8)
+            error.html("Mật khẩu không được ít hơn 8 kí tự!");
+          else
+            if($('#new-password').val() == $('#old-password').val())
+              error.html("Mật khẩu mới không được giống mật khẩu cũ");
+            else
+            {
+              var pass_ok = "0";
+              jQuery.ajaxSetup({async:false});
+              $.ajax({
+                cache: false,
+                async: false,
+                type: "POST",
+                url: './includes/functions.php',
+                data: {
+                  funct: 'check_pass',
+                  pass: $('#old-password').val()
+                },
+                success: function(response){
+                  pass_ok = response;
+                }
+              });
+
+                if(pass_ok == "0")
+                  error.html("Mật khẩu cũ không đúng!");
+                else{
+                  jQuery.ajaxSetup({async:false});
+                  $.ajax({
+                    cache: false,
+                    async: false,
+                    type: "POST",
+                    url: './includes/functions.php',
+                    data: {
+                      funct: 'change_pass',
+                      newpass: $('#new-password').val()
+                    },
+                    success: function(){
+                      $.ajax({
+                        url:'../includes/logout.php',
+                        type:'post',
+                        success:function(response){
+                          $('#error-popup .modal-body').html("Đổi mật khẩu thành công.<br>Vui lòng đăng nhập lại");
+                          $('#error-popup').modal('show');
+                          setTimeout(function(){ window.location = "/dang-nhap"; },800);
+                        }
+                      });
+                    }
+                  });
+                }
+             }
+});
+
+$("#search_menu").keyup(function(){
+  if($("#search_menu").val() == ""){
+    $("#show_menu").removeClass('display-none');
+    $("#search_result").addClass('display-none');
+  }
+  else
+  {
+    $("#show_menu").addClass('display-none');
+    $("#search_result").removeClass('display-none');
+    $("#search_result #search_txt").html($("#search_menu").val());
+    $.ajax({
+      cache: false,
+      async: false,
+      type: "GET",
+      url: './includes/search.php',
+      data: {
+        keyword: $("#search_menu").val()
+      },
+      success: function(response){
+        $("#search_result .search_result_content").html(response);
+      }
+    });
+  }
 });
 
 $(document).ready(function(e){
@@ -884,11 +1060,8 @@ $(document).ready(function(e){
        prevArrow: '.menu-tabs-control-left',
        nextArrow: '.menu-tabs-control-right',
        infinite: true,
-       slidesToShow: 3,
+       slidesToShow: 2,
        responsive: [{
-         breakpoint: 935,
-         settings: { slidesToShow: 2}
-       }, {
          breakpoint: 769,
          settings: { slidesToShow: 1}
        }]

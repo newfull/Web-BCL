@@ -3,7 +3,7 @@
 </head>
 <?php include_once("header.php");?>
 
-<div class="container container-sect info-sect col-xs-12 col-lg-12" id="info-sect">
+<div class="container container-sect col-xs-12 col-lg-12" id="info-sect">
   <div class="row sect-title">
     <div class="col-lg-2">
     </div>

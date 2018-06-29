@@ -317,6 +317,34 @@ function add_cart_detail_combo($conn, $cartid, $comboid){
   return sp_exec_vars($conn, "SP_ADD_CART_DETAIL_COMBO", $cartid.",".$comboid);
 }
 
+function change_user_info($conn, $accid, $name, $email, $phone, $d, $m, $y, $sex, $noti){
+  return sp_exec_vars($conn, "SP_UPD_ACCOUNT_INFO", $accid.",".$name.",".$email.",".$phone.",".$d."-".$m."-".$y.",".$sex.",".$noti);
+}
+
+function change_add($conn, $accid, $add){
+  if($conn == "NULL")
+    return null;
+
+  $query = "CALL SP_UPD_ACCOUNT_ADD(\"".$accid."\",\"".$add."\");";
+  $stmt = $conn->query($query);
+}
+
+function check_pass($conn, $accid, $pass){
+  return fn_call_vars($conn, "FN_CHECK_PASS", $accid.",".md5($pass));
+}
+
+function change_pass($conn, $accid, $pass){
+  return sp_exec_vars($conn, "SP_UPD_ACCOUNT_PASS", $accid.",".md5($pass));
+}
+
+function search_menu_item($conn, $key){
+  return sp_call_vars($conn, "SP_GET_ITEM_BY_NAME", $key);
+}
+
+function search_menu_combo($conn, $key){
+  return sp_call_vars($conn, "SP_GET_COMBO_BY_NAME", $key);
+}
+
 if(isset($_POST['funct'])) {
   switch($_POST['funct']){
     case 'change_cart_details_quant':
@@ -345,6 +373,18 @@ if(isset($_POST['funct'])) {
       break;
     case 'add_combo_to_cart':
       add_cart_detail_combo($conn, $_POST['cart'], $_POST['combo']);
+      break;
+    case 'change_user_info':
+      change_user_info($conn, $_SESSION['current'], $_POST['name'], $_POST['email'], $_POST['phone'], $_POST['day'], $_POST['month'], $_POST['year'], $_POST['sex'], $_POST['noti']);
+      break;
+    case 'change_add':
+      change_add($conn, $_SESSION['current'], $_POST['address']);
+      break;
+    case 'check_pass':
+      echo check_pass($conn, $_SESSION['current'], $_POST['pass']);
+      break;
+    case 'change_pass':
+      change_pass($conn, $_SESSION['current'], $_POST['newpass']);
       break;
   }
 }

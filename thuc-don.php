@@ -13,7 +13,7 @@
   </div>
   <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
     <br>
-    <input type="text" class="search_menu" placeholder="Tìm kiếm sản phẩm" autofocus/>
+    <input type="text" class="search_menu" id="search_menu" placeholder="Tìm kiếm sản phẩm" autofocus/>
   </div>
   <div class="hidden-md col-lg-2">
   </div>
@@ -22,21 +22,21 @@
 <div class="container">
     <div class="row">
         <div class="col-xs-12">
-            <div class="tab" role="tabpanel">
+            <div class="tab" role="tabpanel" id="show_menu">
 
                 <!-- Nav tabs -->
                 <div class="row">
                 <div class="hidden-xs hidden-sm hidden-md col-lg-12">
                 <ul class="nav nav-tabs nav-tabs-item-cat" role="tablist">
-                  <li role='presentation'><a href='#Section0' role='tab' data-toggle='tab'></i>Toàn bộ (<?php echo count(all_item($conn)); ?>) </a></li>
-                  <li role='presentation'><a href='#Section1' role='tab' data-toggle='tab'></i>Combo</a></li>
+                  <li role='presentation'><a href='#Section0' role='tab' data-toggle='tab'>Toàn bộ (<?php echo count(all_item($conn)); ?>) </a></li>
+                  <li role='presentation'><a href='#Section1' role='tab' data-toggle='tab'>Combo</a></li>
                   <?php
                   $create_tab_content = "";
                   $tabs_num = count($tabs_name);
 
                   for($i = 0; $i < $tabs_num; $i++){
                     $create_tab_content .= "<li role='presentation'";
-                    $create_tab_content.= "><a href='#Section".($tabs_name[$i][0]+1)."' role='tab' data-toggle='tab'></i>";
+                    $create_tab_content.= "><a href='#Section".($tabs_name[$i][0]+1)."' role='tab' data-toggle='tab'>";
                     $create_tab_content .= $tabs_name[$i][1];
                     $create_tab_content .= "</a></li>";
                   }
@@ -74,7 +74,6 @@
 
                 <!-- Tab panes -->
                 <div class="tab-content tabs menu-content">
-                  <br><br>
                   <?php
                   $create_tab_content = "";
                     $create_tab_content .= "<div role='tabpanel' class='tab-pane fade in' id='Section0'>";
@@ -268,7 +267,13 @@
 
                   echo $create_tab_content;
                   ?>
+
                 </div>
+            </div>
+            <div id="search_result" class="search_result display-none">
+              <h4>Kết quả tìm kiếm sản phẩm: <span id="search_txt"></span></h4>
+              <div class="search_result_content">
+              </div>
             </div>
         </div>
 
