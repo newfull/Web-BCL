@@ -31,6 +31,10 @@ Redirect /footer /trang-chu
 Redirect /functions /trang-chu
 Redirect /favicon.ico /trang-chu
 
+Redirect /dang-ky /dang-nhap?sec=reg
+
+Redirect /quen-mat-khau /dang-nhap?sec=fgpass
+
 Redirect /cart /gio-hang
 Redirect /gio /gio-hang
 Redirect /giohang /gio-hang

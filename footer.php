@@ -105,6 +105,5 @@
 	<script src="/js/velocity.min.js"></script>
 	<script src="/js/slick.min.js"></script>
 	<script src="/js/bootstrap-select.min.js"></script>
-	<script src="/js/md5.js"></script>
 	<!-- /Script -->
 </body>

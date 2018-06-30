@@ -12,6 +12,16 @@ body{
   html, body { max-width: 100% !important;}
 }
 
+input[type="search"] {
+ -webkit-box-sizing: content-box;
+ -moz-box-sizing: content-box;
+ box-sizing: content-box;
+ -webkit-appearance: searchfield;
+}
+
+input[type="search"]::-webkit-search-cancel-button {
+-webkit-appearance: searchfield-cancel-button;
+}
 /* Preloader Style */
 .preloader{
   position: relative;
@@ -465,7 +475,9 @@ input[type=radio]:not(old):checked + label{
   color: #15608c;
 }
 
-#chkbox-label, #chkbox-agreement, #chkbox-email{
+#chkbox-label, #chkbox-agreement,
+#chkbox-email, #login-page-save-user,
+#signup-chkagree, #signup-chknoti{
   padding-top: 10px;
   margin-left: 0px;
   font-size: 16px;
@@ -2280,7 +2292,7 @@ margin-bottom: 5px;
 
 .btn-xem-menu{
   margin-top: 20px;
-  width: 200px;
+  width: 200px
 }
 
 #user-sect a, #login-sect a{
@@ -2290,6 +2302,11 @@ margin-bottom: 5px;
 #user-sect .active a, #login-sect .active a{
   color: white;
   background-color: crimson !important;
+}
+
+#login-sect #signup-page .chkbox a{
+  color: crimson;
+  background-color: white !important;
 }
 
 .sect-title{
@@ -2405,4 +2422,27 @@ label.user-city, label.user-dist{
 
 #search_result #search_txt{
   font-weight: bold;
+}
+
+.blog-row{
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.blog-wrapper{
+  height: 300px;
+}
+
+.blog-item img{
+  border: 1px dotted gray;
+  border-radius: 6px;
+}
+
+.blog-item .share-btn{
+  margin-left: 10px;
+}
+
+.blog-item .blog-content{
+  width: 100%;
+  height: 200px
 }

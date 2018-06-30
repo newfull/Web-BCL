@@ -69,16 +69,16 @@ if(!empty($_SESSION['current'])){
                 <img src="../images/logo.png"/>
               </div>
               <div class="links">
-                <a href="/trang-chu" class="active">Trang chủ</a>
-                <a href="/thuc-don/">Thực đơn</a>
-                <a href="/khuyen-mai">Tin tức</a>
+                <a href="/trang-chu" onclick="toggleSidenav();" class="active">Trang chủ</a>
+                <a href="/thuc-don/" onclick="toggleSidenav();">Thực đơn</a>
+                <a href="/khuyen-mai" onclick="toggleSidenav();">Tin tức</a>
                 <a href=<?php
                   $create_content = "";
                   if(!empty($_SESSION['current'])) $create_content = '/quan-ly';
                   else $create_content = '"#popup-login" data-toggle="modal"';
                   echo $create_content;
-                  ?>>Tài khoản</a>
-                <a href="/gioi-thieu">Giới thiệu</a>
+                  ?> onclick="toggleSidenav();">Tài khoản</a>
+                <a href="/gioi-thieu" onclick="toggleSidenav();">Giới thiệu</a>
               </div>
             </nav>
 
@@ -345,7 +345,7 @@ if(!empty($_SESSION['current'])){
 
                   <div class = "col-xs-4">
                     <div class="clearfix">
-                      <a id="forgot-pass" data-target="#popup-forgotpass" data-toggle="modal" class="text-danger" data-dismiss="modal">Quên mật khẩu ?</a>
+                      <a href="/quen-mat-khau" class="text-danger">Quên mật khẩu ?</a>
                     </div>
                   </div>
                 </div>

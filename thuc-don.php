@@ -13,7 +13,7 @@
   </div>
   <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
     <br>
-    <input type="text" class="search_menu" id="search_menu" placeholder="Tìm kiếm sản phẩm" autofocus/>
+    <input type="search" class="search_menu" id="search_menu" placeholder="Tìm kiếm sản phẩm" autofocus/>
   </div>
   <div class="hidden-md col-lg-2">
   </div>

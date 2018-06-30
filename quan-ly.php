@@ -33,8 +33,6 @@ if(!empty($_SESSION['current'])){
         <!-- Tab panes -->
         <div class="tab-content">
           <div id="user" class="tab-pane fade in active">
-            <div class="wrapper-user">
-              <div class="wrapper-user-content">
                 <form id='user_info' onsubmit="return false;">
                   <div class="info1">
                     <div class="info1-content">
@@ -111,7 +109,7 @@ if(!empty($_SESSION['current'])){
                         <div class="col-xs-5 col-lg-2">
                           <div class="clearfix">
                             <div class="radio gioitinh">
-                              <input id="user-gender-nam" type="radio" value="1" name="gender" <?php echo ($current_user->getSex()=='1')?'checked':'' ?>>
+                              <input id="user-gender-nam" type="radio" value="1" name="gender" checked>
                               <label for="user-gender-nam">Nam</label>
                             </div>
                           </div>
@@ -120,7 +118,7 @@ if(!empty($_SESSION['current'])){
                         <div class="col-xs-5 col-lg-2">
                           <div class="clearfix">
                             <div class="radio gioitinh">
-                              <input id="user-gender-nu" type="radio" value="0" name="gender" <?php echo ($current_user->getSex()=='0')?'checked':'' ?>>
+                              <input id="user-gender-nu" type="radio" value="0" name="gender">
                               <label for="user-gender-nu">Nữ</label>
                             </div>
                           </div>
@@ -181,10 +179,9 @@ if(!empty($_SESSION['current'])){
                     <div class="hidden-xs col-lg-4">
                     </div>
                   </div>
+                </form>
                 </div>
-              </div>
-            </form>
-          </div>
+
           <div id="eadd" class="tab-pane fade">
             <div class="wrapper-add">
               <div class="wrapper-add-content">

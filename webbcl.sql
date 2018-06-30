@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jun 28, 2018 at 06:44 PM
+-- Generation Time: Jun 30, 2018 at 12:58 PM
 -- Server version: 10.1.32-MariaDB
 -- PHP Version: 7.1.17
 
@@ -113,7 +113,7 @@ SELECT A.* from ACCOUNT A where A.ACCOUNTID = accid$$
 
 DROP PROCEDURE IF EXISTS `SP_GET_ALL_BLOGS`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_GET_ALL_BLOGS` ()  NO SQL
-SELECT * FROM BLOG$$
+SELECT BLOGTITLE AS 'Ten', BLOGIMG as 'DuongDan', BLOGCONTENT as 'NoiDung', BLOGDATE as 'Ngay' FROM BLOG$$
 
 DROP PROCEDURE IF EXISTS `SP_GET_ALL_COMBOS`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_GET_ALL_COMBOS` ()  NO SQL
@@ -153,12 +153,30 @@ SELECT i.comboname as 'Ten', i.comboprice as 'Gia', i.comboIMGURL as 'DuongDan',
 from cart_detail_combo cd, combo i
 where cd.CARTID = cartid and cd.comboid = i.comboid$$
 
+DROP PROCEDURE IF EXISTS `SP_GET_COMBO_BY_NAME`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_GET_COMBO_BY_NAME` (IN `keyword` VARCHAR(20))  NO SQL
+SELECT i.COMBONAME as 'Ten',
+i.COMBOPRICE as 'Gia',
+i.COMBOID as 'Ma',
+i.COMBOIMGURL as 'DuongDan'
+FROM COMBO i
+WHERE i.COMBOSTATUS = 1 AND LOWER(i.COMBONAME) LIKE CONCAT('%', CONVERT(LOWER(keyword), BINARY), '%')$$
+
 DROP PROCEDURE IF EXISTS `SP_GET_COMBO_DETAILS`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_GET_COMBO_DETAILS` (IN `comboid` INT(11))  NO SQL
 SELECT item.ITEMNAME as 'Ten', item.ITEMPRICE as 'Gia', cd.QUANTITY as 'SoLuong', type.UNIT_NAME as 'DonVi' 
 from combo cb, combo_detail cd, item, item_type type
       where cb.COMBOID = comboid AND cd.COMBOID = cb.COMBOID
       AND cd.ITEMID = item.ITEMID AND item.ITEM_TYPEID = type.ITEM_TYPEID$$
+
+DROP PROCEDURE IF EXISTS `SP_GET_ITEM_BY_NAME`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_GET_ITEM_BY_NAME` (IN `keyword` VARCHAR(20))  NO SQL
+SELECT i.ITEMNAME as 'Ten',
+i.ITEMPRICE as 'Gia',
+i.ITEMID as 'Ma',
+i.ITEMIMGURL as 'DuongDan'
+FROM ITEM i
+WHERE i.ITEMSTATUS = 1 AND LOWER(i.ITEMNAME) LIKE CONCAT('%', CONVERT(LOWER(keyword), BINARY), '%')$$
 
 DROP PROCEDURE IF EXISTS `SP_GET_ITEM_INFO`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_GET_ITEM_INFO` (IN `itemid` INT(11))  NO SQL
@@ -228,6 +246,30 @@ i.ITEMID as 'Ma',
 i.ITEMIMGURL as 'DuongDan' from item i, item_type type, item_category cat
     where cat.ITEM_CATEGORYID = item_cat and type.ITEM_CATEGORYID = cat.ITEM_CATEGORYID
     and i.ITEM_TYPEID = type.ITEM_TYPEID and i.ITEMSTATUS = 1$$
+
+DROP PROCEDURE IF EXISTS `SP_UPD_ACCOUNT_ADD`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_UPD_ACCOUNT_ADD` (IN `accid` INT, IN `accadd` VARCHAR(500))  NO SQL
+BEGIN
+UPDATE account
+SET ACCOUNTADD = accadd
+where accountid = accid;
+END$$
+
+DROP PROCEDURE IF EXISTS `SP_UPD_ACCOUNT_INFO`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_UPD_ACCOUNT_INFO` (IN `accid` INT(11), IN `name` VARCHAR(30), IN `email` TEXT, IN `phone` VARCHAR(11), IN `dob` TEXT, IN `sex` INT(1), IN `noti` INT(1))  NO SQL
+BEGIN
+UPDATE ACCOUNT
+    SET ACCOUNTNAME = name, ACCOUNTEMAIL = email, ACCOUNTPHONE = phone, ACCOUNTDOB = str_to_date(dob, "%d-%m-%Y"), ACCOUNTSEX = sex, ACCOUNTNOTI = noti
+    WHERE ACCOUNTID = accid;
+END$$
+
+DROP PROCEDURE IF EXISTS `SP_UPD_ACCOUNT_PASS`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_UPD_ACCOUNT_PASS` (IN `accid` INT(11), IN `pass` TEXT)  NO SQL
+BEGIN
+UPDATE account
+SET ACCOUNTPASS = pass 
+WHERE ACCOUNTID = accid;
+END$$
 
 DROP PROCEDURE IF EXISTS `SP_UPD_CART_VALUE`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_UPD_CART_VALUE` (IN `cart_id` INT(11), IN `detail_val` DECIMAL(13,2))  BEGIN
@@ -336,6 +378,19 @@ BEGIN
     RETURN result;
 END$$
 
+DROP FUNCTION IF EXISTS `FN_CHECK_PASS`$$
+CREATE DEFINER=`root`@`localhost` FUNCTION `FN_CHECK_PASS` (`accid` INT(11), `pass` TEXT) RETURNS INT(1) NO SQL
+BEGIN
+ 	DECLARE result int(1);
+    SET result = "0";
+    
+    SELECT COUNT(*) into result
+    FROM ACCOUNT
+    WHERE ACCOUNTID = accid AND ACCOUNTPASS = pass;
+    
+    RETURN result;
+END$$
+
 DROP FUNCTION IF EXISTS `FN_GET_CARTID`$$
 CREATE DEFINER=`root`@`localhost` FUNCTION `FN_GET_CARTID` (`accid` INT(11)) RETURNS INT(11) BEGIN
 	DECLARE cartid int(11);
@@ -390,16 +445,14 @@ DELIMITER ;
 --
 -- Table structure for table `account`
 --
--- Creation: Jun 24, 2018 at 03:17 PM
---
 
 DROP TABLE IF EXISTS `account`;
 CREATE TABLE `account` (
   `ACCOUNTID` int(11) NOT NULL COMMENT 'Mã tài khoản',
   `ACCOUNTUSER` varchar(20) NOT NULL COMMENT 'Tên đăng nhập',
-  `ACCOUNTPASS` varchar(20) NOT NULL COMMENT 'Mật khẩu',
+  `ACCOUNTPASS` text NOT NULL COMMENT 'Mật khẩu',
   `ACCOUNTNAME` varchar(30) NOT NULL COMMENT 'Tên người dùng',
-  `ACCOUNTEMAIL` varchar(30) NOT NULL COMMENT 'Email',
+  `ACCOUNTEMAIL` text NOT NULL COMMENT 'Email',
   `ACCOUNTPHONE` varchar(11) NOT NULL COMMENT 'Điện thoại',
   `ACCOUNTDOB` date NOT NULL COMMENT 'Sinh nhật',
   `ACCOUNTSEX` int(1) NOT NULL COMMENT 'Giới tính (1- Nam, 0- Nữ)',
@@ -412,16 +465,12 @@ CREATE TABLE `account` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Tài khoản đăng nhập';
 
 --
--- RELATIONSHIPS FOR TABLE `account`:
---
-
---
 -- Dumping data for table `account`
 --
 
 INSERT INTO `account` (`ACCOUNTID`, `ACCOUNTUSER`, `ACCOUNTPASS`, `ACCOUNTNAME`, `ACCOUNTEMAIL`, `ACCOUNTPHONE`, `ACCOUNTDOB`, `ACCOUNTSEX`, `ACCOUNTADD`, `ACCOUNTDATE`, `ACCOUNTVALID`, `ACCOUNTLIKEDITEMS`, `ACCOUNTLIKEDCOMBOS`, `ACCOUNTNOTI`) VALUES
 (4, 'kaito', 'pass', 'Bien', 'Bien@gmail.com', '1234567891', '1997-01-01', 1, 'Quang Nam', '0000-00-00', 1, NULL, NULL, 0),
-(5, 'newfull', 'dodien', 'Nguyễn Thành Công', 'obmega3@gmail.com', '0911123456', '2014-02-10', 0, 'Linh Trung', '2018-05-15', 1, '2,26,1', '3', 1);
+(5, 'newfull', '0ede32830053dc3d1a9dbdd98e71dea4', 'Nguyễn Thành Công', 'obmega3@gmail.com', '0911111112', '1997-01-02', 1, 'KTX Khu B ĐHQG TPHCM, Phường Linh Trung, Quận Thủ Đức, Thành phố Hồ Chí Minh', '2018-05-15', 1, '2,26,1', '3', 0);
 
 --
 -- Triggers `account`
@@ -439,8 +488,6 @@ DELIMITER ;
 --
 -- Table structure for table `admin`
 --
--- Creation: Jun 20, 2018 at 12:07 PM
---
 
 DROP TABLE IF EXISTS `admin`;
 CREATE TABLE `admin` (
@@ -455,10 +502,6 @@ CREATE TABLE `admin` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Bảng tài khoản Admin';
 
 --
--- RELATIONSHIPS FOR TABLE `admin`:
---
-
---
 -- Dumping data for table `admin`
 --
 
@@ -469,8 +512,6 @@ INSERT INTO `admin` (`EMPID`, `EMPNAME`, `EMPDOB`, `EMPADD`, `EMPPHONE`, `EMPSAL
 
 --
 -- Table structure for table `blog`
---
--- Creation: Jun 28, 2018 at 04:43 PM
 --
 
 DROP TABLE IF EXISTS `blog`;
@@ -484,17 +525,19 @@ CREATE TABLE `blog` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Tin tức khuyến mãi';
 
 --
--- RELATIONSHIPS FOR TABLE `blog`:
---   `EMPID`
---       `admin` -> `EMPID`
+-- Dumping data for table `blog`
 --
+
+INSERT INTO `blog` (`BLOGID`, `BLOGTITLE`, `BLOGIMG`, `BLOGCONTENT`, `BLOGDATE`, `EMPID`) VALUES
+(1, 'KHUẤY ĐỘNG HÈ CÙNG BÉ TẠI KFC! GIẢM NGAY 25% CHO HÓA ĐƠN TỪ 120.000 ĐỒNG!', '1.png', 'Một mùa hè sôi động lại đến, các anh chị phụ huynh hãy thưởng cho các bé iu nhà mình bằng một bữa tiệc “Gà Rán KFC” hoành tráng để khích lệ tinh thần của các bé iu đi nào.\r\n\r\nNhân dịp Quốc Tế Thiếu Nhi 1.6 và để khởi đầu một mùa hè tràn đầy năng lượng, KFC giảm ngay 25% trên tổng giá trị hóa đơn khi dùng bữa tại các nhà hàng KFC trên toàn quốc với đơn hàng từ 120.000 đồng trở lên, có ít nhất 1 Combo Kiddie 55k.\r\n\r\nChương trình này áp dụng tại tất cả các nhà hàng KFC trên toàn quốc đến hết ngày 31/7/2018.\r\n\r\nKhông áp dụng cho thẻ giảm giá, dịch vụ tiệc sinh nhật, đơn hàng trên 2.000.000 đồng, giao hàng tận nơi và các chương trình khuyến mãi khác.\r\n\r\nCả nhà hãy kéo ngay đến KFC để mở tiệc ăn mừng hè đi nào!!!\r\n\r\n#KFCVietNam#QuocTeThieuNhi#1.6#Uudai25%', '2018-06-04 00:00:00', 1),
+(2, 'GÀ KẸP ZINBO - BURGER KHÔNG BÁNH CHỈ GÀ!', '2.png', 'KFC vừa trình làng một siêu phẩm mới Gà Kẹp Zinbo mới, burger không bánh chỉ gà, đang làm “xôn xao\" các tín đồ ẩm thực.\r\n\r\nGà kẹp Zinbo với 2 miếng thịt ức Gà giòn cay được thay cho 2 lớp bánh burger truyền thống, kẹp giữa là rau xà-lách tươi và lát thơm ngọt thanh được phủ thêm 2 lớp sốt Mayonnaise thơm béo và sốt gà nướng hương chanh, tạo nên món burger Gà Kẹp Zinbo KFC độc đáo với hương vị thơm ngon mới lạ mang lại trải nghiệm ẩm thực thật thú vị. Giá cực hợp lý chỉ 59.000đ/cái đảm bảo vừa ăn no say luôn vửa ngon không thể tả. Hoặc các fans có thể chọn ngay những combo giá cực ưu đãi sau:\r\n\r\nCombo Zinbo 1: gồm 1 Gà Kẹp Zinbo + 1 Khoai Tây Chiên (vừa) + 1 Pepsi (vừa) với giá siêu hợp lý chỉ 79.000đ\r\nCombo Zinbo 2: gồm 1 Gà Kẹp Zinbo + 1 miếng Gà Giòn Cay/Gà Giòn Không Cay/Truyền Thống + 1 Khoai Tây Chiên (vừa) + 1 Pepsi (vừa) chỉ 109.000đ cho phần ăn siêu ngon no căng bụng.\r\nSản phẩm hiện đang được bán tại tất cả nhà hàng KFC trên toàn quốc. Áp dụng cho cả Giao hàng tận nơi.\r\n\r\nHãy đến và dùng thử siêu phẩm Gà Kẹp Zinbo cùng KFC nhé!\r\n\r\n#KFC #KFCVietnam #GaKepZinbo #Zinbo', '2018-06-03 00:00:00', 1),
+(3, 'VUI ĂN GÀ - CÙNG KFC DỰ ĐOÁN BÓNG ĐÁ!', '3.png', 'Hòa mình cùng bầu không khí cực kì sôi động của môn thể thao vua với Giải Vô Địch Bóng Đá Thế Giới lần thứ 21 đang diễn ra tưng bừng trên khắp hành tinh và đánh dấu bước ngoặt của năm thứ 21 KFC có mặt tại Việt Nam. Chương trình “Vui ăn gà - Cùng KFC dự đoán bóng đá” là câu chuyện song hành giữa niềm đam mê ẩm thực cùng tình yêu bóng đá nồng cháy của mùa bóng năm nay. Hãy cùng KFC vừa thưởng thức những trận đấu sôi nổi, kịch tính, vừa dự đoán kết quả của những vòng đấu để nhận ngay những phần quà cực chất.\r\n\r\n1. Cách thức tham gia dễ dàng và trúng ngay vô vàn những giải thưởng hấp dẫn:\r\n\r\n- Bước 1: Chọn mua Combo “KFC Foodball 21” để nhận ngay phiếu tham gia dự  đoán bóng đá sau:\r\n\r\nCombo KFC Foodball 21 84k giá 84.000đ (gồm 3 miếng Gà Giòn Cay/Gà Truyền Thống/Gà Giòn Không Cay + 2 Pepsi (vừa) để NHẬN NGAY 1 Phiếu cào tham gia dự đoán.\r\nCombo KFC Foodball 21 184k giá 184.000đ (gồm 6 miếng Gà Giòn Cay/Gà Truyền Thống/ Gà Giòn Không Cay + 3 Pepsi (LỚN) để NHẬN NGAY 3 Phiếu cào tham gia dự đoán. Phần ăn đủ cho cả nhà vừa ăn vừa xem bóng đá.\r\n- Bước 2: Cào vào phần cào trên Phiếu để lấy mã số tham gia dự đoán. Lưu ý: mỗi mã số tham gia dự đoán chỉ áp dụng cho 1 lần tham gia. Khách hàng có thể tham gia dự đoán nhiều lần với nhiều mã số khác nhau\r\n\r\n- Bước 3: Truy cập trang web: www.kfcvietnam.com.vn/dudoanbongda để tham gia dự đoán kết quả các vòng đấu để nhận những giải thưởng vô cùng hấp dẫn.\r\n\r\n2. Danh sách giải thưởng của mỗi vòng:\r\n\r\nSố lượng giải\r\n\r\nCơ cấu giải thưởng mỗi vòng\r\n\r\nTrận Chung Kết\r\n\r\n21 Giải Nhất\r\n\r\nGift Voucher KFC 4.000.000 đồng & 1 Loa Pepsi cực chất\r\n\r\n21 Giải Nhì\r\n\r\nGift Voucher KFC 2.000.000 đồng & 1 Tai Nghe Pepsi cực ngầu\r\n\r\n21 Giải Ba\r\n\r\nGift Voucher KFC 1.000.000 đồng & 1 Ba-lô Pepsi cực cool\r\n\r\nVòng 16 Đội, Vòng Tứ Kết, Vòng Bán Kết, Vòng Chung Kết\r\n\r\nMỗi vòng 21 Giải Nhất\r\n\r\nGift Voucher KFC 2.000.000 đồng & 1 Loa Pepsi cực chất\r\n\r\nMỗi vòng 21 Giải Nhì\r\n\r\nGift Voucher KFC 1.000.000 đồng & 1 Tai Nghe Pepsi cực ngầu\r\n\r\nMỗi vòng 21 Giải Ba\r\n\r\nGift Voucher KFC 500.000 đồng & 1 Ba-lô Pepsi cực cool\r\n\r\n3. Thời gian tham gia dự đoán cho các vòng:\r\n\r\nVòng 16 Đội: từ 0h ngày 01/06/2018 đến 22h00 ngày 27/06/2018\r\nVòng Tứ Kết: từ 0h ngày 28/06/2018 đến 22h00 ngày 02/07/2018\r\nVòng Bán Kết: từ 0h ngày 03/07/2018 đến 22h00 ngày 07/07/2018\r\nVòng Chung Kết: từ 0h ngày 08/07/2018 đến 22h00 ngày 11/07/2018\r\nTrận Chung Kết: từ 0h ngày 12/07/2018 đến 17h00 ngày 15/07/2018\r\n4. Thời gian công bố kết quả trúng thưởng:\r\n\r\nVòng 16 Đội: ngày 04/07/2018\r\nVòng Tứ Kết: ngày 07/07/2018\r\nVòng Bán Kết: ngày 11/07/2018\r\nVòng Chung Kết: ngày 14/07/2018\r\nTrận Chung Kết: ngày 19/07/2018\r\nChương trình kéo dài từ ngày 01/06/2018 đến hết ngày 15/07/2018 tại tất cả các nhà hàng KFC trên toàn quốc, áp dụng cho cả giao hàng tận nơi.\r\n\r\nKhông áp dụng cho thẻ giảm giá và đơn hàng trên 2.000.000 đồng.\r\n\r\nTHAM GIA NGAY TẠI:  www.kfcvietnam.com.vn/dudoanbongda\r\n\r\n#KFC #KFCVietnam #DuDoanBongDa', '2018-06-02 00:00:00', 1),
+(4, '“NHẮM MẮT THẤY MÙA HÈ – TƯƠI TRẺ CÙNG TRÀ NHIỆT ĐỚI HẠT CHIA KFC”', '4.png', 'Trà Nhiệt Đới Hạt Chia, món nước uống mùa hè vừa được KFC ra mắt là sự kết hợp hài hòa giữa trà chanh mát lạnh, hạt chia 100% organic từ Anh và các loại trái cây vùng nhiệt đới tươi mới, cùng tạo nên một thức uống vừa dinh dưỡng tốt cho sức khỏe vừa thanh mát nhẹ nhàng có tác dụng giải nhiệt giúp xoa dịu đi cái nóng oi bức của mùa hè. Giá một ly Trà Nhiệt Đới Hạt Chia cũng rất mát chỉ 24.000 đồng (hoặc đổi từ Pepsi (vừa) với giá chỉ 12.000 đồng).\r\n\r\nCòn gì tuyệt vời hơn khi vừa măm măm gà rán giòn cay vừa thưởng thức từng ngụm trà mát lạnh!\r\n\r\nGhé KFC ngay các fans nhé!', '2018-06-01 00:00:00', 1);
 
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `cart`
---
--- Creation: Jun 16, 2018 at 04:57 PM
 --
 
 DROP TABLE IF EXISTS `cart`;
@@ -504,12 +547,6 @@ CREATE TABLE `cart` (
   `CARTTIME` datetime NOT NULL COMMENT 'Thời điểm tạo giỏ',
   `ACTIVE` int(1) NOT NULL DEFAULT '1' COMMENT 'Đang kích hoạt'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Giỏ hàng';
-
---
--- RELATIONSHIPS FOR TABLE `cart`:
---   `ACCOUNTID`
---       `account` -> `ACCOUNTID`
---
 
 --
 -- Dumping data for table `cart`
@@ -538,8 +575,6 @@ DELIMITER ;
 --
 -- Table structure for table `cart_detail`
 --
--- Creation: Jun 21, 2018 at 04:31 AM
---
 
 DROP TABLE IF EXISTS `cart_detail`;
 CREATE TABLE `cart_detail` (
@@ -549,14 +584,6 @@ CREATE TABLE `cart_detail` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Chi tiết giỏ hàng';
 
 --
--- RELATIONSHIPS FOR TABLE `cart_detail`:
---   `CARTID`
---       `cart` -> `CARTID`
---   `ITEMID`
---       `item` -> `ITEMID`
---
-
---
 -- Dumping data for table `cart_detail`
 --
 
@@ -564,15 +591,14 @@ INSERT INTO `cart_detail` (`CARTID`, `ITEMID`, `QUANTITY`) VALUES
 (1, 4, 20),
 (2, 1, 1),
 (7, 1, 5),
-(7, 2, 1),
+(7, 2, 2),
+(7, 3, 1),
 (7, 30, 1);
 
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `cart_detail_combo`
---
--- Creation: Jun 23, 2018 at 02:40 PM
 --
 
 DROP TABLE IF EXISTS `cart_detail_combo`;
@@ -581,14 +607,6 @@ CREATE TABLE `cart_detail_combo` (
   `COMBOID` int(11) NOT NULL COMMENT 'Mã combo',
   `QUANTITY` int(2) NOT NULL DEFAULT '1' COMMENT 'Số lượng'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- RELATIONSHIPS FOR TABLE `cart_detail_combo`:
---   `CARTID`
---       `cart` -> `CARTID`
---   `COMBOID`
---       `combo` -> `COMBOID`
---
 
 --
 -- Dumping data for table `cart_detail_combo`
@@ -602,39 +620,30 @@ INSERT INTO `cart_detail_combo` (`CARTID`, `COMBOID`, `QUANTITY`) VALUES
 --
 -- Table structure for table `combo`
 --
--- Creation: Jun 06, 2018 at 04:12 AM
---
 
 DROP TABLE IF EXISTS `combo`;
 CREATE TABLE `combo` (
   `COMBOID` int(11) NOT NULL COMMENT 'Mã Combo',
   `COMBONAME` varchar(30) NOT NULL COMMENT 'Tên Combo',
   `COMBOPRICE` decimal(13,2) NOT NULL COMMENT 'Giá Combo',
-  `COMBOLIKE` int(11) NOT NULL DEFAULT '0' COMMENT 'Số lượt thích',
   `COMBOSTATUS` int(1) NOT NULL DEFAULT '1' COMMENT '1 - Đang bán, 0 - Ngừng bán',
   `COMBOIMGURL` text NOT NULL COMMENT 'Đường dẫn hình ảnh'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Combo';
 
 --
--- RELATIONSHIPS FOR TABLE `combo`:
---
-
---
 -- Dumping data for table `combo`
 --
 
-INSERT INTO `combo` (`COMBOID`, `COMBONAME`, `COMBOPRICE`, `COMBOLIKE`, `COMBOSTATUS`, `COMBOIMGURL`) VALUES
-(1, 'combo test 1', '50000.00', 0, 0, 'combo1.png'),
-(2, 'combo test 2', '169000.00', 0, 0, 'combo2.png'),
-(3, 'Combo mùa hè', '52000.00', 0, 1, ''),
-(4, 'Combo C1', '120000.00', 0, 1, '');
+INSERT INTO `combo` (`COMBOID`, `COMBONAME`, `COMBOPRICE`, `COMBOSTATUS`, `COMBOIMGURL`) VALUES
+(1, 'combo test 1', '50000.00', 0, 'combo1.png'),
+(2, 'combo test 2', '169000.00', 0, 'combo2.png'),
+(3, 'Combo mùa hè', '52000.00', 1, ''),
+(4, 'Combo C1', '120000.00', 1, '');
 
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `combo_detail`
---
--- Creation: Jun 06, 2018 at 04:12 AM
 --
 
 DROP TABLE IF EXISTS `combo_detail`;
@@ -643,14 +652,6 @@ CREATE TABLE `combo_detail` (
   `ITEMID` int(11) NOT NULL COMMENT 'Mã món',
   `QUANTITY` int(11) NOT NULL DEFAULT '1' COMMENT 'Số lượng'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Chi tiết combo';
-
---
--- RELATIONSHIPS FOR TABLE `combo_detail`:
---   `ITEMID`
---       `item` -> `ITEMID`
---   `COMBOID`
---       `combo` -> `COMBOID`
---
 
 --
 -- Dumping data for table `combo_detail`
@@ -674,8 +675,6 @@ INSERT INTO `combo_detail` (`COMBOID`, `ITEMID`, `QUANTITY`) VALUES
 --
 -- Table structure for table `item`
 --
--- Creation: Jun 06, 2018 at 04:12 AM
---
 
 DROP TABLE IF EXISTS `item`;
 CREATE TABLE `item` (
@@ -684,53 +683,46 @@ CREATE TABLE `item` (
   `ITEMPRICE` decimal(13,2) NOT NULL COMMENT 'Giá',
   `ITEM_TYPEID` int(11) NOT NULL COMMENT 'Mã loại',
   `ITEMSTOCK` int(11) NOT NULL COMMENT 'Số lượng tồn',
-  `ITEMLIKED` int(11) NOT NULL DEFAULT '0' COMMENT 'Số lượt thích',
   `ITEMSTATUS` int(1) NOT NULL DEFAULT '1' COMMENT '1 - Đang bán, 0 - Ngừng bán',
   `ITEMIMGURL` text NOT NULL COMMENT 'Đường dẫn hình ảnh',
   `ITEMISNEW` int(1) NOT NULL DEFAULT '1' COMMENT 'Nếu mới bán: 1, còn lại: 0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Món ăn';
 
 --
--- RELATIONSHIPS FOR TABLE `item`:
---   `ITEM_TYPEID`
---       `item_type` -> `ITEM_TYPEID`
---
-
---
 -- Dumping data for table `item`
 --
 
-INSERT INTO `item` (`ITEMID`, `ITEMNAME`, `ITEMPRICE`, `ITEM_TYPEID`, `ITEMSTOCK`, `ITEMLIKED`, `ITEMSTATUS`, `ITEMIMGURL`, `ITEMISNEW`) VALUES
-(1, 'Gà truyền thống', '20000.00', 12, 1000, 0, 1, '12-1.png', 0),
-(2, 'Gà giòn không cay', '25000.00', 12, 1000, 0, 1, '12-2.png', 1),
-(3, 'Cơm gà viên', '30000.00', 13, 1000, 0, 1, '13-3.png', 1),
-(4, 'Cơm gà giòn cay', '29000.00', 13, 1000, 0, 1, '13-4.png', 1),
-(5, 'Khoai tây chiên (Vừa)', '15000.00', 16, 1000, 0, 1, '16-5.png', 1),
-(6, 'Khoai tây chiên (Lớn)', '20000.00', 16, 1000, 0, 1, '16-6.png', 1),
-(7, 'Bánh mật ong', '10000.00', 17, 1111, 0, 1, 'item test.png', 1),
-(8, 'Canh củ cải', '23000.00', 24, 1111, 0, 1, 'item test 2.png', 1),
-(9, 'Canh bào ngư', '50000.00', 24, 1111, 0, 1, 'canh bào ngư.png', 1),
-(10, 'Cơm hải sản', '40000.00', 13, 1111, 0, 1, '', 1),
-(11, 'Mì ý (Vừa)', '23000.00', 23, 1111, 0, 1, 'Mì ý (Vừa).png', 1),
-(12, 'Cơm gà phủ bông', '51000.00', 13, 2222, 0, 1, 'Cơm gà phủ bông.png', 1),
-(13, 'Burger Bò Teriyaki', '25000.00', 14, 1000, 0, 1, 'Burger Bò Teriyaki.png', 1),
-(14, 'Burger Tôm', '26000.00', 14, 1000, 0, 1, 'Burger Tôm.png', 1),
-(15, 'Burger Gà', '23000.00', 14, 1000, 0, 1, 'Burger Gà.png', 1),
-(16, 'Burger thịt xông khói', '22000.00', 14, 2000, 0, 1, 'Burger thịt xông khói.png', 1),
-(17, 'Rau trộn (Nhỏ)', '15000.00', 22, 1000, 0, 1, 'Rau trộn (Nhỏ).png', 1),
-(18, 'Rau trộn (Vừa)', '20000.00', 22, 222, 0, 1, 'Rau trộn (Vừa).png', 1),
-(19, 'Kem Vani', '3000.00', 18, 2222, 0, 1, 'Kem vani.png', 1),
-(20, 'Kem Chocolate', '6000.00', 18, 2000, 0, 1, 'Kem Chocolate.png', 1),
-(21, 'Kem Sundae', '15000.00', 19, 1111, 0, 0, 'Kem Sundae.png', 1),
-(22, 'Kem Tornado', '20000.00', 19, 1111, 0, 1, 'Kem Tornado.png', 1),
-(23, 'Pepsi (Vừa)', '10000.00', 15, 1111, 0, 1, 'Pepsi (Vừa).png', 1),
-(24, 'Pepsi (Đại)', '20000.00', 15, 1111, 0, 1, 'Pepsi (Đại).png', 1),
-(25, '7up (Vừa)', '10000.00', 15, 1111, 0, 1, '7up (Vừa).png', 1),
-(26, '7up (Đại)', '20000.00', 15, 1111, 0, 1, '7up (Đại).png', 1),
-(27, 'Hot Pack', '15000.00', 17, 1111, 0, 1, 'Hot Pack.png', 1),
-(28, 'Khoanh mực nướng (3 miếng)', '25000.00', 17, 1000, 0, 1, 'Khoanh mực nướng (3 miếng).png', 1),
-(29, 'Burger Gà giòn cay', '32000.00', 14, 1111, 0, 1, 'Burger Gà giòn cay.png', 1),
-(30, 'Gà phủ bông', '32000.00', 12, 1111, 0, 1, 'Gà phủ bông.png', 1);
+INSERT INTO `item` (`ITEMID`, `ITEMNAME`, `ITEMPRICE`, `ITEM_TYPEID`, `ITEMSTOCK`, `ITEMSTATUS`, `ITEMIMGURL`, `ITEMISNEW`) VALUES
+(1, 'Gà truyền thống', '20000.00', 12, 1000, 1, '12-1.png', 0),
+(2, 'Gà giòn không cay', '25000.00', 12, 1000, 1, '12-2.png', 1),
+(3, 'Cơm gà viên', '30000.00', 13, 1000, 1, '13-3.png', 1),
+(4, 'Cơm gà giòn cay', '29000.00', 13, 1000, 1, '13-4.png', 1),
+(5, 'Khoai tây chiên (Vừa)', '15000.00', 16, 1000, 1, '16-5.png', 1),
+(6, 'Khoai tây chiên (Lớn)', '20000.00', 16, 1000, 1, '16-6.png', 1),
+(7, 'Bánh mật ong', '10000.00', 17, 1111, 1, 'item test.png', 1),
+(8, 'Canh củ cải', '23000.00', 24, 1111, 1, 'item test 2.png', 1),
+(9, 'Canh bào ngư', '50000.00', 24, 1111, 1, 'canh bào ngư.png', 1),
+(10, 'Cơm hải sản', '40000.00', 13, 1111, 1, '', 1),
+(11, 'Mì ý (Vừa)', '23000.00', 23, 1111, 1, 'Mì ý (Vừa).png', 1),
+(12, 'Cơm gà phủ bông', '51000.00', 13, 2222, 1, 'Cơm gà phủ bông.png', 1),
+(13, 'Burger Bò Teriyaki', '25000.00', 14, 1000, 1, 'Burger Bò Teriyaki.png', 1),
+(14, 'Burger Tôm', '26000.00', 14, 1000, 1, 'Burger Tôm.png', 1),
+(15, 'Burger Gà', '23000.00', 14, 1000, 1, 'Burger Gà.png', 1),
+(16, 'Burger thịt xông khói', '22000.00', 14, 2000, 1, 'Burger thịt xông khói.png', 1),
+(17, 'Rau trộn (Nhỏ)', '15000.00', 22, 1000, 1, 'Rau trộn (Nhỏ).png', 1),
+(18, 'Rau trộn (Vừa)', '20000.00', 22, 222, 1, 'Rau trộn (Vừa).png', 1),
+(19, 'Kem Vani', '3000.00', 18, 2222, 1, 'Kem vani.png', 1),
+(20, 'Kem Chocolate', '6000.00', 18, 2000, 1, 'Kem Chocolate.png', 1),
+(21, 'Kem Sundae', '15000.00', 19, 1111, 0, 'Kem Sundae.png', 1),
+(22, 'Kem Tornado', '20000.00', 19, 1111, 1, 'Kem Tornado.png', 1),
+(23, 'Pepsi (Vừa)', '10000.00', 15, 1111, 1, 'Pepsi (Vừa).png', 1),
+(24, 'Pepsi (Đại)', '20000.00', 15, 1111, 1, 'Pepsi (Đại).png', 1),
+(25, '7up (Vừa)', '10000.00', 15, 1111, 1, '7up (Vừa).png', 1),
+(26, '7up (Đại)', '20000.00', 15, 1111, 1, '7up (Đại).png', 1),
+(27, 'Hot Pack', '15000.00', 17, 1111, 1, 'Hot Pack.png', 1),
+(28, 'Khoanh mực nướng (3 miếng)', '25000.00', 17, 1000, 1, 'Khoanh mực nướng (3 miếng).png', 1),
+(29, 'Burger Gà giòn cay', '32000.00', 14, 1111, 1, 'Burger Gà giòn cay.png', 1),
+(30, 'Gà phủ bông', '32000.00', 12, 1111, 1, 'Gà phủ bông.png', 1);
 
 --
 -- Triggers `item`
@@ -751,8 +743,6 @@ DELIMITER ;
 --
 -- Table structure for table `item_category`
 --
--- Creation: Jun 06, 2018 at 04:12 AM
---
 
 DROP TABLE IF EXISTS `item_category`;
 CREATE TABLE `item_category` (
@@ -761,10 +751,6 @@ CREATE TABLE `item_category` (
   `ITEM_CATEGORYIMGNAME` text NOT NULL COMMENT 'Tên hình ảnh hiển thị',
   `ITEM_CATEGORYALIAS` varchar(20) NOT NULL COMMENT 'Id gọi tắt'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- RELATIONSHIPS FOR TABLE `item_category`:
---
 
 --
 -- Dumping data for table `item_category`
@@ -782,8 +768,6 @@ INSERT INTO `item_category` (`ITEM_CATEGORYID`, `ITEM_CATEGORYNAME`, `ITEM_CATEG
 --
 -- Table structure for table `item_promotion`
 --
--- Creation: Jun 28, 2018 at 04:42 PM
---
 
 DROP TABLE IF EXISTS `item_promotion`;
 CREATE TABLE `item_promotion` (
@@ -794,12 +778,6 @@ CREATE TABLE `item_promotion` (
   `ENDDATE` date NOT NULL COMMENT 'Ngày kết thúc',
   `EMPID` int(11) NOT NULL COMMENT 'Người tạo'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Khuyến mãi theo sản phẩm';
-
---
--- RELATIONSHIPS FOR TABLE `item_promotion`:
---   `EMPID`
---       `admin` -> `EMPID`
---
 
 --
 -- Triggers `item_promotion`
@@ -820,8 +798,6 @@ DELIMITER ;
 --
 -- Table structure for table `item_promotion_detail`
 --
--- Creation: Jun 06, 2018 at 04:12 AM
---
 
 DROP TABLE IF EXISTS `item_promotion_detail`;
 CREATE TABLE `item_promotion_detail` (
@@ -832,14 +808,6 @@ CREATE TABLE `item_promotion_detail` (
   `NEWPRICE` decimal(10,0) DEFAULT NULL COMMENT 'Giá mới (nếu có) [Bỏ trống nếu khuyến mãi %]',
   `PRVALUE` int(2) DEFAULT '5' COMMENT 'Giá trị khuyến mãi (%) [Bỏ trống nếu đổi giá tự do]'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Chi tiết khuyến mãi theo sản phẩm';
-
---
--- RELATIONSHIPS FOR TABLE `item_promotion_detail`:
---   `ITMPR_ID`
---       `item_promotion` -> `ITMPR_ID`
---   `ITEMID`
---       `item` -> `ITEMID`
---
 
 --
 -- Triggers `item_promotion_detail`
@@ -868,8 +836,6 @@ DELIMITER ;
 --
 -- Table structure for table `item_type`
 --
--- Creation: Jun 06, 2018 at 04:12 AM
---
 
 DROP TABLE IF EXISTS `item_type`;
 CREATE TABLE `item_type` (
@@ -878,12 +844,6 @@ CREATE TABLE `item_type` (
   `UNIT_NAME` varchar(20) DEFAULT 'Phần' COMMENT 'Tên đơn vị tính',
   `ITEM_CATEGORYID` int(11) NOT NULL COMMENT 'Mã danh mục'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Loại';
-
---
--- RELATIONSHIPS FOR TABLE `item_type`:
---   `ITEM_CATEGORYID`
---       `item_category` -> `ITEM_CATEGORYID`
---
 
 --
 -- Dumping data for table `item_type`
@@ -908,8 +868,6 @@ INSERT INTO `item_type` (`ITEM_TYPEID`, `ITEM_TYPENAME`, `UNIT_NAME`, `ITEM_CATE
 --
 -- Table structure for table `receipt`
 --
--- Creation: Jun 28, 2018 at 04:41 PM
---
 
 DROP TABLE IF EXISTS `receipt`;
 CREATE TABLE `receipt` (
@@ -919,12 +877,6 @@ CREATE TABLE `receipt` (
   `RECEIPTADD` text NOT NULL COMMENT 'Địa chỉ nhận hàng',
   `RECEIPTVALUE` decimal(13,2) NOT NULL COMMENT 'Giá trị hóa đơn'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Hóa đơn';
-
---
--- RELATIONSHIPS FOR TABLE `receipt`:
---   `ACCOUNTID`
---       `account` -> `ACCOUNTID`
---
 
 --
 -- Triggers `receipt`
@@ -942,8 +894,6 @@ DELIMITER ;
 --
 -- Table structure for table `receipt_detail`
 --
--- Creation: Jun 06, 2018 at 04:12 AM
---
 
 DROP TABLE IF EXISTS `receipt_detail`;
 CREATE TABLE `receipt_detail` (
@@ -953,20 +903,10 @@ CREATE TABLE `receipt_detail` (
   `VALUE` decimal(13,2) NOT NULL COMMENT 'Tổng giá'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Chi tiết hóa đơn';
 
---
--- RELATIONSHIPS FOR TABLE `receipt_detail`:
---   `RECEIPTID`
---       `receipt` -> `RECEIPTID`
---   `ITEMID`
---       `item` -> `ITEMID`
---
-
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `receipt_promotion`
---
--- Creation: Jun 27, 2018 at 05:07 PM
 --
 
 DROP TABLE IF EXISTS `receipt_promotion`;
@@ -978,12 +918,6 @@ CREATE TABLE `receipt_promotion` (
   `ENDDATE` date NOT NULL COMMENT 'Ngày kết thúc',
   `EMPID` int(11) NOT NULL COMMENT 'Người tạo'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Khuyến mãi trên hóa đơn';
-
---
--- RELATIONSHIPS FOR TABLE `receipt_promotion`:
---   `EMPID`
---       `admin` -> `EMPID`
---
 
 --
 -- Triggers `receipt_promotion`
@@ -1012,8 +946,6 @@ DELIMITER ;
 --
 -- Table structure for table `receipt_promotion_detail`
 --
--- Creation: Jun 06, 2018 at 04:12 AM
---
 
 DROP TABLE IF EXISTS `receipt_promotion_detail`;
 CREATE TABLE `receipt_promotion_detail` (
@@ -1023,12 +955,6 @@ CREATE TABLE `receipt_promotion_detail` (
   `MAXRCPVALUE` decimal(13,2) NOT NULL COMMENT 'Giá trị hóa đơn tối đa',
   `PROVALUE` int(2) NOT NULL DEFAULT '10' COMMENT 'Giá trị khuyến mãi (%)'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Chi tiết khuyến mãi';
-
---
--- RELATIONSHIPS FOR TABLE `receipt_promotion_detail`:
---   `RCPPR_ID`
---       `receipt_promotion` -> `RCPPR_ID`
---
 
 --
 -- Triggers `receipt_promotion_detail`
@@ -1054,17 +980,11 @@ DELIMITER ;
 --
 -- Table structure for table `reg-email`
 --
--- Creation: Jun 27, 2018 at 05:10 PM
---
 
 DROP TABLE IF EXISTS `reg-email`;
 CREATE TABLE `reg-email` (
   `EMAIL` text NOT NULL COMMENT 'Email đăng ký nhận tin'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- RELATIONSHIPS FOR TABLE `reg-email`:
---
 
 --
 -- Indexes for dumped tables
@@ -1206,7 +1126,7 @@ ALTER TABLE `admin`
 -- AUTO_INCREMENT for table `blog`
 --
 ALTER TABLE `blog`
-  MODIFY `BLOGID` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Mã bài';
+  MODIFY `BLOGID` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Mã bài', AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `cart`

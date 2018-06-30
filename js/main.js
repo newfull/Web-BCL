@@ -60,7 +60,7 @@ function navbar_movealong(){
     var scroll = $(window).scrollTop();
     var height = $(document).height();
     //navbar chạy theo scroll
-    if (scroll > stickyNavTop) {
+    if (scroll > stickyNavTop && height > 1280) {
         $('#navbar').addClass('navbar-fixed-top');
         $('#navbar').addClass('isDown');
     } else {
@@ -118,10 +118,18 @@ function check_input_value_email() {
 
 function check_input_value_password() {
     $('#login-pass').blur(function() {
-        if ($('#login-pass').val() == '') {
-            $('#login-pass').addClass('empty');
+        if ($(this).val() == '') {
+            $(this).addClass('empty');
         } else {
-            $('#login-pass').removeClass('empty');
+            $(this).removeClass('empty');
+        }
+    })
+
+    $('#login-page-pass').blur(function() {
+        if ($(this).val() == '') {
+            $(this).addClass('empty');
+        } else {
+            $(this).removeClass('empty');
         }
     })
 }
@@ -302,6 +310,26 @@ $('#login').submit(function(e){
      }
     });
 });
+
+$('#login-page-form').submit(function(e){
+    e.preventDefault();
+    var data= $("#login-page-form").serialize();
+    $.ajax({
+        url:'../includes/login.php',
+        type:'post',
+        data: data,
+        success:function(response){
+          $('#error-popup .modal-body').html(response);
+          $('#error-popup').modal('show');
+          if(response == "Đăng nhập thành công")
+            setTimeout(function(){ window.location = "/"; },800);
+          else {
+            setTimeout(function(){  $('#error-popup').modal('hide');},5000);
+          }
+     }
+    });
+});
+
 
 $('.fn-logout').on("click", function(){
   var r = confirm("Bạn thật sự muốn đăng xuất?");
@@ -611,7 +639,7 @@ $(window).focus(function() {
        $(content).load("./gioi-thieu.php .sect-content");
        break;
      case 'blog-sect':
-       $(content).load("./khuyen-mai.php .sect-content");
+       $(content).load("./khuyen-mai.php .sect-content-wrapper");
        break;
    }
 
@@ -997,7 +1025,7 @@ $(".update-pass").click(function(){
              }
 });
 
-$("#search_menu").keyup(function(){
+$("#search_menu").on("change paste keyup blur", function(){
   if($("#search_menu").val() == ""){
     $("#show_menu").removeClass('display-none');
     $("#search_result").addClass('display-none');
@@ -1021,6 +1049,66 @@ $("#search_menu").keyup(function(){
     });
   }
 });
+
+window.fbAsyncInit = function() {
+    // FB JavaScript SDK configuration and setup
+    FB.init({
+      appId      : '615265362186705', // FB App ID
+      cookie     : true,  // enable cookies to allow the server to access the session
+      xfbml      : true,  // parse social plugins on this page
+      version    : 'v3.0' // use graph api version 2.8
+    });
+
+    // Check whether the user already logged in
+    FB.getLoginStatus(function(response) {
+        if (response.status === 'connected') {
+            //display user data
+            getFbUserData();
+        }
+    });
+};
+
+// Load the JavaScript SDK asynchronously
+(function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/en_US/sdk.js";
+    fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));
+
+// Facebook login with JavaScript SDK
+function loginFB() {
+    FB.login(function (response) {
+        if (response.authResponse) {
+            console.log(response);
+        } else {
+          $('#error-popup .modal-body').html("Người dùng huỷ đăng nhập hoặc chưa cấp quyền đủ.");
+          $('#error-popup').modal('show');
+        }
+    }, {scope: 'email'});
+}
+
+// Fetch the user profile data from facebook
+function getFbUserData(){
+    FB.api('/me', {locale: 'en_US', fields: 'id,first_name,last_name,email,link,gender,locale,picture'},
+    function (response) {
+    //     document.getElementById('fbLink').setAttribute("onclick","fbLogout()");
+    //     document.getElementById('fbLink').innerHTML = 'Logout from Facebook';
+    //     document.getElementById('status').innerHTML = 'Thanks for logging in, ' + response.first_name + '!';
+    //     document.getElementById('userData').innerHTML = '<p><b>FB ID:</b> '+response.id+'</p><p><b>Name:</b> '+response.first_name+' '+response.last_name+'</p><p><b>Email:</b> '+response.email+'</p><p><b>Gender:</b> '+response.gender+'</p><p><b>Locale:</b> '+response.locale+'</p><p><b>Picture:</b> <img src="'+response.picture.data.url+'"/></p><p><b>FB Profile:</b> <a target="_blank" href="'+response.link+'">click to view profile</a></p>';
+     });
+}
+
+// Logout from facebook
+function fbLogout() {
+    FB.logout(function() {
+        // document.getElementById('fbLink').setAttribute("onclick","fbLogin()");
+        // document.getElementById('fbLink').innerHTML = '<img src="fblogin.png"/>';
+        // document.getElementById('userData').innerHTML = '';
+        // document.getElementById('status').innerHTML = 'You have successfully logout from Facebook.';
+    });
+}
 
 $(document).ready(function(e){
     $('.selectpicker').selectpicker();
