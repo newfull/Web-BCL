@@ -22,7 +22,9 @@ if(!empty($_SESSION['current'])){
   <meta name="description" content="Website bán gà rán BCL">
   <meta name="author" content="BCL">
 
+  <link rel="icon" href="/favicon.ico">
   <link rel="shortcut icon" href="/favicon.ico">
+  <link rel="icon" type="image/png" href="/favicon.png" />
 
   <link href="/css/main.css" rel="stylesheet" type="text/css">
   <link href="/css/style.css" rel="stylesheet" type="text/css">
@@ -70,7 +72,7 @@ if(!empty($_SESSION['current'])){
               </div>
               <div class="links">
                 <a href="/trang-chu" onclick="toggleSidenav();" class="active">Trang chủ</a>
-                <a href="/thuc-don/" onclick="toggleSidenav();">Thực đơn</a>
+                <a href="/thuc-don" onclick="toggleSidenav();">Thực đơn</a>
                 <a href="/khuyen-mai" onclick="toggleSidenav();">Tin tức</a>
                 <a href=<?php
                   $create_content = "";
@@ -434,9 +436,14 @@ if(!empty($_SESSION['current'])){
 
           <div class="modal-body">
             <div id="signup-panel" class="tab-content">
-            <form id='register' action='' method='post' accept-charset='UTF-8'>
+            <form id='register' onsubmit="return false;">
               <div class="tab-pane fade active in" id="signup">
                 <div class="regform">
+                  <div class="row">
+                    <div class="col-xs-12 col-lg-12">
+                      <label class="error-label reg-error-label"></label>
+                    </div>
+                  </div>
                   <div class="row">
                     <div class="col-xs-4">
                       <label class="nhan">Họ và tên <imp>(*)</imp>: </label>

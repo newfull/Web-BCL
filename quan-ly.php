@@ -277,6 +277,33 @@ if(!empty($_SESSION['current'])){
             <div class="liked-combos">
               <div class="liked-combos-content">
                 <?
+                if(isEmpty(liked_combos($conn, $current_user->getID())) && isEmpty(liked_items($conn, $current_user->getID()))){
+                  $create_content = "";
+                  $create_content .= '
+                    <div class="row">
+                  <div class="col-xs-4">
+                  </div>
+                  <div class="col-xs-4">
+                  <img src="/images/thumb.png" class="img-responsive" alt="" />
+                  </div>
+                  <div class="col-xs-4">
+                  </div>
+                  </div>
+                  <div class="row">
+                <div class="hidden-xs col-lg-4">
+                </div>
+                <div class="col-xs-12 col-lg-4 text-center">
+                <br><h4>Bạn chưa thích sản phẩm nào</h4><br>
+                <a href="/thuc-don"><button type="button" class="btn btn-info center-block">Xem thực đơn</button></a><br>
+                </div>
+                <div class="hidden-xs col-lg-4">
+                </div>
+                </div>';
+
+                  echo $create_content;
+                }
+                else
+                {
                 $create_tab_content = "";
                 $list = liked_combos($conn, $current_user->getID());
                 if(isEmpty($list)) $num = 0;
@@ -292,6 +319,7 @@ if(!empty($_SESSION['current'])){
                   $create_tab_content .= "</div></div>";
                 }
                 echo $create_tab_content;
+              }
                 ?>
               </div>
             </div>

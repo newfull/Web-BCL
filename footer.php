@@ -46,7 +46,7 @@
 					<div class="col-xs-2 dat-hang-ngay">
 						<h2>Đặt hàng ngay</h2>
 						<ul class="list-unstyled">
-							<li><a href="#popup-cart" data-toggle="modal" id="btnCart"><img src="/images/delivery.png" class="logo-delivery img-responsive"></a></li>
+							<li><a href="/gio-hang" id="btnCart"><img src="/images/delivery.png" class="logo-delivery img-responsive"></a></li>
 						</ul>
 					</div>
 
@@ -59,7 +59,7 @@
 								<input type="text" id="news_email" name="news_email" class="form-control focus empty" value="">
 								<label class="floating-label">Nhập email</label>
 							</li>
-								<button onclick="registerUser()" class="btn btn-danger btn-dk">Đăng ký</button>
+								<button onclick="registerEmail()" class="btn btn-danger btn-dk">Đăng ký</button>
 								</div>
 						</ul>
 					</div>

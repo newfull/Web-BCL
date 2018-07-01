@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jun 30, 2018 at 12:58 PM
+-- Generation Time: Jul 01, 2018 at 08:13 AM
 -- Server version: 10.1.32-MariaDB
--- PHP Version: 7.1.17
+-- PHP Version: 5.6.36
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -82,6 +82,21 @@ BEGIN
 	END IF;    
 END$$
 
+DROP PROCEDURE IF EXISTS `SP_ADD_EMAIL_FOR_NEWS`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_ADD_EMAIL_FOR_NEWS` (IN `email` TEXT)  NO SQL
+BEGIN
+	IF EXISTS(SELECT * FROM REG_EMAIL x WHERE x.EMAIL = email)	THEN
+    BEGIN
+    	SELECT 'Email đã được đăng ký nhận tin rồi';
+    END;
+    ELSE
+    BEGIN
+    	INSERT INTO REG_EMAIL(EMAIL) VALUES (email);
+        SELECT 'Đăng ký nhận tin thành công';
+    END;
+    END IF;
+END$$
+
 DROP PROCEDURE IF EXISTS `SP_DEL_ALL_CART_DETAIL`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_DEL_ALL_CART_DETAIL` (IN `cartid` INT(11))  NO SQL
 BEGIN
@@ -113,7 +128,7 @@ SELECT A.* from ACCOUNT A where A.ACCOUNTID = accid$$
 
 DROP PROCEDURE IF EXISTS `SP_GET_ALL_BLOGS`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_GET_ALL_BLOGS` ()  NO SQL
-SELECT BLOGTITLE AS 'Ten', BLOGIMG as 'DuongDan', BLOGCONTENT as 'NoiDung', BLOGDATE as 'Ngay' FROM BLOG$$
+SELECT BLOGTITLE AS 'Ten', BLOGIMG as 'DuongDan', BLOGCONTENT as 'NoiDung', BLOGDATE as 'Ngay', BLOGID as 'Ma' FROM BLOG$$
 
 DROP PROCEDURE IF EXISTS `SP_GET_ALL_COMBOS`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_GET_ALL_COMBOS` ()  NO SQL
@@ -140,6 +155,10 @@ SELECT * from item_category$$
 DROP PROCEDURE IF EXISTS `SP_GET_ALL_ITEM_TYPES`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_GET_ALL_ITEM_TYPES` ()  NO SQL
 SELECT * FROM ITEM_TYPE$$
+
+DROP PROCEDURE IF EXISTS `SP_GET_BLOG_BY_ID`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_GET_BLOG_BY_ID` (IN `blogid` INT(11))  NO SQL
+select BLOGTITLE as 'Ten', BLOGCONTENT as 'NoiDung', BLOGIMG as 'DuongDan', BLOGDATE as 'Ngay' FROM BLOG WHERE BLOG.BLOGID = blogid$$
 
 DROP PROCEDURE IF EXISTS `SP_GET_CART_DETAILS`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_GET_CART_DETAILS` (IN `cartid` INT(11))  NO SQL
@@ -438,6 +457,32 @@ BEGIN
     RETURN accid;
 END$$
 
+DROP FUNCTION IF EXISTS `FN_REGISTER`$$
+CREATE DEFINER=`root`@`localhost` FUNCTION `FN_REGISTER` (`username` VARCHAR(20), `pass` TEXT, `name` VARCHAR(30), `email` TEXT, `phone` VARCHAR(11), `dob` TEXT, `sex` INT(1), `noti` INT(1)) RETURNS INT(2) NO SQL
+BEGIN
+	DECLARE accid int(2);
+    SET accid = 0;
+    
+	IF EXISTS(SELECT * FROM ACCOUNT WHERE ACCOUNTUSER = username) THEN
+    BEGIN
+    	SET accid = -2;
+    END;
+    ELSE 
+    if exists(SELECT * FROM ACCOUNT WHERE ACCOUNTEMAIL = email) THEN	
+    BEGIN
+    	SET accid = -1;
+    END;
+    else 
+    BEGIN
+    	INSERT INTO ACCOUNT(ACCOUNTUSER, ACCOUNTPASS, ACCOUNTEMAIL, ACCOUNTPHONE, ACCOUNTSEX, ACCOUNTNOTI, ACCOUNTDOB, ACCOUNTNAME, ACCOUNTDATE) VALUES (username, pass, email, phone, sex, noti, str_to_date(dob, "%d-%m-%Y"), name, NOW());
+        SET accid = 0;
+    END;
+    end if;
+    end if;
+    
+    RETURN accid;
+END$$
+
 DELIMITER ;
 
 -- --------------------------------------------------------
@@ -470,7 +515,9 @@ CREATE TABLE `account` (
 
 INSERT INTO `account` (`ACCOUNTID`, `ACCOUNTUSER`, `ACCOUNTPASS`, `ACCOUNTNAME`, `ACCOUNTEMAIL`, `ACCOUNTPHONE`, `ACCOUNTDOB`, `ACCOUNTSEX`, `ACCOUNTADD`, `ACCOUNTDATE`, `ACCOUNTVALID`, `ACCOUNTLIKEDITEMS`, `ACCOUNTLIKEDCOMBOS`, `ACCOUNTNOTI`) VALUES
 (4, 'kaito', 'pass', 'Bien', 'Bien@gmail.com', '1234567891', '1997-01-01', 1, 'Quang Nam', '0000-00-00', 1, NULL, NULL, 0),
-(5, 'newfull', '0ede32830053dc3d1a9dbdd98e71dea4', 'Nguyễn Thành Công', 'obmega3@gmail.com', '0911111112', '1997-01-02', 1, 'KTX Khu B ĐHQG TPHCM, Phường Linh Trung, Quận Thủ Đức, Thành phố Hồ Chí Minh', '2018-05-15', 1, '2,26,1', '3', 0);
+(5, 'newfull', '0ede32830053dc3d1a9dbdd98e71dea4', 'Nguyễn Thành Công', 'obmega3@gmail.com', '0911111112', '1997-01-02', 1, 'KTX Khu B ĐHQG TPHCM, Phường Linh Trung, Quận Thủ Đức, Thành phố Hồ Chí Minh', '2018-05-15', 1, '2,26,1', '3', 0),
+(7, 'neil.brex', '5388d26972038428479dea2cf03ec29f', 'Nguyễn Thành Công', 'obmega4@gmail.com', '0911111111', '1997-01-02', 1, '', '2018-07-01', 1, NULL, NULL, 0),
+(8, '15520070', '0ede32830053dc3d1a9dbdd98e71dea4', 'Nguyễn Thành Công', 'poly.lime.3@gmail.com', '0911111111', '1997-05-02', 0, '', '2018-07-01', 1, NULL, NULL, 0);
 
 --
 -- Triggers `account`
@@ -529,8 +576,8 @@ CREATE TABLE `blog` (
 --
 
 INSERT INTO `blog` (`BLOGID`, `BLOGTITLE`, `BLOGIMG`, `BLOGCONTENT`, `BLOGDATE`, `EMPID`) VALUES
-(1, 'KHUẤY ĐỘNG HÈ CÙNG BÉ TẠI KFC! GIẢM NGAY 25% CHO HÓA ĐƠN TỪ 120.000 ĐỒNG!', '1.png', 'Một mùa hè sôi động lại đến, các anh chị phụ huynh hãy thưởng cho các bé iu nhà mình bằng một bữa tiệc “Gà Rán KFC” hoành tráng để khích lệ tinh thần của các bé iu đi nào.\r\n\r\nNhân dịp Quốc Tế Thiếu Nhi 1.6 và để khởi đầu một mùa hè tràn đầy năng lượng, KFC giảm ngay 25% trên tổng giá trị hóa đơn khi dùng bữa tại các nhà hàng KFC trên toàn quốc với đơn hàng từ 120.000 đồng trở lên, có ít nhất 1 Combo Kiddie 55k.\r\n\r\nChương trình này áp dụng tại tất cả các nhà hàng KFC trên toàn quốc đến hết ngày 31/7/2018.\r\n\r\nKhông áp dụng cho thẻ giảm giá, dịch vụ tiệc sinh nhật, đơn hàng trên 2.000.000 đồng, giao hàng tận nơi và các chương trình khuyến mãi khác.\r\n\r\nCả nhà hãy kéo ngay đến KFC để mở tiệc ăn mừng hè đi nào!!!\r\n\r\n#KFCVietNam#QuocTeThieuNhi#1.6#Uudai25%', '2018-06-04 00:00:00', 1),
-(2, 'GÀ KẸP ZINBO - BURGER KHÔNG BÁNH CHỈ GÀ!', '2.png', 'KFC vừa trình làng một siêu phẩm mới Gà Kẹp Zinbo mới, burger không bánh chỉ gà, đang làm “xôn xao\" các tín đồ ẩm thực.\r\n\r\nGà kẹp Zinbo với 2 miếng thịt ức Gà giòn cay được thay cho 2 lớp bánh burger truyền thống, kẹp giữa là rau xà-lách tươi và lát thơm ngọt thanh được phủ thêm 2 lớp sốt Mayonnaise thơm béo và sốt gà nướng hương chanh, tạo nên món burger Gà Kẹp Zinbo KFC độc đáo với hương vị thơm ngon mới lạ mang lại trải nghiệm ẩm thực thật thú vị. Giá cực hợp lý chỉ 59.000đ/cái đảm bảo vừa ăn no say luôn vửa ngon không thể tả. Hoặc các fans có thể chọn ngay những combo giá cực ưu đãi sau:\r\n\r\nCombo Zinbo 1: gồm 1 Gà Kẹp Zinbo + 1 Khoai Tây Chiên (vừa) + 1 Pepsi (vừa) với giá siêu hợp lý chỉ 79.000đ\r\nCombo Zinbo 2: gồm 1 Gà Kẹp Zinbo + 1 miếng Gà Giòn Cay/Gà Giòn Không Cay/Truyền Thống + 1 Khoai Tây Chiên (vừa) + 1 Pepsi (vừa) chỉ 109.000đ cho phần ăn siêu ngon no căng bụng.\r\nSản phẩm hiện đang được bán tại tất cả nhà hàng KFC trên toàn quốc. Áp dụng cho cả Giao hàng tận nơi.\r\n\r\nHãy đến và dùng thử siêu phẩm Gà Kẹp Zinbo cùng KFC nhé!\r\n\r\n#KFC #KFCVietnam #GaKepZinbo #Zinbo', '2018-06-03 00:00:00', 1),
+(1, 'KHUẤY ĐỘNG HÈ CÙNG BÉ TẠI KFC! GIẢM NGAY 25% CHO HÓA ĐƠN TỪ 120.000 ĐỒNG!', '1.png', 'Một mùa hè sôi động lại đến, các anh chị phụ huynh hãy thưởng cho các bé iu nhà mình bằng một bữa tiệc “Gà Rán KFC” hoành tráng để khích lệ tinh thần của các bé iu đi nào.\r\n<br>\r\nNhân dịp Quốc Tế Thiếu Nhi 1.6 và để khởi đầu một mùa hè tràn đầy năng lượng, KFC giảm ngay 25% trên tổng giá trị hóa đơn khi dùng bữa tại các nhà hàng KFC trên toàn quốc với đơn hàng từ 120.000 đồng trở lên, có ít nhất 1 Combo Kiddie 55k.\r\n<br>\r\nChương trình này áp dụng tại tất cả các nhà hàng KFC trên toàn quốc đến hết ngày 31/7/2018.\r\n<br>\r\nKhông áp dụng cho thẻ giảm giá, dịch vụ tiệc sinh nhật, đơn hàng trên 2.000.000 đồng, giao hàng tận nơi và các chương trình khuyến mãi khác.\r\n<b>\r\nCả nhà hãy kéo ngay đến KFC để mở tiệc ăn mừng hè đi nào!!!</b>\r\n<br>\r\n#KFCVietNam#QuocTeThieuNhi#1.6#Uudai25%', '2018-06-04 00:00:00', 1),
+(2, 'GÀ KẸP ZINBO - BURGER KHÔNG BÁNH CHỈ GÀ!', '2.png', 'KFC vừa trình làng một siêu phẩm mới Gà Kẹp Zinbo mới, burger không bánh chỉ gà, đang làm “xôn xao\" các tín đồ ẩm thực.\r\n<br>\r\nGà kẹp Zinbo với 2 miếng thịt ức Gà giòn cay được thay cho 2 lớp bánh burger truyền thống, kẹp giữa là rau xà-lách tươi và lát thơm ngọt thanh được phủ thêm 2 lớp sốt Mayonnaise thơm béo và sốt gà nướng hương chanh, tạo nên món burger Gà Kẹp Zinbo KFC độc đáo với hương vị thơm ngon mới lạ mang lại trải nghiệm ẩm thực thật thú vị. Giá cực hợp lý chỉ 59.000đ/cái đảm bảo vừa ăn no say luôn vửa ngon không thể tả. Hoặc các fans có thể chọn ngay những combo giá cực ưu đãi sau:\r\n<br>\r\n<b>Combo Zinbo 1:</b> gồm 1 Gà Kẹp Zinbo + 1 Khoai Tây Chiên (vừa) + 1 Pepsi (vừa) với giá siêu hợp lý chỉ 79.000đ\r\n<br>\r\n<b>Combo Zinbo 2:</b> gồm 1 Gà Kẹp Zinbo + 1 miếng Gà Giòn Cay/Gà Giòn Không Cay/Truyền Thống + 1 Khoai Tây Chiên (vừa) + 1 Pepsi (vừa) chỉ 109.000đ cho phần ăn siêu ngon no căng bụng.\r\n<br>\r\nSản phẩm hiện đang được bán tại tất cả nhà hàng KFC trên toàn quốc. Áp dụng cho cả Giao hàng tận nơi.\r\n<br><b>\r\nHãy đến và dùng thử siêu phẩm Gà Kẹp Zinbo cùng KFC nhé!</br></b>\r\n<br>\r\n#KFC #KFCVietnam #GaKepZinbo #Zinbo', '2018-06-03 00:00:00', 1),
 (3, 'VUI ĂN GÀ - CÙNG KFC DỰ ĐOÁN BÓNG ĐÁ!', '3.png', 'Hòa mình cùng bầu không khí cực kì sôi động của môn thể thao vua với Giải Vô Địch Bóng Đá Thế Giới lần thứ 21 đang diễn ra tưng bừng trên khắp hành tinh và đánh dấu bước ngoặt của năm thứ 21 KFC có mặt tại Việt Nam. Chương trình “Vui ăn gà - Cùng KFC dự đoán bóng đá” là câu chuyện song hành giữa niềm đam mê ẩm thực cùng tình yêu bóng đá nồng cháy của mùa bóng năm nay. Hãy cùng KFC vừa thưởng thức những trận đấu sôi nổi, kịch tính, vừa dự đoán kết quả của những vòng đấu để nhận ngay những phần quà cực chất.\r\n\r\n1. Cách thức tham gia dễ dàng và trúng ngay vô vàn những giải thưởng hấp dẫn:\r\n\r\n- Bước 1: Chọn mua Combo “KFC Foodball 21” để nhận ngay phiếu tham gia dự  đoán bóng đá sau:\r\n\r\nCombo KFC Foodball 21 84k giá 84.000đ (gồm 3 miếng Gà Giòn Cay/Gà Truyền Thống/Gà Giòn Không Cay + 2 Pepsi (vừa) để NHẬN NGAY 1 Phiếu cào tham gia dự đoán.\r\nCombo KFC Foodball 21 184k giá 184.000đ (gồm 6 miếng Gà Giòn Cay/Gà Truyền Thống/ Gà Giòn Không Cay + 3 Pepsi (LỚN) để NHẬN NGAY 3 Phiếu cào tham gia dự đoán. Phần ăn đủ cho cả nhà vừa ăn vừa xem bóng đá.\r\n- Bước 2: Cào vào phần cào trên Phiếu để lấy mã số tham gia dự đoán. Lưu ý: mỗi mã số tham gia dự đoán chỉ áp dụng cho 1 lần tham gia. Khách hàng có thể tham gia dự đoán nhiều lần với nhiều mã số khác nhau\r\n\r\n- Bước 3: Truy cập trang web: www.kfcvietnam.com.vn/dudoanbongda để tham gia dự đoán kết quả các vòng đấu để nhận những giải thưởng vô cùng hấp dẫn.\r\n\r\n2. Danh sách giải thưởng của mỗi vòng:\r\n\r\nSố lượng giải\r\n\r\nCơ cấu giải thưởng mỗi vòng\r\n\r\nTrận Chung Kết\r\n\r\n21 Giải Nhất\r\n\r\nGift Voucher KFC 4.000.000 đồng & 1 Loa Pepsi cực chất\r\n\r\n21 Giải Nhì\r\n\r\nGift Voucher KFC 2.000.000 đồng & 1 Tai Nghe Pepsi cực ngầu\r\n\r\n21 Giải Ba\r\n\r\nGift Voucher KFC 1.000.000 đồng & 1 Ba-lô Pepsi cực cool\r\n\r\nVòng 16 Đội, Vòng Tứ Kết, Vòng Bán Kết, Vòng Chung Kết\r\n\r\nMỗi vòng 21 Giải Nhất\r\n\r\nGift Voucher KFC 2.000.000 đồng & 1 Loa Pepsi cực chất\r\n\r\nMỗi vòng 21 Giải Nhì\r\n\r\nGift Voucher KFC 1.000.000 đồng & 1 Tai Nghe Pepsi cực ngầu\r\n\r\nMỗi vòng 21 Giải Ba\r\n\r\nGift Voucher KFC 500.000 đồng & 1 Ba-lô Pepsi cực cool\r\n\r\n3. Thời gian tham gia dự đoán cho các vòng:\r\n\r\nVòng 16 Đội: từ 0h ngày 01/06/2018 đến 22h00 ngày 27/06/2018\r\nVòng Tứ Kết: từ 0h ngày 28/06/2018 đến 22h00 ngày 02/07/2018\r\nVòng Bán Kết: từ 0h ngày 03/07/2018 đến 22h00 ngày 07/07/2018\r\nVòng Chung Kết: từ 0h ngày 08/07/2018 đến 22h00 ngày 11/07/2018\r\nTrận Chung Kết: từ 0h ngày 12/07/2018 đến 17h00 ngày 15/07/2018\r\n4. Thời gian công bố kết quả trúng thưởng:\r\n\r\nVòng 16 Đội: ngày 04/07/2018\r\nVòng Tứ Kết: ngày 07/07/2018\r\nVòng Bán Kết: ngày 11/07/2018\r\nVòng Chung Kết: ngày 14/07/2018\r\nTrận Chung Kết: ngày 19/07/2018\r\nChương trình kéo dài từ ngày 01/06/2018 đến hết ngày 15/07/2018 tại tất cả các nhà hàng KFC trên toàn quốc, áp dụng cho cả giao hàng tận nơi.\r\n\r\nKhông áp dụng cho thẻ giảm giá và đơn hàng trên 2.000.000 đồng.\r\n\r\nTHAM GIA NGAY TẠI:  www.kfcvietnam.com.vn/dudoanbongda\r\n\r\n#KFC #KFCVietnam #DuDoanBongDa', '2018-06-02 00:00:00', 1),
 (4, '“NHẮM MẮT THẤY MÙA HÈ – TƯƠI TRẺ CÙNG TRÀ NHIỆT ĐỚI HẠT CHIA KFC”', '4.png', 'Trà Nhiệt Đới Hạt Chia, món nước uống mùa hè vừa được KFC ra mắt là sự kết hợp hài hòa giữa trà chanh mát lạnh, hạt chia 100% organic từ Anh và các loại trái cây vùng nhiệt đới tươi mới, cùng tạo nên một thức uống vừa dinh dưỡng tốt cho sức khỏe vừa thanh mát nhẹ nhàng có tác dụng giải nhiệt giúp xoa dịu đi cái nóng oi bức của mùa hè. Giá một ly Trà Nhiệt Đới Hạt Chia cũng rất mát chỉ 24.000 đồng (hoặc đổi từ Pepsi (vừa) với giá chỉ 12.000 đồng).\r\n\r\nCòn gì tuyệt vời hơn khi vừa măm măm gà rán giòn cay vừa thưởng thức từng ngụm trà mát lạnh!\r\n\r\nGhé KFC ngay các fans nhé!', '2018-06-01 00:00:00', 1);
 
@@ -556,7 +603,9 @@ INSERT INTO `cart` (`CARTID`, `ACCOUNTID`, `CARTTIME`, `ACTIVE`) VALUES
 (1, 4, '2018-06-05 00:00:00', 0),
 (2, 4, '2018-06-06 00:00:00', 0),
 (3, 4, '2018-06-16 23:56:59', 1),
-(7, 5, '2018-06-21 00:41:36', 1);
+(7, 5, '2018-06-21 00:41:36', 1),
+(9, 7, '2018-07-01 12:46:15', 1),
+(10, 8, '2018-07-01 12:50:17', 1);
 
 --
 -- Triggers `cart`
@@ -779,20 +828,6 @@ CREATE TABLE `item_promotion` (
   `EMPID` int(11) NOT NULL COMMENT 'Người tạo'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Khuyến mãi theo sản phẩm';
 
---
--- Triggers `item_promotion`
---
-DROP TRIGGER IF EXISTS `trig_itempromotion_insert`;
-DELIMITER $$
-CREATE TRIGGER `trig_itempromotion_insert` BEFORE INSERT ON `item_promotion` FOR EACH ROW BEGIN
-    IF NEW.HOURLYPR = 0 THEN
-        SET NEW.STARTHOUR =null;
-        SET NEW.ENDHOUR =null;
-    END IF;
-END
-$$
-DELIMITER ;
-
 -- --------------------------------------------------------
 
 --
@@ -808,28 +843,6 @@ CREATE TABLE `item_promotion_detail` (
   `NEWPRICE` decimal(10,0) DEFAULT NULL COMMENT 'Giá mới (nếu có) [Bỏ trống nếu khuyến mãi %]',
   `PRVALUE` int(2) DEFAULT '5' COMMENT 'Giá trị khuyến mãi (%) [Bỏ trống nếu đổi giá tự do]'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Chi tiết khuyến mãi theo sản phẩm';
-
---
--- Triggers `item_promotion_detail`
---
-DROP TRIGGER IF EXISTS `trig_itempromotiondetail_insert`;
-DELIMITER $$
-CREATE TRIGGER `trig_itempromotiondetail_insert` BEFORE INSERT ON `item_promotion_detail` FOR EACH ROW BEGIN
-    DECLARE SWAPQUANT INT(11);
-    DECLARE diff_date INT(11);
-    
-    IF NEW.MINQUANT < 0 THEN
-        SET NEW.MINQUANT =0;
-    END IF;
-    
-    IF NEW.MAXQUANT < NEW.MINQUANT THEN
-        SET SWAPQUANT = NEW.MINQUANT;
-        SET NEW.MINQUANT = NEW.MAXQUANT;
-        SET NEW.MAXQUANT= SWAP;
-    END IF;
-END
-$$
-DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -919,28 +932,6 @@ CREATE TABLE `receipt_promotion` (
   `EMPID` int(11) NOT NULL COMMENT 'Người tạo'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Khuyến mãi trên hóa đơn';
 
---
--- Triggers `receipt_promotion`
---
-DROP TRIGGER IF EXISTS `trig_receiptpromotion_insert`;
-DELIMITER $$
-CREATE TRIGGER `trig_receiptpromotion_insert` BEFORE INSERT ON `receipt_promotion` FOR EACH ROW BEGIN
-    DECLARE diff_date int(11);
-    DECLARE SWAP DATE;
-    IF NEW.HOURLYPR = 0 THEN
-        SET NEW.STARTHOUR =null;
-        SET NEW.ENDHOUR =null;
-    END IF;
-    SELECT DATEDIFF(NEW.STARTDATE,NEW.ENDDATE) INTO diff_date;
-    IF diff_date > 0 THEN
-        SET SWAP = NEW.STARTDATE;
-        SET NEW.STARTDATE = NEW.ENDDATE;
-        SET NEW.ENDDATE= SWAP;
-    END IF;
-END
-$$
-DELIMITER ;
-
 -- --------------------------------------------------------
 
 --
@@ -956,35 +947,29 @@ CREATE TABLE `receipt_promotion_detail` (
   `PROVALUE` int(2) NOT NULL DEFAULT '10' COMMENT 'Giá trị khuyến mãi (%)'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Chi tiết khuyến mãi';
 
---
--- Triggers `receipt_promotion_detail`
---
-DROP TRIGGER IF EXISTS `trig_receiptpromotiondetail_insert`;
-DELIMITER $$
-CREATE TRIGGER `trig_receiptpromotiondetail_insert` BEFORE INSERT ON `receipt_promotion_detail` FOR EACH ROW BEGIN
-    DECLARE SWAP INT(11);
-    IF(NEW.MINRCPVALUE < 0) THEN
-        SET NEW.MINRCPVALUE =0;
-    END IF;
-    IF(NEW.MAXRCPVALUE < NEW.MINRCPVALUE) THEN
-        SET SWAP = NEW.MINRCPVALUE;
-        SET NEW.MINRCPVALUE = NEW.MAXRCPVALUE;
-        SET NEW.MINRCPVALUE= SWAP;
-    END IF;
-END
-$$
-DELIMITER ;
-
 -- --------------------------------------------------------
 
 --
--- Table structure for table `reg-email`
+-- Table structure for table `reg_email`
 --
 
-DROP TABLE IF EXISTS `reg-email`;
-CREATE TABLE `reg-email` (
-  `EMAIL` text NOT NULL COMMENT 'Email đăng ký nhận tin'
+DROP TABLE IF EXISTS `reg_email`;
+CREATE TABLE `reg_email` (
+  `REGEMAILID` int(11) NOT NULL COMMENT 'Mã',
+  `EMAIL` text NOT NULL COMMENT 'Email đăng ký nhận tin',
+  `REGDATE` date NOT NULL COMMENT 'Ngày đăng ký'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `reg_email`
+--
+
+INSERT INTO `reg_email` (`REGEMAILID`, `EMAIL`, `REGDATE`) VALUES
+(1, 'obmega3@gmail.com', '0000-00-00'),
+(2, 'obmega2@gmail.com', '0000-00-00'),
+(3, 'obmega1@gmail.com', '0000-00-00'),
+(4, 'obmega21@gmail.com', '0000-00-00'),
+(5, 's@s.com', '0000-00-00');
 
 --
 -- Indexes for dumped tables
@@ -1107,6 +1092,12 @@ ALTER TABLE `receipt_promotion_detail`
   ADD KEY `RCPPR_ID` (`RCPPR_ID`);
 
 --
+-- Indexes for table `reg_email`
+--
+ALTER TABLE `reg_email`
+  ADD PRIMARY KEY (`REGEMAILID`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -1114,7 +1105,7 @@ ALTER TABLE `receipt_promotion_detail`
 -- AUTO_INCREMENT for table `account`
 --
 ALTER TABLE `account`
-  MODIFY `ACCOUNTID` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Mã tài khoản', AUTO_INCREMENT=6;
+  MODIFY `ACCOUNTID` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Mã tài khoản', AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `admin`
@@ -1132,7 +1123,7 @@ ALTER TABLE `blog`
 -- AUTO_INCREMENT for table `cart`
 --
 ALTER TABLE `cart`
-  MODIFY `CARTID` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Mã giỏ', AUTO_INCREMENT=8;
+  MODIFY `CARTID` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Mã giỏ', AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `combo`
@@ -1181,6 +1172,12 @@ ALTER TABLE `receipt_promotion`
 --
 ALTER TABLE `receipt_promotion_detail`
   MODIFY `RCPPR_DTLID` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Mã chi tiết khuyến mãi';
+
+--
+-- AUTO_INCREMENT for table `reg_email`
+--
+ALTER TABLE `reg_email`
+  MODIFY `REGEMAILID` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Mã', AUTO_INCREMENT=6;
 
 --
 -- Constraints for dumped tables

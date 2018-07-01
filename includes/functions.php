@@ -345,6 +345,14 @@ function search_menu_combo($conn, $key){
   return sp_call_vars($conn, "SP_GET_COMBO_BY_NAME", $key);
 }
 
+function get_blog($conn, $blog){
+  return sp_call_vars($conn, "SP_GET_BLOG_BY_ID", $blog);
+}
+
+function reg_email($conn, $email){
+  return sp_call_vars($conn, "SP_ADD_EMAIL_FOR_NEWS", $email);
+}
+
 if(isset($_POST['funct'])) {
   switch($_POST['funct']){
     case 'change_cart_details_quant':
@@ -385,6 +393,12 @@ if(isset($_POST['funct'])) {
       break;
     case 'change_pass':
       change_pass($conn, $_SESSION['current'], $_POST['newpass']);
+      break;
+    case 'get_blog_by_id':
+      echo json_encode(get_blog($conn, $_POST['blog'])[0]);
+      break;
+    case 'reg_email':
+      echo reg_email($conn, $_POST['email'])[0][0];
       break;
   }
 }

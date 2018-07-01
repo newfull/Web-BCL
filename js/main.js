@@ -147,7 +147,7 @@ $('input[type="tel"]').keydown(function(event){
 
 function clear_modal(){
   $(".modal").on("hidden.bs.modal", function(){
-        $(".modal-body input[type='text'], .modal-body input[type='password']").val("");
+        $(".reg-error-label").html("");
         $('#login-user').addClass('empty');
         $('#login-pass').addClass('empty');
   });
@@ -330,6 +330,57 @@ $('#login-page-form').submit(function(e){
     });
 });
 
+$('#register').submit(function(e){
+    e.preventDefault();
+    var error = $('.reg-error-label');
+    error.html("");
+
+    if($("#name").val() == "")
+      error.html("Không được để trống họ tên");
+      else if($("#regusername").val() == "")
+        error.html("Không được để trống tên đăng nhập");
+        else
+        if($("#regpassword").val().length < 8)
+          error.html("Mật khẩu phải nhiều hơn 8 ký tự");
+          else
+          if($("#regpassword").val() != $("#reenterpassword").val())
+            error.html("Nhập lại mật khẩu chưa chính xác!");
+          else
+            if(checkEmail($("#email").val()) == false)
+              error.html("Email không hợp lệ");
+            else if(checkPhoneNumber($("#phonenumber").val()) == false)
+              error.html("Số điện thoại không hợp lệ");
+              else
+              if($("#chkbox-agreement").is(":checked") == false)
+                error.html("Bạn phải đồng ý với điều khoản của BCL trước khi đăng ký");
+              else
+              {
+                error.html("");
+                var data= $("#register").serialize();
+
+                var noti = "";
+                if($('#chkbox-email').is(":checked"))
+                  noti = 1;
+                else noti = 0;
+
+                data += "&noti=" + noti;
+
+    $.ajax({
+        url:'../includes/register.php',
+        type:'post',
+        data: data,
+        success:function(response){
+          $('#error-popup .modal-body').html(response);
+          $('#error-popup').modal('show');
+          if(response == "Đăng ký thành công")
+            setTimeout(function(){ window.location = "/dang-nhap"; },1500);
+          else {
+            setTimeout(function(){  $('#error-popup').modal('hide');},1500);
+          }
+     }
+    });
+  }
+});
 
 $('.fn-logout').on("click", function(){
   var r = confirm("Bạn thật sự muốn đăng xuất?");
@@ -637,9 +688,6 @@ $(window).focus(function() {
       break;
     case 'info-sect':
        $(content).load("./gioi-thieu.php .sect-content");
-       break;
-     case 'blog-sect':
-       $(content).load("./khuyen-mai.php .sect-content-wrapper");
        break;
    }
 
@@ -1050,64 +1098,111 @@ $("#search_menu").on("change paste keyup blur", function(){
   }
 });
 
-window.fbAsyncInit = function() {
-    // FB JavaScript SDK configuration and setup
-    FB.init({
-      appId      : '615265362186705', // FB App ID
-      cookie     : true,  // enable cookies to allow the server to access the session
-      xfbml      : true,  // parse social plugins on this page
-      version    : 'v3.0' // use graph api version 2.8
-    });
+// window.fbAsyncInit = function() {
+//     // FB JavaScript SDK configuration and setup
+//     FB.init({
+//       appId      : '615265362186705', // FB App ID
+//       cookie     : true,  // enable cookies to allow the server to access the session
+//       xfbml      : true,  // parse social plugins on this page
+//       version    : 'v3.0' // use graph api version 2.8
+//     });
+//
+//     // Check whether the user already logged in
+//     FB.getLoginStatus(function(response) {
+//         if (response.status === 'connected') {
+//             //display user data
+//             getFbUserData();
+//         }
+//     });
+// };
+//
+// // Load the JavaScript SDK asynchronously
+// (function(d, s, id) {
+//     var js, fjs = d.getElementsByTagName(s)[0];
+//     if (d.getElementById(id)) return;
+//     js = d.createElement(s); js.id = id;
+//     js.src = "//connect.facebook.net/en_US/sdk.js";
+//     fjs.parentNode.insertBefore(js, fjs);
+// }(document, 'script', 'facebook-jssdk'));
+//
+// // Facebook login with JavaScript SDK
+// function loginFB() {
+//     FB.login(function (response) {
+//         if (response.authResponse) {
+//             console.log(response);
+//         } else {
+//           $('#error-popup .modal-body').html("Người dùng huỷ đăng nhập hoặc chưa cấp quyền đủ.");
+//           $('#error-popup').modal('show');
+//         }
+//     }, {scope: 'email'});
+// }
+//
+// // Fetch the user profile data from facebook
+// function getFbUserData(){
+//     FB.api('/me', {locale: 'en_US', fields: 'id,first_name,last_name,email,link,gender,locale,picture'},
+//     function (response) {
+//     //     document.getElementById('fbLink').setAttribute("onclick","fbLogout()");
+//     //     document.getElementById('fbLink').innerHTML = 'Logout from Facebook';
+//     //     document.getElementById('status').innerHTML = 'Thanks for logging in, ' + response.first_name + '!';
+//     //     document.getElementById('userData').innerHTML = '<p><b>FB ID:</b> '+response.id+'</p><p><b>Name:</b> '+response.first_name+' '+response.last_name+'</p><p><b>Email:</b> '+response.email+'</p><p><b>Gender:</b> '+response.gender+'</p><p><b>Locale:</b> '+response.locale+'</p><p><b>Picture:</b> <img src="'+response.picture.data.url+'"/></p><p><b>FB Profile:</b> <a target="_blank" href="'+response.link+'">click to view profile</a></p>';
+//      });
+// }
+//
+// // Logout from facebook
+// function fbLogout() {
+//     FB.logout(function() {
+//         // document.getElementById('fbLink').setAttribute("onclick","fbLogin()");
+//         // document.getElementById('fbLink').innerHTML = '<img src="fblogin.png"/>';
+//         // document.getElementById('userData').innerHTML = '';
+//         // document.getElementById('status').innerHTML = 'You have successfully logout from Facebook.';
+//     });
+// }
 
-    // Check whether the user already logged in
-    FB.getLoginStatus(function(response) {
-        if (response.status === 'connected') {
-            //display user data
-            getFbUserData();
-        }
-    });
-};
-
-// Load the JavaScript SDK asynchronously
-(function(d, s, id) {
-    var js, fjs = d.getElementsByTagName(s)[0];
-    if (d.getElementById(id)) return;
-    js = d.createElement(s); js.id = id;
-    js.src = "//connect.facebook.net/en_US/sdk.js";
-    fjs.parentNode.insertBefore(js, fjs);
-}(document, 'script', 'facebook-jssdk'));
-
-// Facebook login with JavaScript SDK
-function loginFB() {
-    FB.login(function (response) {
-        if (response.authResponse) {
-            console.log(response);
-        } else {
-          $('#error-popup .modal-body').html("Người dùng huỷ đăng nhập hoặc chưa cấp quyền đủ.");
-          $('#error-popup').modal('show');
-        }
-    }, {scope: 'email'});
+function show_blog(blogid){
+  $("#show_blog_content").removeClass('display-none');
+  $.ajax({
+    cache: false,
+    async: false,
+    type: "POST",
+    dataType: "json",
+    url: './includes/functions.php',
+    data: {
+      funct: 'get_blog_by_id',
+      blog: blogid
+    },
+    success: function(response){
+      console.log(response['Ten']);
+      document.getElementById("blog-header").scrollIntoView();
+      $("#blog_title > h3").html(response['Ten']);
+      $("#blog_content").html(response['NoiDung']);
+      var url = "../images/blog/content/" + response['DuongDan'];
+      $("#blog_img img").attr("src", url);
+    }
+  });
 }
 
-// Fetch the user profile data from facebook
-function getFbUserData(){
-    FB.api('/me', {locale: 'en_US', fields: 'id,first_name,last_name,email,link,gender,locale,picture'},
-    function (response) {
-    //     document.getElementById('fbLink').setAttribute("onclick","fbLogout()");
-    //     document.getElementById('fbLink').innerHTML = 'Logout from Facebook';
-    //     document.getElementById('status').innerHTML = 'Thanks for logging in, ' + response.first_name + '!';
-    //     document.getElementById('userData').innerHTML = '<p><b>FB ID:</b> '+response.id+'</p><p><b>Name:</b> '+response.first_name+' '+response.last_name+'</p><p><b>Email:</b> '+response.email+'</p><p><b>Gender:</b> '+response.gender+'</p><p><b>Locale:</b> '+response.locale+'</p><p><b>Picture:</b> <img src="'+response.picture.data.url+'"/></p><p><b>FB Profile:</b> <a target="_blank" href="'+response.link+'">click to view profile</a></p>';
-     });
-}
-
-// Logout from facebook
-function fbLogout() {
-    FB.logout(function() {
-        // document.getElementById('fbLink').setAttribute("onclick","fbLogin()");
-        // document.getElementById('fbLink').innerHTML = '<img src="fblogin.png"/>';
-        // document.getElementById('userData').innerHTML = '';
-        // document.getElementById('status').innerHTML = 'You have successfully logout from Facebook.';
-    });
+function registerEmail(){
+  var data= $("#news_email").val();
+  if(checkEmail(data) == false){
+    $('#error-popup .modal-body').html("Email không hợp lệ!");
+    $('#error-popup').modal('show');
+  }
+  else{
+  $.ajax({
+      url:'../includes/functions.php',
+      type:'post',
+      data: {
+        funct: 'reg_email',
+        email: data
+      },
+      success:function(response){
+        $('#error-popup .modal-body').html(response);
+        $('#error-popup').modal('show');
+        setTimeout(function(){  $('#error-popup').modal('hide');},2000);
+        $("#news_email").val("");
+   }
+  });
+  }
 }
 
 $(document).ready(function(e){
