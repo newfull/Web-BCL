@@ -75,7 +75,16 @@ if(!empty($_SESSION['current'])){
   <?php
   $data1 = cart_details_combo($conn, $current_user->getCart());
   $data2 = cart_details($conn, $current_user->getCart());
-  $data = array_merge($data1, $data2);
+  if(isEmpty($data1) && !isEmpty($data2))
+    $data = $data2;
+  else
+    if(isEmpty($data2) && !isEmpty($data1))
+      $data = $data1;
+    else
+      if(!isEmpty($data2) && !isEmpty($data1))
+      {
+        $data = array_merge($data1, $data2);
+      }
 
   foreach($data as $item) {?>
 
@@ -87,7 +96,8 @@ if(!empty($_SESSION['current'])){
 
    </tr>
 
-  <?php  } ?>
+  <?php  }
+?>
 
   </table>
 </div>

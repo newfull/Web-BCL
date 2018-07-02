@@ -382,6 +382,58 @@ $('#register').submit(function(e){
   }
 });
 
+$('#signup-page').submit(function(e){
+    e.preventDefault();
+    var error = $('.signup-error-label');
+    error.html("");
+
+    if($("#signup-name").val() == "")
+      error.html("Không được để trống họ tên");
+      else if($("#signup-username").val() == "")
+        error.html("Không được để trống tên đăng nhập");
+        else
+        if($("#signup-password").val().length < 8)
+          error.html("Mật khẩu phải nhiều hơn 8 ký tự");
+          else
+          if($("#signup-password").val() != $("#signup-reenterpassword").val())
+            error.html("Nhập lại mật khẩu chưa chính xác!");
+          else
+            if(checkEmail($("#signup-email").val()) == false)
+              error.html("Email không hợp lệ");
+            else if(checkPhoneNumber($("#signup-phonenumber").val()) == false)
+              error.html("Số điện thoại không hợp lệ");
+              else
+              if($("#signup-chkagree").is(":checked") == false)
+                error.html("Bạn phải đồng ý với điều khoản của BCL trước khi đăng ký");
+              else
+              {
+                error.html("");
+                var data= $("#signup-page").serialize();
+
+                var noti = "";
+                if($('#signup-chknoti').is(":checked"))
+                  noti = 1;
+                else noti = 0;
+
+                data += "&noti=" + noti;
+
+    $.ajax({
+        url:'../includes/register.php',
+        type:'post',
+        data: data,
+        success:function(response){
+          $('#error-popup .modal-body').html(response);
+          $('#error-popup').modal('show');
+          if(response == "Đăng ký thành công")
+            setTimeout(function(){ window.location = "/dang-nhap"; },1500);
+          else {
+            setTimeout(function(){  $('#error-popup').modal('hide');},1500);
+          }
+     }
+    });
+  }
+});
+
 $('.fn-logout').on("click", function(){
   var r = confirm("Bạn thật sự muốn đăng xuất?");
   if (r == true) {
@@ -686,9 +738,6 @@ $(window).focus(function() {
     case 'user-sect':
       reload_info();
       break;
-    case 'info-sect':
-       $(content).load("./gioi-thieu.php .sect-content");
-       break;
    }
 
 });
@@ -1230,6 +1279,21 @@ $(".submit-receipt").click(function(){
    }
   });
 });
+
+function show_receipt(receipt){
+  $('.wrapper-his').addClass("display-none");
+  $('.wrapper-receipt').removeClass("display-none");
+  $.ajax({
+      url:'../includes/receipt_details.php',
+      type:'get',
+      data: {
+        receipt: receipt
+      },
+      success:function(response){
+        $('.wrapper-receipt').html(response);
+   }
+  });
+}
 
 $(document).ready(function(e){
     $('.selectpicker').selectpicker();

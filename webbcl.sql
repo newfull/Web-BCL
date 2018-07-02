@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jul 01, 2018 at 08:13 AM
+-- Generation Time: Jul 02, 2018 at 08:56 PM
 -- Server version: 10.1.32-MariaDB
 -- PHP Version: 5.6.36
 
@@ -95,6 +95,68 @@ BEGIN
         SELECT 'Đăng ký nhận tin thành công';
     END;
     END IF;
+END$$
+
+DROP PROCEDURE IF EXISTS `SP_CHECKOUT`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_CHECKOUT` (IN `cartid` INT(11), IN `receiptid` INT(11))  NO SQL
+BEGIN
+ DECLARE iid int(11) DEFAULT 0;
+ DECLARE qtt int(11) DEFAULT 0;
+ DECLARE tot decimal(13,2) DEFAULT 0;
+ DECLARE done BOOLEAN DEFAULT false;
+ DECLARE acc int(11) DEFAULT 0;
+ DECLARE detail_item CURSOR FOR 
+ SELECT cd.itemid, cd.quantity, (i.itemprice * cd.quantity) FROM cart_detail cd, item i WHERE cd.cartid = cartid and cd.itemid = i.itemid;
+ DECLARE detail_combo CURSOR FOR 
+ SELECT cd.comboid, cd.quantity, (i.comboprice * cd.quantity) FROM cart_detail_combo cd, combo i WHERE cd.cartid = cartid and cd.comboid = i.comboid;
+ 
+ OPEN detail_item;
+ BEGIN
+ DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+            get_item: LOOP
+            IF done THEN
+      LEAVE get_item;
+    END IF;
+                FETCH detail_item INTO iid, qtt, tot;
+                if EXISTS ( SELECT * FROM ITEM WHERE ITEMID = iid) then
+				IF NOT EXISTS (SELECT * FROM RECEIPT_DETAIL rd WHERE rd.receiptid = receiptid and rd.itemid = iid) then
+                INSERT INTO RECEIPT_DETAIL VALUES (receiptid, iid, qtt, tot);
+                end if;
+                end if;
+            END LOOP;
+ END;
+ CLOSE detail_item;
+ 
+ SET done = FALSE;
+ OPEN detail_combo;
+ BEGIN
+ DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+            get_combo: LOOP
+            IF done THEN
+      LEAVE get_combo;
+    END IF;
+    
+                FETCH detail_combo INTO iid, qtt, tot;
+                if EXISTS ( SELECT * FROM combo WHERE comboid = iid) then
+				IF NOT EXISTS (SELECT * FROM RECEIPT_DETAIL_COMBO rd WHERE rd.receiptid = receiptid and rd.comboid = iid) then
+                INSERT INTO RECEIPT_DETAIL_COMBO VALUES (receiptid, iid, qtt, tot);
+                end if;
+                end if;
+            END LOOP;
+END;
+ CLOSE detail_combo;
+	
+ SELECT c.ACCOUNTID into acc from cart c where c.cartid = cartid;  
+  
+ CALL SP_ADD_CART(acc);
+END$$
+
+DROP PROCEDURE IF EXISTS `SP_DEACTIVATE_OLD_CARTS`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_DEACTIVATE_OLD_CARTS` (IN `accid` INT(11))  NO SQL
+BEGIN
+	UPDATE CART 
+    SET ACTIVE = 0
+    WHERE CART.ACCOUNTID = accid;
 END$$
 
 DROP PROCEDURE IF EXISTS `SP_DEL_ALL_CART_DETAIL`$$
@@ -266,6 +328,30 @@ i.ITEMIMGURL as 'DuongDan' from item i, item_type type, item_category cat
     where cat.ITEM_CATEGORYID = item_cat and type.ITEM_CATEGORYID = cat.ITEM_CATEGORYID
     and i.ITEM_TYPEID = type.ITEM_TYPEID and i.ITEMSTATUS = 1$$
 
+DROP PROCEDURE IF EXISTS `SP_GET_RECEIPTS`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_GET_RECEIPTS` (IN `accid` INT(11))  NO SQL
+BEGIN
+	SELECT RECEIPTID as 'Ma', RECEIPTTIME as 'ThoiGian', RECEIPTADD as 'DiaChi', RECEIPTVALUE as 'GiaTri' FROM RECEIPT WHERE RECEIPT.ACCOUNTID = accid;
+END$$
+
+DROP PROCEDURE IF EXISTS `SP_GET_RECEIPT_DETAILS`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_GET_RECEIPT_DETAILS` (IN `receipt` INT(11))  NO SQL
+SELECT i.ITEMNAME as 'Ten', i.ITEMPRICE as 'Gia', cd.QUANTITY as 'SoLuong'
+from receipt_detail cd, item i
+where cd.receiptid = receipt and cd.ITEMID = i.ITEMID$$
+
+DROP PROCEDURE IF EXISTS `SP_GET_RECEIPT_DETAILS_COMBO`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_GET_RECEIPT_DETAILS_COMBO` (IN `receipt` INT(11))  NO SQL
+SELECT i.comboname as 'Ten', i.comboPRICE as 'Gia', cd.QUANTITY as 'SoLuong'
+from receipt_detail_combo cd, combo i
+where cd.receiptid = receipt and cd.comboid = i.comboid$$
+
+DROP PROCEDURE IF EXISTS `SP_GET_RECEIPT_INFO`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_GET_RECEIPT_INFO` (IN `receipt` INT(11))  NO SQL
+BEGIN
+SELECT RECEIPTID as 'Ma', RECEIPTTIME as 'ThoiGian', RECEIPTADD as 'DiaChi', RECEIPTVALUE as 'GiaTri' FROM RECEIPT WHERE RECEIPTID = receipt;
+END$$
+
 DROP PROCEDURE IF EXISTS `SP_UPD_ACCOUNT_ADD`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_UPD_ACCOUNT_ADD` (IN `accid` INT, IN `accadd` VARCHAR(500))  NO SQL
 BEGIN
@@ -343,16 +429,37 @@ END$$
 
 DROP PROCEDURE IF EXISTS `SP_UPD_PROMOTION_STT`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_UPD_PROMOTION_STT` ()  BEGIN
-	UPDATE item_promotion SET STATUS = 0
-    WHERE DATEDIFF(ENDDATE, CURDATE())  < 0;
-UPDATE RECEIPT_promotion SET STATUS = 0
-    WHERE DATEDIFF(ENDDATE, CURDATE())  < 0;
+DECLARE maxsdr date;
+
+SELECT MAX(STARTDATE) INTO maxsdr FROM RECEIPT_PROMOTION WHERE STARTDATE <= CURDATE();
+
+UPDATE RECEIPT_PROMOTION SET STATUS = 0;
+
+UPDATE RECEIPT_promotion SET STATUS = 1
+WHERE DATEDIFF(ENDDATE, CURDATE())  > 0 OR STARTDATE = maxsdr;
 
 END$$
 
 --
 -- Functions
 --
+DROP FUNCTION IF EXISTS `FN_ADD_RECEIPT`$$
+CREATE DEFINER=`root`@`localhost` FUNCTION `FN_ADD_RECEIPT` (`accid` INT(11)) RETURNS TEXT CHARSET utf8 NO SQL
+BEGIN
+DECLARE address varchar(500) DEFAULT "";
+DECLARE ret int(11) DEFAULT 0;
+DECLARE cartid int(11) DEFAULT 0;
+
+SELECT ACCOUNTADD into address from account where accountid = accid;
+SELECT c.CARTID into cartid from cart c where c.accountid = accid and c.active = 1;
+
+INSERT INTO RECEIPT(ACCOUNTID, RECEIPTTIME, RECEIPTADD, RECEIPTVALUE) VALUES (accid, NOW(), address, FN_GET_RECEIPT_DISCOUNTED_VALUE(cartid));
+
+SET ret = LAST_INSERT_ID();
+
+RETURN ret;
+END$$
+
 DROP FUNCTION IF EXISTS `FN_CHANGE_CART_DETAIL_COMBO_QUANT`$$
 CREATE DEFINER=`root`@`localhost` FUNCTION `FN_CHANGE_CART_DETAIL_COMBO_QUANT` (`cartid` INT(11), `comboid` INT(11), `val` INT(11)) RETURNS INT(11) NO SQL
 BEGIN
@@ -444,6 +551,40 @@ BEGIN
 	RETURN total;
 END$$
 
+DROP FUNCTION IF EXISTS `FN_GET_DISCOUNT_VALUE`$$
+CREATE DEFINER=`root`@`localhost` FUNCTION `FN_GET_DISCOUNT_VALUE` (`cartid` INT) RETURNS INT(2) NO SQL
+BEGIN
+	DECLARE PRVAL int(2);
+    DECLARE CVAL decimal(13,2);
+    SET PRVAL = 0;
+    SET CVAL = 0;
+    CALL SP_UPD_PROMOTION_STT();
+    
+    SET CVAL = FN_GET_CART_VALUE(cartid);
+    
+    SELECT PROVALUE into PRVAL FROM receipt_promotion_detail rd, receipt_promotion rp
+   WHERE rp.STATUS = '1' AND rp.RCPPR_ID = rd.RCPPR_ID and CVAL >= rd.MINRCPVALUE AND CVAL <= rd.MAXRCPVALUE;
+    
+    RETURN PRVAL;
+END$$
+
+DROP FUNCTION IF EXISTS `FN_GET_RECEIPT_DISCOUNTED_VALUE`$$
+CREATE DEFINER=`root`@`localhost` FUNCTION `FN_GET_RECEIPT_DISCOUNTED_VALUE` (`cartid` INT(11)) RETURNS DECIMAL(13,2) NO SQL
+BEGIN
+	DECLARE PRVAL int(2);
+    DECLARE CVAL decimal(13,2);
+    SET PRVAL = 0;
+    SET CVAL = 0;
+    CALL SP_UPD_PROMOTION_STT();
+    
+    SET CVAL = FN_GET_CART_VALUE(cartid);
+    
+    SELECT PROVALUE into PRVAL FROM receipt_promotion_detail rd, receipt_promotion rp
+   WHERE rp.STATUS = '1' AND rp.RCPPR_ID = rd.RCPPR_ID and CVAL >= rd.MINRCPVALUE AND CVAL <= rd.MAXRCPVALUE;
+    
+    RETURN CVAL * (100-PRVAL)/100;
+END$$
+
 DROP FUNCTION IF EXISTS `FN_LOGIN`$$
 CREATE DEFINER=`root`@`localhost` FUNCTION `FN_LOGIN` (`username` VARCHAR(20), `password` VARCHAR(100)) RETURNS INT(11) NO SQL
 BEGIN
@@ -517,7 +658,8 @@ INSERT INTO `account` (`ACCOUNTID`, `ACCOUNTUSER`, `ACCOUNTPASS`, `ACCOUNTNAME`,
 (4, 'kaito', 'pass', 'Bien', 'Bien@gmail.com', '1234567891', '1997-01-01', 1, 'Quang Nam', '0000-00-00', 1, NULL, NULL, 0),
 (5, 'newfull', '0ede32830053dc3d1a9dbdd98e71dea4', 'Nguyễn Thành Công', 'obmega3@gmail.com', '0911111112', '1997-01-02', 1, 'KTX Khu B ĐHQG TPHCM, Phường Linh Trung, Quận Thủ Đức, Thành phố Hồ Chí Minh', '2018-05-15', 1, '2,26,1', '3', 0),
 (7, 'neil.brex', '5388d26972038428479dea2cf03ec29f', 'Nguyễn Thành Công', 'obmega4@gmail.com', '0911111111', '1997-01-02', 1, '', '2018-07-01', 1, NULL, NULL, 0),
-(8, '15520070', '0ede32830053dc3d1a9dbdd98e71dea4', 'Nguyễn Thành Công', 'poly.lime.3@gmail.com', '0911111111', '1997-05-02', 0, '', '2018-07-01', 1, NULL, NULL, 0);
+(8, '15520070', '0ede32830053dc3d1a9dbdd98e71dea4', 'Lê Công Pha', 'poly.lime.3@gmail.com', '0911111111', '1997-05-02', 1, '33/3 Công Pha, Phường Bến Thành, Quận 1, Thành phố Hồ Chí Minh', '2018-07-01', 1, '1', '4', 0),
+(9, 'bp352446', 'e57dce4b6ffe352b0a1f3fdaf0a56525', 'ádasd', 'neilrealm@gmail.com', '0911111111', '2015-03-02', 1, '', '2018-07-02', 1, NULL, NULL, 1);
 
 --
 -- Triggers `account`
@@ -603,9 +745,18 @@ INSERT INTO `cart` (`CARTID`, `ACCOUNTID`, `CARTTIME`, `ACTIVE`) VALUES
 (1, 4, '2018-06-05 00:00:00', 0),
 (2, 4, '2018-06-06 00:00:00', 0),
 (3, 4, '2018-06-16 23:56:59', 1),
-(7, 5, '2018-06-21 00:41:36', 1),
-(9, 7, '2018-07-01 12:46:15', 1),
-(10, 8, '2018-07-01 12:50:17', 1);
+(7, 5, '2018-06-21 00:41:36', 0),
+(9, 7, '2018-07-01 12:46:15', 0),
+(10, 8, '2018-07-01 12:50:17', 1),
+(11, 9, '2018-07-02 23:47:20', 1),
+(12, 7, '2018-07-03 00:00:56', 0),
+(13, 5, '2018-07-03 00:01:13', 0),
+(14, 5, '2018-07-03 00:09:12', 0),
+(16, 7, '2018-07-03 00:17:25', 1),
+(18, 5, '2018-07-03 00:21:41', 0),
+(19, 5, '2018-07-03 00:34:50', 0),
+(20, 5, '2018-07-03 00:35:46', 0),
+(21, 5, '2018-07-03 00:55:48', 1);
 
 --
 -- Triggers `cart`
@@ -639,10 +790,21 @@ CREATE TABLE `cart_detail` (
 INSERT INTO `cart_detail` (`CARTID`, `ITEMID`, `QUANTITY`) VALUES
 (1, 4, 20),
 (2, 1, 1),
-(7, 1, 5),
+(7, 1, 6),
 (7, 2, 2),
 (7, 3, 1),
-(7, 30, 1);
+(7, 30, 1),
+(10, 1, 6),
+(10, 2, 27),
+(10, 3, 51),
+(10, 4, 99),
+(10, 5, 99),
+(10, 6, 1),
+(14, 1, 1),
+(14, 2, 1),
+(20, 1, 1),
+(20, 8, 1),
+(20, 9, 1);
 
 -- --------------------------------------------------------
 
@@ -662,7 +824,15 @@ CREATE TABLE `cart_detail_combo` (
 --
 
 INSERT INTO `cart_detail_combo` (`CARTID`, `COMBOID`, `QUANTITY`) VALUES
-(7, 4, 4);
+(7, 4, 4),
+(10, 3, 9),
+(10, 4, 99),
+(13, 4, 1),
+(14, 4, 1),
+(18, 3, 1),
+(18, 4, 1),
+(19, 4, 1),
+(20, 4, 1);
 
 -- --------------------------------------------------------
 
@@ -815,38 +985,6 @@ INSERT INTO `item_category` (`ITEM_CATEGORYID`, `ITEM_CATEGORYNAME`, `ITEM_CATEG
 -- --------------------------------------------------------
 
 --
--- Table structure for table `item_promotion`
---
-
-DROP TABLE IF EXISTS `item_promotion`;
-CREATE TABLE `item_promotion` (
-  `ITMPR_ID` int(11) NOT NULL COMMENT 'Mã khuyến mãi',
-  `NAME` varchar(30) NOT NULL COMMENT 'Tên khuyến mãi',
-  `STATUS` int(1) NOT NULL COMMENT 'Trạng thái của mã giảm giá',
-  `STARTDATE` date NOT NULL COMMENT 'Ngày bắt đầu',
-  `ENDDATE` date NOT NULL COMMENT 'Ngày kết thúc',
-  `EMPID` int(11) NOT NULL COMMENT 'Người tạo'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Khuyến mãi theo sản phẩm';
-
--- --------------------------------------------------------
-
---
--- Table structure for table `item_promotion_detail`
---
-
-DROP TABLE IF EXISTS `item_promotion_detail`;
-CREATE TABLE `item_promotion_detail` (
-  `ITMPR_ID` int(11) NOT NULL COMMENT 'Mã khuyến mãi',
-  `ITEMID` int(11) NOT NULL COMMENT 'Mã món',
-  `MINQUANT` int(11) NOT NULL DEFAULT '1' COMMENT 'Số lượng tối thiểu',
-  `MAXQUANT` int(11) NOT NULL DEFAULT '1' COMMENT 'Số lượng tối đa',
-  `NEWPRICE` decimal(10,0) DEFAULT NULL COMMENT 'Giá mới (nếu có) [Bỏ trống nếu khuyến mãi %]',
-  `PRVALUE` int(2) DEFAULT '5' COMMENT 'Giá trị khuyến mãi (%) [Bỏ trống nếu đổi giá tự do]'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Chi tiết khuyến mãi theo sản phẩm';
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `item_type`
 --
 
@@ -892,6 +1030,13 @@ CREATE TABLE `receipt` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Hóa đơn';
 
 --
+-- Dumping data for table `receipt`
+--
+
+INSERT INTO `receipt` (`RECEIPTID`, `ACCOUNTID`, `RECEIPTTIME`, `RECEIPTADD`, `RECEIPTVALUE`) VALUES
+(14, 5, '2018-07-03 00:55:48', 'KTX Khu B ĐHQG TPHCM, Phường Linh Trung, Quận Thủ Đức, Thành phố Hồ Chí Minh', '191700.00');
+
+--
 -- Triggers `receipt`
 --
 DROP TRIGGER IF EXISTS `trig_receipt_insert`;
@@ -916,6 +1061,36 @@ CREATE TABLE `receipt_detail` (
   `VALUE` decimal(13,2) NOT NULL COMMENT 'Tổng giá'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Chi tiết hóa đơn';
 
+--
+-- Dumping data for table `receipt_detail`
+--
+
+INSERT INTO `receipt_detail` (`RECEIPTID`, `ITEMID`, `QUANTITY`, `VALUE`) VALUES
+(14, 1, 1, '20000.00'),
+(14, 8, 1, '23000.00'),
+(14, 9, 1, '50000.00');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `receipt_detail_combo`
+--
+
+DROP TABLE IF EXISTS `receipt_detail_combo`;
+CREATE TABLE `receipt_detail_combo` (
+  `RECEIPTID` int(11) NOT NULL COMMENT 'Mã hoá đơn',
+  `COMBOID` int(11) NOT NULL COMMENT 'Mã combo',
+  `QUANTITY` int(11) NOT NULL DEFAULT '1' COMMENT 'Số lượng',
+  `VALUE` decimal(13,2) NOT NULL COMMENT 'Thành tiền'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `receipt_detail_combo`
+--
+
+INSERT INTO `receipt_detail_combo` (`RECEIPTID`, `COMBOID`, `QUANTITY`, `VALUE`) VALUES
+(14, 4, 1, '120000.00');
+
 -- --------------------------------------------------------
 
 --
@@ -932,6 +1107,13 @@ CREATE TABLE `receipt_promotion` (
   `EMPID` int(11) NOT NULL COMMENT 'Người tạo'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Khuyến mãi trên hóa đơn';
 
+--
+-- Dumping data for table `receipt_promotion`
+--
+
+INSERT INTO `receipt_promotion` (`RCPPR_ID`, `NAME`, `STATUS`, `STARTDATE`, `ENDDATE`, `EMPID`) VALUES
+(5, 'Khuyến mãi 1', 1, '2018-07-01', '2018-07-10', 1);
+
 -- --------------------------------------------------------
 
 --
@@ -946,6 +1128,14 @@ CREATE TABLE `receipt_promotion_detail` (
   `MAXRCPVALUE` decimal(13,2) NOT NULL COMMENT 'Giá trị hóa đơn tối đa',
   `PROVALUE` int(2) NOT NULL DEFAULT '10' COMMENT 'Giá trị khuyến mãi (%)'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Chi tiết khuyến mãi';
+
+--
+-- Dumping data for table `receipt_promotion_detail`
+--
+
+INSERT INTO `receipt_promotion_detail` (`RCPPR_DTLID`, `RCPPR_ID`, `MINRCPVALUE`, `MAXRCPVALUE`, `PROVALUE`) VALUES
+(1, 5, '50000.00', '700000.00', 10),
+(2, 5, '710000.00', '1000000.00', 15);
 
 -- --------------------------------------------------------
 
@@ -1043,20 +1233,6 @@ ALTER TABLE `item_category`
   ADD PRIMARY KEY (`ITEM_CATEGORYID`);
 
 --
--- Indexes for table `item_promotion`
---
-ALTER TABLE `item_promotion`
-  ADD PRIMARY KEY (`ITMPR_ID`),
-  ADD KEY `ACCOUNTID` (`EMPID`);
-
---
--- Indexes for table `item_promotion_detail`
---
-ALTER TABLE `item_promotion_detail`
-  ADD PRIMARY KEY (`ITMPR_ID`,`ITEMID`),
-  ADD KEY `ITEMID` (`ITEMID`);
-
---
 -- Indexes for table `item_type`
 --
 ALTER TABLE `item_type`
@@ -1076,6 +1252,13 @@ ALTER TABLE `receipt`
 ALTER TABLE `receipt_detail`
   ADD PRIMARY KEY (`RECEIPTID`,`ITEMID`),
   ADD KEY `ITEMID` (`ITEMID`);
+
+--
+-- Indexes for table `receipt_detail_combo`
+--
+ALTER TABLE `receipt_detail_combo`
+  ADD PRIMARY KEY (`RECEIPTID`,`COMBOID`),
+  ADD KEY `COMBOID` (`COMBOID`);
 
 --
 -- Indexes for table `receipt_promotion`
@@ -1105,7 +1288,7 @@ ALTER TABLE `reg_email`
 -- AUTO_INCREMENT for table `account`
 --
 ALTER TABLE `account`
-  MODIFY `ACCOUNTID` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Mã tài khoản', AUTO_INCREMENT=9;
+  MODIFY `ACCOUNTID` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Mã tài khoản', AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `admin`
@@ -1123,7 +1306,7 @@ ALTER TABLE `blog`
 -- AUTO_INCREMENT for table `cart`
 --
 ALTER TABLE `cart`
-  MODIFY `CARTID` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Mã giỏ', AUTO_INCREMENT=11;
+  MODIFY `CARTID` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Mã giỏ', AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT for table `combo`
@@ -1144,12 +1327,6 @@ ALTER TABLE `item_category`
   MODIFY `ITEM_CATEGORYID` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Mã danh mục', AUTO_INCREMENT=6;
 
 --
--- AUTO_INCREMENT for table `item_promotion`
---
-ALTER TABLE `item_promotion`
-  MODIFY `ITMPR_ID` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Mã khuyến mãi';
-
---
 -- AUTO_INCREMENT for table `item_type`
 --
 ALTER TABLE `item_type`
@@ -1159,19 +1336,19 @@ ALTER TABLE `item_type`
 -- AUTO_INCREMENT for table `receipt`
 --
 ALTER TABLE `receipt`
-  MODIFY `RECEIPTID` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Mã hóa đơn';
+  MODIFY `RECEIPTID` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Mã hóa đơn', AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `receipt_promotion`
 --
 ALTER TABLE `receipt_promotion`
-  MODIFY `RCPPR_ID` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Mã khuyến mãi';
+  MODIFY `RCPPR_ID` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Mã khuyến mãi', AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `receipt_promotion_detail`
 --
 ALTER TABLE `receipt_promotion_detail`
-  MODIFY `RCPPR_DTLID` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Mã chi tiết khuyến mãi';
+  MODIFY `RCPPR_DTLID` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Mã chi tiết khuyến mãi', AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `reg_email`
@@ -1223,19 +1400,6 @@ ALTER TABLE `item`
   ADD CONSTRAINT `item_ibfk_1` FOREIGN KEY (`ITEM_TYPEID`) REFERENCES `item_type` (`ITEM_TYPEID`) ON DELETE CASCADE;
 
 --
--- Constraints for table `item_promotion`
---
-ALTER TABLE `item_promotion`
-  ADD CONSTRAINT `item_promotion_ibfk_1` FOREIGN KEY (`EMPID`) REFERENCES `admin` (`EMPID`);
-
---
--- Constraints for table `item_promotion_detail`
---
-ALTER TABLE `item_promotion_detail`
-  ADD CONSTRAINT `item_promotion_detail_ibfk_1` FOREIGN KEY (`ITMPR_ID`) REFERENCES `item_promotion` (`ITMPR_ID`) ON DELETE CASCADE,
-  ADD CONSTRAINT `item_promotion_detail_ibfk_2` FOREIGN KEY (`ITEMID`) REFERENCES `item` (`ITEMID`) ON DELETE CASCADE;
-
---
 -- Constraints for table `item_type`
 --
 ALTER TABLE `item_type`
@@ -1253,6 +1417,13 @@ ALTER TABLE `receipt`
 ALTER TABLE `receipt_detail`
   ADD CONSTRAINT `receipt_detail_ibfk_1` FOREIGN KEY (`RECEIPTID`) REFERENCES `receipt` (`RECEIPTID`) ON DELETE CASCADE,
   ADD CONSTRAINT `receipt_detail_ibfk_2` FOREIGN KEY (`ITEMID`) REFERENCES `item` (`ITEMID`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `receipt_detail_combo`
+--
+ALTER TABLE `receipt_detail_combo`
+  ADD CONSTRAINT `receipt_detail_combo_ibfk_1` FOREIGN KEY (`RECEIPTID`) REFERENCES `receipt` (`RECEIPTID`),
+  ADD CONSTRAINT `receipt_detail_combo_ibfk_2` FOREIGN KEY (`COMBOID`) REFERENCES `combo` (`COMBOID`);
 
 --
 -- Constraints for table `receipt_promotion`

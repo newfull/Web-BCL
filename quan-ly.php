@@ -269,9 +269,41 @@ if(!empty($_SESSION['current'])){
           <div id="his" class="tab-pane fade">
             <div class="wrapper-his">
               <div class="wrapper-his-content">
-                sdkfjsadasd
+                <div class="row">
+                <div class="col-xs-10">
+                  <table border="1px"; width=100%>
+
+                  <tr style="border:1px solid black; background-color: #B6AFAE">
+                      <th style="text-align:center">Đơn hàng</th>
+                      <th style="text-align:center">Thời gian</th>
+                      <th style="text-align:center">Địa chỉ</th>
+                      <th style="text-align:center">Tổng</th>
+                      </tr>
+
+                  <?php
+                  $data = receipts($conn, $current_user->getID());
+
+                  foreach($data as $item) {?>
+
+                  <tr>
+                       <td align='center'><a href="#" onclick="show_receipt(<?php echo $item['Ma']; ?>)">#PO<?php echo $item['Ma']; ?></a></td>
+                       <td align='center'><?php echo $item['ThoiGian'];?></td>
+                       <td align='center'><?php echo $item['DiaChi'];?></td>
+                       <td align='center'><?php echo number_format($item['GiaTri'],0).'₫';?></td>
+
+                   </tr>
+
+                  <?php  }
+                ?>
+
+                  </table>
+                </div>
+                </div>
               </div>
             </div>
+            <div class="wrapper-receipt display-none">
+            </div>
+
           </div>
           <div id="liked" class="tab-pane fade">
             <div class="liked-combos">

@@ -245,7 +245,7 @@ function cart_value($conn, $cartid){
 function init_cart($conn, $accid){
   $cartid = fn_call_vars($conn, "FN_GET_CARTID", $accid);
   if($cartid == -1)
-    sp_exec_vars($conn, "SP_CART_INSERT", $accid);
+    sp_exec_vars($conn, "SP_ADD_CART", $accid);
 
   return fn_call_vars($conn, "FN_GET_CARTID", $accid);
 }
@@ -360,9 +360,25 @@ function receipt_value($conn, $cartid){
 function discount_value($conn, $cartid){
   return fn_call_vars($conn, "FN_GET_DISCOUNT_VALUE", $cartid);
 }
-;
+
 function checkout($conn, $accid){
-  sp_call_vars($conn, "SP_CHECKOUT", init_cart($conn, $_SESSION['current']).",".fn_call_vars($conn, "FN_ADD_RECEIPT", $_SESSION['current']));
+  return sp_exec_vars($conn, "SP_CHECKOUT", init_cart($conn, $_SESSION['current']).",".fn_call_vars($conn, "FN_ADD_RECEIPT", $_SESSION['current']));
+}
+
+function receipts($conn, $accid){
+  return sp_call_vars($conn, "SP_GET_RECEIPTS", $accid);
+}
+
+function get_receipt_info($conn, $receiptid){
+  return sp_call_vars($conn, "SP_GET_RECEIPT_INFO", $receiptid)[0];
+}
+
+function receipt_details($conn, $receiptid){
+  return sp_call_vars($conn, "SP_GET_RECEIPT_DETAILS",$receiptid);
+}
+
+function receipt_details_combo($conn, $receiptid){
+  return sp_call_vars($conn, "SP_GET_RECEIPT_DETAILS_COMBO",$receiptid);
 }
 
 if(isset($_POST['funct'])) {

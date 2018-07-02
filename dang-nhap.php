@@ -104,11 +104,16 @@ if(empty($_SESSION['current'])){
           <form onsubmit="return false;">
                 <div class="regform">
                   <div class="row">
+                    <div class="col-xs-12 col-lg-12">
+                      <label class="error-label signup-error-label"></label>
+                    </div>
+                  </div>
+                  <div class="row">
                     <div class="col-xs-12 col-lg-4">
                       <label class="nhan">Họ và tên <imp>(*)</imp>: </label>
                     </div>
                     <div class="col-xs-12 col-lg-4">
-                      <input name="name" class="form-control" type="text" required="">
+                      <input name="name" id="signup-name" class="form-control" type="text" required="">
                     </div>
                   </div>
 
@@ -117,7 +122,7 @@ if(empty($_SESSION['current'])){
                       <label class="nhan">Tên đăng nhập <imp>(*)</imp>: </label>
                     </div>
                     <div class="col-xs-12 col-lg-4">
-                      <input name="username" class="form-control" type="text" required="">
+                      <input name="username" id="signup-username" class="form-control" type="text" required="">
                     </div>
                   </div>
 
@@ -126,7 +131,7 @@ if(empty($_SESSION['current'])){
                       <label class="nhan">Mật khẩu <imp>(*)</imp>: </label>
                     </div>
                     <div class="col-xs-12 col-lg-4">
-                      <input name="password" class="form-control" type="password" required="">
+                      <input name="password" id="signup-password" class="form-control" type="password" required="">
                     </div>
                   </div>
 
@@ -135,7 +140,7 @@ if(empty($_SESSION['current'])){
                       <label class="nhan">Nhập lại mật khẩu <imp>(*)</imp>: </label>
                     </div>
                     <div class="col-xs-12 col-lg-4">
-                      <input class="form-control" name="reenterpassword" type="password" required="">
+                      <input class="form-control" id="signup-reenterpassword" name="reenterpassword" type="password" required="">
                     </div>
                   </div>
 
@@ -144,7 +149,7 @@ if(empty($_SESSION['current'])){
                       <label class="nhan">E-mail <imp>(*)</imp>: </label>
                     </div>
                     <div class="col-xs-12 col-lg-4">
-                      <input name="email" class="form-control" type="text" required="">
+                      <input name="email" id="signup-email" class="form-control" type="text" required="">
                     </div>
                   </div>
 
@@ -155,13 +160,13 @@ if(empty($_SESSION['current'])){
                     <div class="hidden-xs col-lg-1">
                     </div>
                     <div class="col-xs-4 col-lg-1">
-                      <select class="date_day" name="user-date-day"></select>
+                      <select class="date_day" name="date-day"></select>
                     </div>
                     <div class="col-xs-4 col-lg-1">
-                      <select class="date_month" name="user-date-month"></select>
+                      <select class="date_month" name="date-month"></select>
                     </div>
                     <div class="col-xs-4 col-lg-2">
-                      <select class="date_year" name="user-date-year"></select>
+                      <select class="date_year" name="date-year"></select>
                     </div>
                     <div class="hidden-xs col-lg-5">
                     </div>
@@ -175,7 +180,7 @@ if(empty($_SESSION['current'])){
                     <div class="col-xs-5 col-lg-2">
                       <div class="clearfix">
                         <div class="radio gioitinh">
-                          <input type="radio" value="1" name="gender" checked>
+                          <input type="radio" id="user-gender-nam" value="1" name="gender" checked>
                           <label for="user-gender-nam">Nam</label>
                         </div>
                       </div>
@@ -199,7 +204,7 @@ if(empty($_SESSION['current'])){
                       <label class="nhan">Điện thoại <imp>(*)</imp>: </label>
                     </div>
                     <div class="col-xs-12 col-lg-4">
-                      <input class="form-control" name="phonenumber" type="tel" maxlength="11" required="">
+                      <input class="form-control" id="signup-phonenumber" name="phonenumber" type="tel" maxlength="11" required="">
                     </div>
                   </div>
 
