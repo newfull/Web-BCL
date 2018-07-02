@@ -353,6 +353,18 @@ function reg_email($conn, $email){
   return sp_call_vars($conn, "SP_ADD_EMAIL_FOR_NEWS", $email);
 }
 
+function receipt_value($conn, $cartid){
+  return fn_call_vars($conn, "FN_GET_RECEIPT_DISCOUNTED_VALUE", $cartid);
+}
+
+function discount_value($conn, $cartid){
+  return fn_call_vars($conn, "FN_GET_DISCOUNT_VALUE", $cartid);
+}
+;
+function checkout($conn, $accid){
+  sp_call_vars($conn, "SP_CHECKOUT", init_cart($conn, $_SESSION['current']).",".fn_call_vars($conn, "FN_ADD_RECEIPT", $_SESSION['current']));
+}
+
 if(isset($_POST['funct'])) {
   switch($_POST['funct']){
     case 'change_cart_details_quant':
@@ -399,6 +411,9 @@ if(isset($_POST['funct'])) {
       break;
     case 'reg_email':
       echo reg_email($conn, $_POST['email'])[0][0];
+      break;
+    case 'checkout':
+      checkout($conn, $_SESSION['current']);
       break;
   }
 }

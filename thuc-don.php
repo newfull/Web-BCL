@@ -271,7 +271,7 @@
                 </div>
             </div>
             <div id="search_result" class="search_result display-none">
-              <h4>Kết quả tìm kiếm sản phẩm: <span id="search_txt"></span></h4>
+              <h4>&emsp;Kết quả tìm kiếm sản phẩm: <span id="search_txt"></span></h4>
               <div class="search_result_content">
               </div>
             </div>

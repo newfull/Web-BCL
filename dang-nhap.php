@@ -23,7 +23,6 @@ if(empty($_SESSION['current'])){
       <ul class="nav nav-pills nav-stacked nav-pills-login">
         <li class="active"><a data-toggle="pill" href="#login-page">Đăng nhập</a></li>
         <li><a data-toggle="pill" href="#signup-page">Đăng ký</a></li>
-        <li><a data-toggle="pill" href="#fgpass-page">Quên mật khẩu?</a></li>
       </ul>
     </div>
 
@@ -271,13 +270,6 @@ if(empty($_SESSION['current'])){
                 </div>
           </form>
         </div>
-
-        <div id="fgpass-page" class="tab-pane fade">
-          <form onsubmit="return false;">
-ádasdad
-          </form>
-        </div>
-
       </div>
     </div>
 
@@ -294,7 +286,7 @@ if(isset($_GET['sec']))
   $selection = $_GET['sec'];
   if($conn != "NULL"){
     $section_id = "0";
-    $choice =array("login","reg","fgpass");
+    $choice =array("login","reg");
     $section_id = array_search($selection, $choice);
 
     echo "<script>$('.nav-pills-login li:eq($section_id) a').tab('show');</script>";

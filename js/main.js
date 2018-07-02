@@ -1077,10 +1077,14 @@ $("#search_menu").on("change paste keyup blur", function(){
   if($("#search_menu").val() == ""){
     $("#show_menu").removeClass('display-none');
     $("#search_result").addClass('display-none');
+    if ($(window).width() < 1200)
+      $(".thucdon-tabs .control").css("display", "inline-block");
+
   }
   else
   {
     $("#show_menu").addClass('display-none');
+    $(".thucdon-tabs .control").css("display", "none");
     $("#search_result").removeClass('display-none');
     $("#search_result #search_txt").html($("#search_menu").val());
     $.ajax({
@@ -1204,6 +1208,28 @@ function registerEmail(){
   });
   }
 }
+
+function requireAdd(){
+  $('#error-popup .modal-body').html("Xin vui lòng cài đặt địa chỉ trước~");
+  $('#error-popup').modal('show');
+  setTimeout(function(){ window.location = "/quan-ly?sec=eadd"; },1500);
+}
+
+$(".submit-receipt").click(function(){
+  $.ajax({
+      url:'../includes/functions.php',
+      type:'post',
+      data: {
+        funct: 'checkout'
+      },
+      success:function(){
+        $('#error-popup .modal-body').html("Xác nhận đơn hàng thành công");
+        $('#error-popup').modal('show');
+        setTimeout(function(){  window.location = "/quan-ly?sec=his"; },2000);
+
+   }
+  });
+});
 
 $(document).ready(function(e){
     $('.selectpicker').selectpicker();

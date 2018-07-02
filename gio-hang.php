@@ -199,7 +199,7 @@
               </div>
 
               <div class="info-sect">
-                <div class="info-sect-heading">Thông tin đơn hàng</div>
+                <div class="info-sect-heading"><br>Thông tin đơn hàng<br><br></div>
                 <div class="info-sect-content">
                   <div class=" checkout-summary">
                     <div class="checkout-summary-rows">
@@ -232,7 +232,7 @@
                         <div class="checkout-order-total-fee"><?php echo number_format(cart_value($conn, $current_user->getCart()),0); ?> ₫
                         </div>
                       </div>
-                      <button type="button" class="next-btn next-btn-primary next-btn-large checkout-order-total-button" data-target='#checkout' data-toggle='modal' data-dismiss='modal'>ĐẶT HÀNG</button>
+                      <a href="/thanh-toan"><button type="button" class="next-btn next-btn-primary next-btn-large checkout-order-total-button">ĐẶT HÀNG</button></a>
                     </div>
                   </div>
                 </div>
@@ -245,3 +245,7 @@
   </div>
   </div>
   <?php include_once("footer.php");?>
+
+  <?php if($current_user->getAdd() == ""){ ?>
+  <script>requireAdd();</script>
+<?php } ?>
